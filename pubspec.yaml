@@ -1,0 +1,82 @@
+name: bamboo
+description: A new Flutter project.
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+version: 2.0.4+14
+
+environment:
+  sdk: ">=2.18.5 <3.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  iconly:
+  banner_image: ^1.0.7
+  http: ^1.2.1
+  flutter_staggered_animations: ^1.0.0
+  cached_network_image: ^3.2.3
+  flutter_slidable: ^3.0.1
+  sqflite: ^2.2.2
+  provider: ^6.0.4
+  dio: ^5.4.0
+  # very_good_analysis: ^5.1.0
+  intl: ^0.19.0
+  # package_info_plus: ^4.2.0
+  circular_progress_bar_with_lines: ^0.0.5
+  flutter_html: ^3.0.0-beta.2
+  flutter_launcher_icons: ^0.13.1
+  rating_dialog: ^2.0.4
+  flutter_svg: any
+  photo_view: ^0.14.0
+  # visibility_detector: ^0.4.0+2
+  flutter_barcode_listener: ^0.1.3
+  flutter_bloc: ^8.1.2
+  connectivity_plus: ^5.0.2
+  url_launcher: ^6.1.10
+  firebase_core:
+  awesome_notifications:
+  firebase_messaging:
+  flutter_local_notifications:
+  # flutter_inappwebview:
+  get:
+  change_app_package_name: ^1.1.0
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/b_logo.png"
+  min_sdk_android: 21 #
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.1
+  json_serializable: ^6.6.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/icons/logo.png
+  fonts:
+    - family: Monto
+      fonts:
+        - asset: assets/fonts/Gilroy-Regular.ttf
+    - family: Semi
+      fonts:
+        - asset: assets/fonts/Gilroy-Medium.ttf
+    - family: GilroyBold
+      fonts:
+        - asset: assets/fonts/Gilroy-Bold.ttf
+    - family: GilroySemiBold
+      fonts:
+        - asset: assets/fonts/Gilroy-SemiBold.ttf
+    - family: GilroyMedium
+      fonts:
+        - asset: assets/fonts/Gilroy-Medium.ttf
+    - family: GilroyRegular
+      fonts:
+        - asset: assets/fonts/Gilroy-Regular.ttf
+  generate: true
