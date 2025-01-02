@@ -1,6 +1,6 @@
-// import 'package:bamboo/test/testing.dart';
 import 'dart:io';
 
+import 'package:badges/badges.dart' as badges;
 import 'package:bamboo/firebase_options.dart';
 import 'package:bamboo/my_pages/categories.dart';
 import 'package:bamboo/my_pages/my_cat_items.dart';
@@ -18,6 +18,8 @@ import 'package:bamboo/providers/page1settings.dart';
 import 'package:bamboo/providers/provider_items.dart';
 import 'package:bamboo/providers/user_info.dart';
 import 'package:bamboo/splash.dart';
+import 'package:bamboo/values/constants.dart' as Constants;
+import 'package:bamboo/values/constants.dart';
 import 'package:bamboo/values/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -32,10 +34,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Firebase Messaging Background Handler
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // Run App
   runApp(
     MultiProvider(
       providers: [
@@ -76,12 +76,10 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _initializeFCM() async {
     try {
-      // İzinleri talep et
       await FirebaseMessaging.instance.requestPermission();
 
       final firebaseMessaging = FirebaseMessaging.instance;
 
-      // Platforma göre cihaz token'ını al
       String? deviceToken;
       if (Platform.isAndroid) {
         deviceToken = await firebaseMessaging.getToken();
@@ -89,18 +87,15 @@ class _MyAppState extends State<MyApp> {
         deviceToken = await firebaseMessaging.getAPNSToken();
       }
 
-      // Eğer token alınmışsa logla ve topic'e abone ol
       if (deviceToken != null && deviceToken.isNotEmpty) {
         print("Device Token: $deviceToken");
 
-        // Topic'e abone ol
         await firebaseMessaging.subscribeToTopic('ttf_channel');
         print("Subscribed to topic: ttf_channel");
       } else {
         print("Failed to fetch device token. Cannot subscribe to topic.");
       }
 
-      // Foreground mesajlarını dinle
       FirebaseMessaging.onMessage.listen((message) {
         print("Foreground Message: ${message.notification?.title}");
         FCMConfig().sendNotification(
@@ -144,7 +139,6 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-// Ana sayfa widgetı
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -163,34 +157,8 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  Future<bool> _backPressed(GlobalKey<NavigatorState> navigatorKey) async {
-    if (navigatorKey.currentState!.canPop()) {
-      navigatorKey.currentState!.maybePop();
-      return Future<bool>.value(false);
-    }
-
-    return (await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("Sistemden çıkmak istiyor musunuz?"),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text("Hayır"),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text("Evet"),
-              ),
-            ],
-          ),
-        )) ??
-        false;
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Alt çubuk sayfaları
     final bottomBarPages = <Widget>[
       _buildNavigatorPage(
         key: Provider.of<BottomProv>(context).yourKey1,
@@ -217,9 +185,37 @@ class _MyHomePageState extends State<MyHomePage> {
     selectedIndex = Provider.of<BottomProv>(context).page;
 
     return WillPopScope(
-      onWillPop: () => _backPressed(
-        which_page != 1 ? Provider.of<BottomProv>(context, listen: false).yourKey : Provider.of<BottomProv>(context, listen: false).yourKey1,
-      ),
+      onWillPop: () async {
+        return await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(
+                  Constants.ruCykmak[Provider.of<Which_page>(context).dil],
+                  style: const TextStyle(
+                    fontFamily: gilroyMedium,
+                    fontSize: 20,
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(
+                      Constants.ruCykmakNo[Provider.of<Which_page>(context).dil],
+                      style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: gilroyMedium),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(
+                      Constants.ruCykmakYes[Provider.of<Which_page>(context).dil],
+                      style: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: gilroyRegular),
+                    ),
+                  ),
+                ],
+              ),
+            ) ??
+            false;
+      },
       child: Scaffold(
         body: PageView(
           controller: Provider.of<BottomProv>(context).pageController,
@@ -241,7 +237,6 @@ class _MyHomePageState extends State<MyHomePage> {
       onGenerateRoute: (settings) {
         Widget page = initialPage;
 
-        // Eklenen rotalar
         if (settings.name == '/options') {
           page = const OptionsItem(image: '');
         } else if (settings.name == '/my_cat_items') {
@@ -266,28 +261,58 @@ class _MyHomePageState extends State<MyHomePage> {
       useLegacyColorScheme: true,
       currentIndex: selectedIndex,
       onTap: (index) => _onNavigationTap(context, index),
-      items: const [
-        BottomNavigationBarItem(
+      items: [
+        const BottomNavigationBarItem(
           icon: Icon(IconlyLight.home),
           activeIcon: Icon(IconlyBold.home),
           label: "Home",
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(IconlyLight.category),
           activeIcon: Icon(IconlyBold.category),
           label: "Category",
         ),
         BottomNavigationBarItem(
-          icon: Icon(IconlyLight.buy),
-          activeIcon: Icon(IconlyBold.buy),
+          icon: Consumer<ProvItem>(
+            builder: (context, provItem, child) {
+              if (provItem.items.isEmpty) {
+                return child!;
+              }
+              return badges.Badge(
+                badgeContent: Text(
+                  provItem.items.length.toString(),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                badgeStyle: const badges.BadgeStyle(badgeColor: Colors.red, padding: EdgeInsets.all(5)),
+                child: child!,
+              );
+            },
+            child: const Icon(IconlyLight.buy),
+          ),
+          activeIcon: Consumer<ProvItem>(
+            builder: (context, provItem, child) {
+              if (provItem.items.isEmpty) {
+                return child!;
+              }
+              return badges.Badge(
+                badgeContent: Text(
+                  provItem.items.length.toString(),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                badgeStyle: const badges.BadgeStyle(badgeColor: Colors.red, padding: EdgeInsets.all(5)),
+                child: child!,
+              );
+            },
+            child: const Icon(IconlyBold.buy),
+          ),
           label: "Order",
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(IconlyLight.heart),
           activeIcon: Icon(IconlyBold.heart),
           label: "Favorites",
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(IconlyLight.profile),
           activeIcon: Icon(IconlyBold.profile),
           label: "Profile",
@@ -319,8 +344,9 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       case 4:
         which_page = 5;
-        setState(() => {});
         bottomProv.setPage4();
+        break;
+      default:
         break;
     }
   }

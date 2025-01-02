@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 import 'package:bamboo/my_pages/category_cart.dart';
 import 'package:bamboo/providers/page1provider.dart';
 // ignore: library_prefixes
 import 'package:bamboo/values/constants.dart' as Constants;
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+
 import '../values/colors.dart';
 
 class Categories extends StatefulWidget {
@@ -54,7 +55,7 @@ class _CategoriesState extends State<Categories> {
           ],
         ),
         body: GridView.builder(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.only(left: 15, right: 15, bottom: 80, top: 15),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 15,

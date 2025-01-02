@@ -1,14 +1,11 @@
-import 'package:bamboo/values/constants.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:bamboo/values/colors.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
-import 'package:iconly/iconly.dart';
-import 'package:provider/provider.dart';
 import 'package:bamboo/providers/bottom_prov.dart';
 import 'package:bamboo/providers/page1provider.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
+import 'package:bamboo/values/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
+import 'package:provider/provider.dart';
 
 import '../my_pages2/sub_cat.dart';
 import '../values/models.dart';
@@ -25,6 +22,8 @@ class _MainCatState extends State<MainCat> {
   @override
   Widget build(BuildContext context) {
     var prov = Provider.of<Which_page>(context);
+    print(Constants.category.length);
+    // double length = Constants.category.length / 2;
     return Column(
       children: [
         topPartName(prov, context),
@@ -55,12 +54,14 @@ class _MainCatState extends State<MainCat> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ClipOval(
-                          child: CachedNetworkImage(
-                            fit: BoxFit.fill,
-                            imageUrl: Constants.category[index].image,
-                            placeholder: (context, url) => Image.asset(logoImage),
-                            errorWidget: (context, url, error) => Image.asset(logoImage),
+                        Expanded(
+                          child: ClipOval(
+                            child: CachedNetworkImage(
+                              fit: BoxFit.fill,
+                              imageUrl: Constants.category[index].image,
+                              placeholder: (context, url) => Image.asset(logoImage),
+                              errorWidget: (context, url, error) => Image.asset(logoImage),
+                            ),
                           ),
                         ),
                         const SizedBox(

@@ -20,229 +20,259 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-  late var response3;
-  bool connection = true;
+  bool _connection = true;
+  final Dio _dio = Dio();
+
   @override
   void initState() {
     super.initState();
-    getTime();
+    _loadData();
   }
 
-  final dio = Dio();
-  Future get(String url) async {
-    try {
-      var repo = await dio.get('https://${Constants.api}$url');
+  Future<void> _loadData() async {
+    await _loadUserData();
+    await _fetchDeliverySettings();
+    await _fetchCategories();
+    await _fetchBanners();
+    await _fetchCommentBanners();
+    await _fetchDiscountProducts();
+    await _fetchNewProducts();
+    await _fetchHitProducts();
+    await _loadCartItems();
+    await _loadAddresses();
+    await _loadFavoriteItems();
+    await _loadLanguageSettings();
 
-      connection = true;
-      return repo.data;
-    } catch (e) {
-      setState(() {
-        connection = false;
-      });
+    // Tüm işlemler bittikten sonra ana sayfaya geç
+    if (mounted) {
+      // Sayfa hala aktif mi kontrolü
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyHomePage()));
     }
   }
 
-  Future getTime() async {
-    final data = await DatabaseHelper.getUser();
-    List<Map<String, dynamic>> myData = [];
+  Future<void> _loadUserData() async {
+    final userData = await DatabaseHelper.getUser();
 
-    myData = data;
-
-    if (myData.isNotEmpty) {
-      Constants.phone = myData[0]['username'];
-      Constants.token = myData[0]['token'];
-      Constants.name = myData[0]['name'];
-      Constants.name1 = myData[0]['name'];
-      Constants.name2 = myData[0]['surname'];
+    if (userData.isNotEmpty) {
+      Constants.phone = userData[0]['username'];
+      Constants.token = userData[0]['token'];
+      Constants.name = userData[0]['name'];
+      Constants.name1 = userData[0]['name'];
+      Constants.name2 = userData[0]['surname'];
       Constants.name = Constants.name1 + Constants.name2;
-
-      Constants.email = myData[0]['email'];
+      Constants.email = userData[0]['email'];
       Provider.of<BottomProv>(context, listen: false).set_reg(true);
     }
-    try {
-      if (Constants.token != '') {
-        Dio dio2 = Dio();
-        dio2.options.headers["Authorization"] = "Bearer ${Constants.token}";
-        var response = await dio2.get('https://${Constants.api}/api/v1/users/me/bonus');
-        Constants.bonusMoney = response.data['amount'];
-      }
-    } catch (e) {}
 
     try {
-      var repo = await get('/api/v1/locations');
-      var mloc = repo['data'];
-      Provider.of<Which_page>(context, listen: false).setDosMin(double.parse(mloc[0]['min_order_fee']));
-      Provider.of<Which_page>(context, listen: false).setDosPrice(double.parse(mloc[0]['shipping_fee']));
-    } catch (e) {}
-    var repo = await get('/api/v1/categories');
-    var mcat = repo['data'];
-    for (int i = 0; i < mcat.length; i++) {
-      Constants.category.add(categorys(
-          id: mcat[i]['id'], name_tm: mcat[i]['name_tm'] ?? '', name_ru: mcat[i]['name_ru'] ?? '', name_en: mcat[i]['name_en'] ?? '', image: mcat[i]['image'], children: mcat[i]['children']));
+      if (Constants.token.isNotEmpty) {
+        _dio.options.headers["Authorization"] = "Bearer ${Constants.token}";
+        final response = await _dio.get('https://${Constants.api}/api/v1/users/me/bonus');
+        Constants.bonusMoney = response.data['amount'].toString();
+      }
+    } catch (e) {
+      print('Error fetching bonus data: $e');
     }
-    try {
-      var repo = await get('/api/v1/sliders');
-      var mban = repo['data'];
-      for (int i = 0; i < mban.length; i++) {
-        Constants.banner.add(sliders(id: mban[i]['id'], image: mban[i]['image']['tm'], imageRu: mban[i]['image']['ru'], imageEn: mban[i]['image']['en']));
-      }
-    } catch (e) {}
-    try {
-      var repo = await get('/api/v1/comment-sliders');
-      var mban = repo['data'];
-      for (int i = 0; i < mban.length; i++) {
-        Constants.commentBanner.add(
-          CommentBanner(
-            id: mban[i]['id'],
-            nameTm: mban[i]['title']['tm'] ?? '',
-            nameRu: mban[i]['title']['ru'] ?? '',
-            contentTm: mban[i]['body']['tm'] ?? '',
-            contentRu: mban[i]['body']['ru'] ?? '',
-            imageTm: mban[i]['image']['tm'],
-            imageRu: mban[i]['image']['ru'],
-          ),
-        );
-      }
-    } catch (e) {}
-    try {
-      var repo = await get('/api/v1/products/discounts');
-      var mdis = repo['data'];
-      for (int i = 0; i < mdis.length; i++) {
-        Constants.discount_products.add(
-          products(
-              id: mdis[i]['id'],
-              name_tm: mdis[i]['name_tm'] ?? '',
-              name_ru: mdis[i]['name_ru'] ?? '',
-              name_en: mdis[i]['name_en'] ?? '',
-              description_tm: mdis[i]['descrioption_tm'] ?? "",
-              description_ru: mdis[i]['descrioption_ru'] ?? "",
-              description_en: mdis[i]['descrioption_en'] ?? "",
-              image: mdis[i]['image'],
-              price: double.parse(mdis[i]['price']),
-              count: 0,
-              rating: double.parse(mdis[i]['rating']),
-              discount: mdis[i]['discount'],
-              discount_price: (mdis[i]['discounted_price'] != null) ? double.parse(mdis[i]['discounted_price'].toString()) : 0.00,
-              category: mdis[i]['category']['id'].toString(),
-              values: mdis[i]['values']),
-        );
-      }
-    } catch (e) {}
-    try {
-      var repo = await get('/api/v1/products/new');
-      var mdis = repo['data'];
-      for (int i = 0; i < mdis.length; i++) {
-        Constants.new_products.add(
-          products(
-              id: mdis[i]['id'],
-              name_tm: mdis[i]['name_tm'] ?? '',
-              name_ru: mdis[i]['name_ru'] ?? '',
-              name_en: mdis[i]['name_en'] ?? '',
-              description_tm: mdis[i]['descrioption_tm'] ?? "",
-              description_ru: mdis[i]['descrioption_ru'] ?? "",
-              description_en: mdis[i]['descrioption_en'] ?? "",
-              image: mdis[i]['image'],
-              price: double.parse(mdis[i]['price']),
-              count: 0,
-              rating: double.parse(mdis[i]['rating']),
-              discount: mdis[i]['discount'],
-              discount_price: (mdis[i]['discounted_price'] != null) ? double.parse(mdis[i]['discounted_price'].toString()) : 0.00,
-              category: mdis[i]['category']['id'].toString(),
-              values: mdis[i]['values']),
-        );
-      }
-    } catch (e) {}
-    try {
-      var repo = await get('/api/v1/brands/1/products');
-      var mdis = repo['data'];
-      for (int i = 0; i < mdis.length; i++) {
-        Constants.hit_products.add(
-          products(
-              id: mdis[i]['id'],
-              name_tm: mdis[i]['name_tm'] ?? '',
-              name_ru: mdis[i]['name_ru'] ?? '',
-              name_en: mdis[i]['name_en'] ?? '',
-              description_tm: mdis[i]['descrioption_tm'] ?? "",
-              description_ru: mdis[i]['descrioption_ru'] ?? "",
-              description_en: mdis[i]['descrioption_en'] ?? "",
-              image: mdis[i]['image'],
-              price: double.parse(mdis[i]['price']),
-              count: 0,
-              rating: double.parse(mdis[i]['rating']),
-              discount: mdis[i]['discount'],
-              discount_price: (mdis[i]['discounted_price'] != null) ? double.parse(mdis[i]['discounted_price'].toString()) : 0.00,
-              category: mdis[i]['category']['id'].toString(),
-              values: mdis[i]['values']),
-        );
-      }
-    } catch (e) {}
-    final datum = await DatabaseHelper.getItems();
-    List<Map<String, dynamic>> myDatum = [];
-    myDatum = datum;
-    for (int i = 0; i < myDatum.length; i++) {
-      Provider.of<ProvItem>(context, listen: false).addSplash(
-          myDatum[i]['productId'],
-          myDatum[i]['name_tm'],
-          myDatum[i]['name_ru'],
-          myDatum[i]['name_en'],
-          myDatum[i]['description_tm'],
-          myDatum[i]['description_ru'],
-          myDatum[i]['description_en'],
-          myDatum[i]['image'],
-          myDatum[i]['price'],
-          myDatum[i]['count'],
-          myDatum[i]['rating'],
-          myDatum[i]['discount'],
-          myDatum[i]['discount_price'],
-          myDatum[i]['category'],
-          myDatum[i]['values']);
-    }
-    try {
-      final address = await DatabaseHelper.getAddress();
-      List<Map<String, dynamic>> myaddress = [];
-      myaddress = address;
-      for (int i = 0; i < myaddress.length; i++) {
-        // ignore: use_build_context_synchronously
-        Provider.of<Favourite>(context, listen: false).addAddress(myaddress[i]['name'], myaddress[i]['address_txt']);
-      }
-    } catch (e) {}
+  }
 
-    final fav = await DatabaseHelper.getFavor();
-    List<Map<String, dynamic>> myFav = [];
-    myFav = fav;
-    for (int i = 0; i < myFav.length; i++) {
-      Provider.of<Favourite>(context, listen: false).addSplash(
-          myFav[i]['productId'],
-          myFav[i]['name_tm'],
-          myFav[i]['name_ru'],
-          myFav[i]['name_en'],
-          myFav[i]['description_tm'],
-          myFav[i]['description_ru'],
-          myFav[i]['description_en'],
-          myFav[i]['image'],
-          myFav[i]['price'],
-          myFav[i]['count'],
-          myFav[i]['rating'],
-          myFav[i]['discount'],
-          myFav[i]['discount_price'],
-          myFav[i]['category'],
-          myFav[i]['values']);
+  Future<void> _fetchDeliverySettings() async {
+    try {
+      final response = await _get('/api/v1/locations');
+      if (response != null && response['data'] != null && response['data'].isNotEmpty) {
+        final location = response['data'][0];
+        Provider.of<Which_page>(context, listen: false).setDosMin(double.parse(location['min_order_fee']));
+        Provider.of<Which_page>(context, listen: false).setDosPrice(double.parse(location['shipping_fee']));
+      }
+    } catch (e) {
+      print('Error fetching delivery settings: $e');
     }
-    final diller = await DatabaseHelper.getDiller();
-    List<Map<String, dynamic>> lan = diller;
-    if (lan.isNotEmpty) {
-      if (lan[0]['dil'] == 0) {
+  }
+
+  Future<void> _fetchCategories() async {
+    try {
+      final response = await _get('/api/v1/categories');
+      if (response != null && response['data'] != null) {
+        final categoriesData = response['data'] as List<dynamic>;
+        if (categoriesData.isNotEmpty) {
+          Constants.category.clear(); // listeyi temizle
+          for (var category in categoriesData) {
+            Constants.category.add(
+              categorys(
+                id: category['id'],
+                name_tm: category['name_tm'] ?? '',
+                name_ru: category['name_ru'] ?? '',
+                name_en: category['name_en'] ?? '',
+                image: category['image'],
+                children: category['children'],
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      print('Error fetching categories: $e');
+    }
+  }
+
+  Future<void> _fetchBanners() async {
+    try {
+      final response = await _get('/api/v1/sliders');
+      if (response != null && response['data'] != null) {
+        final bannersData = response['data'] as List<dynamic>;
+        if (bannersData.isNotEmpty) {
+          Constants.banner.clear(); // listeyi temizle
+          for (var banner in bannersData) {
+            Constants.banner.add(
+              sliders(
+                id: banner['id'],
+                image: banner['image']['tm'],
+                imageRu: banner['image']['ru'],
+                imageEn: banner['image']['en'],
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      print('Error fetching banners: $e');
+    }
+  }
+
+  Future<void> _fetchCommentBanners() async {
+    try {
+      final response = await _get('/api/v1/comment-sliders');
+      if (response != null && response['data'] != null) {
+        final commentBannersData = response['data'] as List<dynamic>;
+        if (commentBannersData.isNotEmpty) {
+          Constants.commentBanner.clear(); // listeyi temizle
+          for (var banner in commentBannersData) {
+            Constants.commentBanner.add(
+              CommentBanner(
+                id: banner['id'],
+                nameTm: banner['title']['tm'] ?? '',
+                nameRu: banner['title']['ru'] ?? '',
+                contentTm: banner['body']['tm'] ?? '',
+                contentRu: banner['body']['ru'] ?? '',
+                imageTm: banner['image']['tm'],
+                imageRu: banner['image']['ru'],
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      print('Error fetching comment banners: $e');
+    }
+  }
+
+  Future<void> _fetchDiscountProducts() async {
+    await _fetchProducts('/api/v1/products/discounts', Constants.discount_products);
+  }
+
+  Future<void> _fetchNewProducts() async {
+    await _fetchProducts('/api/v1/products/new', Constants.new_products);
+  }
+
+  Future<void> _fetchHitProducts() async {
+    await _fetchProducts('/api/v1/brands/1/products', Constants.hit_products);
+  }
+
+  Future<void> _fetchProducts(String endpoint, List<products> targetList) async {
+    try {
+      final response = await _get(endpoint);
+      if (response != null && response['data'] != null) {
+        final productsData = response['data'] as List<dynamic>;
+        if (productsData.isNotEmpty) {
+          targetList.clear();
+          for (var product in productsData) {
+            targetList.add(
+              products(
+                id: product['id'],
+                name_tm: product['name_tm'] ?? '',
+                name_ru: product['name_ru'] ?? '',
+                name_en: product['name_en'] ?? '',
+                description_tm: product['descrioption_tm'] ?? "",
+                description_ru: product['descrioption_ru'] ?? "",
+                description_en: product['descrioption_en'] ?? "",
+                image: product['image'],
+                price: double.parse(product['price'].toString()),
+                count: 0,
+                rating: double.parse(product['rating'].toString()),
+                discount: product['discount'],
+                discount_price: (product['discounted_price'] != null) ? double.parse(product['discounted_price'].toString()) : 0.00,
+                category: product['category']['id'].toString(),
+                values: product['values'],
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      print('Error fetching products from $endpoint: $e');
+    }
+  }
+
+  Future<void> _loadCartItems() async {
+    final cartItems = await DatabaseHelper.getItems();
+    Provider.of<ProvItem>(context, listen: false).clearItem();
+    for (var item in cartItems) {
+      Provider.of<ProvItem>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
+          item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
+    }
+  }
+
+  Future<void> _loadAddresses() async {
+    try {
+      final addresses = await DatabaseHelper.getAddress();
+      Provider.of<Favourite>(context, listen: false).clearAddress();
+      for (var address in addresses) {
+        Provider.of<Favourite>(context, listen: false).addAddress(address['name'], address['address_txt']);
+      }
+    } catch (e) {
+      print('Error fetching addresses from database: $e');
+    }
+  }
+
+  Future<void> _loadFavoriteItems() async {
+    final favoriteItems = await DatabaseHelper.getFavor();
+    Provider.of<Favourite>(context, listen: false);
+    for (var item in favoriteItems) {
+      Provider.of<Favourite>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
+          item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
+    }
+  }
+
+  Future<void> _loadLanguageSettings() async {
+    final languageData = await DatabaseHelper.getDiller();
+    if (languageData.isNotEmpty) {
+      final language = languageData[0]['dil'];
+      if (language == 0) {
         Provider.of<Which_page>(context, listen: false).setRu();
-      } else if (lan[0]['dil'] == 1)
+      } else if (language == 1) {
         Provider.of<Which_page>(context, listen: false).setTm();
-      else
+      } else {
         Provider.of<Which_page>(context, listen: false).setEn();
+      }
     } else {
       DatabaseHelper.createDill(1, 1);
     }
-
     Constants.dil = true;
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyHomePage()));
+  }
+
+  Future<dynamic> _get(String url) async {
+    try {
+      final response = await _dio.get('https://${Constants.api}$url');
+      setState(() {
+        _connection = true;
+      });
+      return response.data;
+    } catch (e) {
+      setState(() {
+        _connection = false;
+      });
+      print('Error fetching data from $url: $e');
+      return null;
+    }
   }
 
   @override
@@ -258,17 +288,15 @@ class _SplashState extends State<Splash> {
               width: 170,
               height: 170,
             ),
-            const SizedBox(
-              height: 50,
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            const CircularProgressIndicator(
-              strokeWidth: 4.0,
-              color: AppColors.primary,
-              semanticsLabel: 'Circular progress indicator',
-            ),
+            const SizedBox(height: 50),
+            if (_connection)
+              const CircularProgressIndicator(
+                strokeWidth: 4.0,
+                color: AppColors.primary,
+                semanticsLabel: 'Circular progress indicator',
+              )
+            else
+              const Text("No connection"),
           ],
         ),
       ),

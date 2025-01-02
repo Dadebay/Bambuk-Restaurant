@@ -114,6 +114,10 @@ String tm_send = 'Eltip bermek';
 
 //for ru language
 
+List<String> ruCykmak = ['Вы уверены, что хотите выйти из программы?', 'Siz hakykatdanda programmadan çykmak isleýärsiňizmi ?', 'Are you sure you want to exit the program?'];
+List<String> ruCykmakYes = ['Да', 'Hawwa', 'Yes'];
+List<String> bonus = ['Ваш бонус', 'Bonusyňyz', 'Your bonus'];
+List<String> ruCykmakNo = ['Нет', 'Ýok', 'No'];
 List<String> ru_onum = ['Повседневные товары', 'Gündelik harytlar', 'Everyday goods'];
 List<String> ru_bonus = [
   'Бонус',

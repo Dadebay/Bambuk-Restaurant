@@ -1,11 +1,12 @@
+import 'package:bamboo/my_orders/card/card_product_orders.dart';
+import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:bamboo/my_orders/card/card_product_orders.dart';
+
 import '../providers/page1provider.dart';
 import '../values/colors.dart';
 import '../values/models.dart';
-import 'package:bamboo/values/constants.dart' as Constants;
 
 class AboutProducts extends StatefulWidget {
   var towarlar;

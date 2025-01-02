@@ -1,8 +1,8 @@
+import 'package:bamboo/providers/page1provider.dart';
+import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconly/iconly.dart';
-import 'package:bamboo/values/constants.dart' as Constants;
-import 'package:bamboo/providers/page1provider.dart';
 import 'package:provider/provider.dart';
 
 class ReviewViewInfo extends StatelessWidget {
