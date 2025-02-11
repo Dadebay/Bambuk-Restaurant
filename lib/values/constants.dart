@@ -124,6 +124,22 @@ List<String> ru_bonus = [
   'Bonus',
   'Bonus',
 ];
+List<String> tabBarName1 = [
+  'Ресторан',
+  'Restoran',
+  'Restaurant',
+];
+List<String> tabBarName2 = [
+  'История блюд',
+  'Tagam taryhy',
+  'Food History',
+];
+List<String> tabBarName3 = [
+  'Интересно',
+  'Gyzykly',
+  'Interesting',
+];
+
 List<String> ru_use_bonus = [
   'Использовать бонус',
   'Bonus ulan',
@@ -229,6 +245,11 @@ List<String> ru_discount_info = [
   'Скидка',
   'Aksiýa boýunça arzanladyş',
   'Discount',
+];
+List<String> service = [
+  'Услуга для (+10%)',
+  'Hyzmat üçin (+10%)',
+  'Service for (+10%)',
 ];
 List<String> ru_net_price = [
   'Общий',
@@ -477,9 +498,9 @@ List<String> ru_AddCart = [
   'Add to cart',
 ];
 List<String> ru_version = [
-  'Версия 2.0.0',
-  'Wersiýa 2.0.0',
-  'Version 2.0.0',
+  'Версия 2.2.0',
+  'Wersiýa 2.2.0',
+  'Version 2.2.0',
 ];
 
 List<String> ru_sargamak = [

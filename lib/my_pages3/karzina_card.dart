@@ -167,7 +167,7 @@ class _KarzinaCardState extends State<KarzinaCard> {
     );
   }
 
-  Widget _buildTextContainer(BuildContext context) {
+  Widget _buildTextContainer(BuildContext context) {  
     return Container(
       height: 80,
       alignment: Alignment.center,

@@ -1,12 +1,11 @@
+import 'package:bamboo/my_pages/cart_items.dart';
 import 'package:bamboo/my_pages/page1_all.dart';
-import 'package:bamboo/values/colors.dart';
+// ignore: library_prefixes
+import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
-import 'package:bamboo/my_pages/cart_items.dart';
 
-// ignore: library_prefixes
-import 'package:bamboo/values/constants.dart' as Constants;
 import '../providers/page1provider.dart';
 import '../values/models.dart';
 
@@ -70,6 +69,8 @@ class _MainVisiblesState extends State<MainVisibles> {
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
+              print(widget.items[index].description_tm);
+              print(widget.items[index].description_en);
               return CartItems(
                   widget.items[index].id,
                   widget.items[index].name_tm,

@@ -10,7 +10,6 @@ import 'package:bamboo/user_reviews_page/review_card.dart';
 import 'package:bamboo/values/colors.dart';
 // ignore: library_prefixes
 import 'package:bamboo/values/constants.dart' as Constants;
-import 'package:bamboo/widgets.dart';
 import 'package:banner_image/banner_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -34,44 +33,49 @@ class _Page1State extends State<Page1> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            _dialogBuilder(context);
-          },
-          icon: const Icon(Icons.language, color: AppColors.primary),
-        ),
-        title: logo(),
-        actions: [
-          IconButton(
-              onPressed: () => UrlLauncher.launch("tel://+99363334994"),
-              icon: const Icon(
-                IconlyBold.call,
-                color: AppColors.primary,
-              ))
+      appBar: const PreferredSize(preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
+      body: ListView(
+        children: <Widget>[
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  _dialogBuilder(context);
+                },
+                icon: const Icon(Icons.language, color: AppColors.primary),
+              ),
+              Expanded(
+                  child: Center(
+                child: Image.asset(
+                  Constants.logoImage,
+                  fit: BoxFit.contain,
+                  width: 70,
+                  alignment: Alignment.center,
+                  height: 60,
+                ),
+              )),
+              IconButton(
+                  onPressed: () => UrlLauncher.launch("tel://+99363334994"),
+                  icon: const Icon(
+                    IconlyBold.call,
+                    color: AppColors.primary,
+                  ))
+            ],
+          ),
+          searchWidget(context),
+          const BannerScreen(),
+          const MainCat(),
+          (Constants.discount_products.isNotEmpty) ? MainVisibles(type: 0, items: Constants.discount_products) : Container(),
+          (Constants.new_products.isNotEmpty) ? MainVisibles(type: 1, items: Constants.new_products) : Container(),
+          const SizedBox(
+            height: 30,
+          ),
+          const BannerScreen2(),
+          reviewListDesign(prov),
+          const SizedBox(
+            height: 10,
+          ),
         ],
-      ),
-      body: Container(
-        color: Colors.white,
-        child: ListView(
-          children: <Widget>[
-            searchWidget(context),
-            const BannerScreen(),
-            const MainCat(),
-            (Constants.discount_products.isNotEmpty) ? MainVisibles(type: 0, items: Constants.discount_products) : Container(),
-            (Constants.new_products.isNotEmpty) ? MainVisibles(type: 1, items: Constants.new_products) : Container(),
-            const SizedBox(
-              height: 30,
-            ),
-            const BannerScreen2(),
-            reviewListDesign(prov),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
       ),
     );
   }

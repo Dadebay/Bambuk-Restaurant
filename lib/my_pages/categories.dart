@@ -21,62 +21,57 @@ class _CategoriesState extends State<Categories> {
   bool stat = false;
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return Navigator.canPop(context);
-      },
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            Constants.ru_category[Provider.of<Which_page>(context).dil],
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 25,
-              fontFamily: 'Semi',
-            ),
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          Constants.ru_category[Provider.of<Which_page>(context).dil],
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 25,
+            fontFamily: 'Semi',
           ),
-          actions: [
-            GestureDetector(
-              onTap: () => UrlLauncher.launch("tel://+99363334994"),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: SvgPicture.asset(
-                  'assets/images/call.svg',
-                  color: AppColors.primary,
-                  allowDrawingOutsideViewBox: true,
-                ),
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () => UrlLauncher.launch("tel://+99363334994"),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: SvgPicture.asset(
+                'assets/images/call.svg',
+                color: AppColors.primary,
+                allowDrawingOutsideViewBox: true,
               ),
             ),
-          ],
-        ),
-        body: GridView.builder(
-            padding: const EdgeInsets.only(left: 15, right: 15, bottom: 80, top: 15),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 15,
-              mainAxisExtent: 185, // here set custom Height You Want
-            ),
-            shrinkWrap: true,
-            physics: const ScrollPhysics(),
-            primary: false,
-            itemCount: Constants.category.length,
-            itemBuilder: (BuildContext context, int index) {
-              return CategoryCart(
-                Constants.category[index].id,
-                Constants.category[index].name_tm,
-                Constants.category[index].name_ru,
-                Constants.category[index].name_en,
-                Constants.category[index].image,
-                Constants.category[index].children,
-              );
-            }),
+          ),
+        ],
       ),
+      body: GridView.builder(
+          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 80, top: 15),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 15,
+            mainAxisSpacing: 15,
+            mainAxisExtent: 185, // here set custom Height You Want
+          ),
+          shrinkWrap: true,
+          physics: const ScrollPhysics(),
+          primary: false,
+          itemCount: Constants.category.length,
+          itemBuilder: (BuildContext context, int index) {
+            return CategoryCart(
+              Constants.category[index].id,
+              Constants.category[index].name_tm,
+              Constants.category[index].name_ru,
+              Constants.category[index].name_en,
+              Constants.category[index].image,
+              Constants.category[index].children,
+            );
+          }),
     );
   }
 }

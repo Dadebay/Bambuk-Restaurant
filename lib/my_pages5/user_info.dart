@@ -175,8 +175,8 @@ class _UserInfState extends State<UserInf> {
 
   Widget _buildBackButton(BuildContext context) {
     return Positioned(
-      top: 40,
-      left: 10,
+      top: 80,
+      left: 40,
       child: GestureDetector(
         onTap: () => Navigator.pop(context),
         child: const Icon(Icons.arrow_back_ios, color: Colors.black),

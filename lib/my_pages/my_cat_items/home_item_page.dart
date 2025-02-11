@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
-
 import 'package:bamboo/my_pages/cart_items.dart';
 // ignore: library_prefixes
 import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/models.dart';
+import 'package:flutter/material.dart';
 
 class HomeItemPage extends StatefulWidget {
   int id;
@@ -24,9 +23,9 @@ class _HomeItemPageState extends State<HomeItemPage> {
           name_tm: m[i]['name_tm'] ?? '',
           name_ru: m[i]['name_ru'] ?? '',
           name_en: m[i]['name_en'] ?? '',
-          description_tm: m[i]['descrioption_tm'] ?? '',
-          description_ru: m[i]['descrioption_ru'] ?? '',
-          description_en: m[i]['descrioption_en'] ?? '',
+          description_tm: m[i]['description_tm'] ?? '',
+          description_ru: m[i]['description_ru'] ?? '',
+          description_en: m[i]['description_en'] ?? '',
           image: m[i]['image'],
           price: double.parse(m[i]['price']),
           count: m[i]['count'],

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:badges/badges.dart' as badges;
@@ -24,7 +25,9 @@ import 'package:bamboo/values/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 
@@ -146,14 +149,22 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   final _pageController = PageController(initialPage: 0);
   int which_page = 1;
   int selectedIndex = 0;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -186,44 +197,104 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return WillPopScope(
       onWillPop: () async {
-        return await showDialog<bool>(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: Text(
-                  Constants.ruCykmak[Provider.of<Which_page>(context).dil],
-                  style: const TextStyle(
-                    fontFamily: gilroyMedium,
-                    fontSize: 20,
+        final currentNavigator = Provider.of<BottomProv>(context, listen: false).getCurrentNavigator();
+
+        // If the current navigator can pop, pop the route
+        if (currentNavigator?.canPop() ?? false) {
+          currentNavigator?.pop();
+          return false; // Prevent the app from closing
+        } else {
+          // Show the confirmation dialog if on the main page
+          return await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(
+                    Constants.ruCykmak[Provider.of<Which_page>(context).dil],
+                    style: const TextStyle(
+                      fontFamily: gilroyMedium,
+                      fontSize: 20,
+                    ),
                   ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text(
+                        Constants.ruCykmakNo[Provider.of<Which_page>(context).dil],
+                        style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: gilroyMedium),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text(
+                        Constants.ruCykmakYes[Provider.of<Which_page>(context).dil],
+                        style: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: gilroyRegular),
+                      ),
+                    ),
+                  ],
                 ),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text(
-                      Constants.ruCykmakNo[Provider.of<Which_page>(context).dil],
-                      style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: gilroyMedium),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: Text(
-                      Constants.ruCykmakYes[Provider.of<Which_page>(context).dil],
-                      style: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: gilroyRegular),
-                    ),
-                  ),
-                ],
-              ),
-            ) ??
-            false;
+              ) ??
+              false;
+        }
       },
       child: Scaffold(
-        body: PageView(
-          controller: Provider.of<BottomProv>(context).pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: bottomBarPages,
+        appBar: const PreferredSize(preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
+        body: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 35),
+              color: const Color(0xfff1fff9),
+              child: TabBar(
+                labelPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                indicator: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xff2cf420).withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                  border: Border.all(color: const Color(0xff2cf420), width: 2),
+                ),
+                indicatorSize: TabBarIndicatorSize.tab,
+                labelColor: const Color(0xff2cf420),
+                unselectedLabelColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                indicatorPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                controller: _tabController,
+                labelStyle: const TextStyle(fontSize: 18, fontFamily: gilroyBold),
+                unselectedLabelStyle: const TextStyle(fontSize: 18, fontFamily: gilroyMedium),
+                onTap: (value) {
+                  setState(() {
+                    which_page = value;
+                  });
+                },
+                tabs: [
+                  Tab(text: Constants.tabBarName1[Provider.of<Which_page>(context).dil]),
+                  Tab(text: Constants.tabBarName2[Provider.of<Which_page>(context).dil]),
+                  Tab(text: Constants.tabBarName3[Provider.of<Which_page>(context).dil]),
+                ],
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  PageView(
+                    controller: Provider.of<BottomProv>(context).pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: bottomBarPages,
+                  ),
+                  const Page2Content(),
+                  const Page3Content(),
+                ],
+              ),
+            ),
+          ],
         ),
-        extendBody: true,
-        bottomNavigationBar: _buildBottomNavigationBar(context),
+        bottomNavigationBar: _tabController.index == 0 ? _buildBottomNavigationBar(context) : const SizedBox.shrink(),
       ),
     );
   }
@@ -322,7 +393,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onNavigationTap(BuildContext context, int index) {
-    selectedIndex = index;
+    setState(() {
+      selectedIndex = index;
+    });
     final bottomProv = Provider.of<BottomProv>(context, listen: false);
 
     switch (index) {
@@ -349,5 +422,199 @@ class _MyHomePageState extends State<MyHomePage> {
       default:
         break;
     }
+  }
+}
+
+class Page2Content extends StatefulWidget {
+  const Page2Content({super.key});
+
+  @override
+  State<Page2Content> createState() => _Page2ContentState();
+}
+
+class _Page2ContentState extends State<Page2Content> {
+  String bodyText = "Loading...";
+  bool isLoading = true; // Add an isLoading state
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    setState(() {
+      isLoading = true; // Set loading to true when starting the request
+    });
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://bambukresto.com.tm:4443/api/v1/pages/2'),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        final data = jsonResponse['data'];
+
+        // Get the language code from the Which_page provider
+        int languageCode = Provider.of<Which_page>(context, listen: false).dil;
+        String bodyKey = 'body_tm'; // Default to Turkmen
+        print(languageCode);
+        if (languageCode == 1) {
+          // Assuming 1 is Russian
+          bodyKey = 'body_ru';
+        } else if (languageCode == 2) {
+          // Assuming 2 is English
+          bodyKey = 'body_en';
+        }
+
+        String bodyHtml = data[bodyKey] ?? data['body_tm'] ?? "No content available."; // Fallback
+
+        setState(() {
+          // Use the `RichText` widget to display the styled HTML content
+          bodyText = bodyHtml; // Assign the selected HTML content
+          isLoading = false; // Set loading to false when data is loaded
+        });
+      } else {
+        setState(() {
+          bodyText = 'Failed to load data. Status code: ${response.statusCode}';
+          isLoading = false; // Set loading to false even in error cases
+        });
+      }
+    } catch (error) {
+      setState(() {
+        bodyText = 'Error: $error';
+        isLoading = false; // Set loading to false on error
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+            child: Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(8.0),
+              child: Html(
+                data: bodyText,
+                style: {
+                  "body": Style(
+                    backgroundColor: Colors.white,
+                    color: Colors.black,
+                    fontFamily: 'GilroyMedium',
+                    lineHeight: const LineHeight(2.0), // Adjust line height as needed
+                    fontSize: FontSize.xLarge, // Adjust font size as needed
+                  ),
+                  "p": Style(
+                    margin: Margins.all(1), // Remove default paragraph margins
+                    padding: HtmlPaddings.all(1), // Remove default paragraph padding
+                  ),
+                  "span": Style(
+                    fontFamily: 'GilroyMediumBam', // Ensure consistent font family
+                    fontSize: FontSize.large, // Adjust font size as needed
+                  ),
+                },
+              ),
+            ),
+          );
+  }
+}
+
+class Page3Content extends StatefulWidget {
+  const Page3Content({super.key});
+
+  @override
+  State<Page3Content> createState() => _Page3ContentState();
+}
+
+class _Page3ContentState extends State<Page3Content> {
+  String bodyText = "Loading...";
+  bool isLoading = true; // Add an isLoading state
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    setState(() {
+      isLoading = true; // Set loading to true when starting the request
+    });
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://bambukresto.com.tm:4443/api/v1/pages/3'),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        final data = jsonResponse['data'];
+
+        // Get the language code from the Which_page provider
+        int languageCode = Provider.of<Which_page>(context, listen: false).dil;
+        String bodyKey = 'body_tm'; // Default to Turkmen
+        print(languageCode);
+        if (languageCode == 1) {
+          // Assuming 1 is Russian
+          bodyKey = 'body_ru';
+        } else if (languageCode == 2) {
+          // Assuming 2 is English
+          bodyKey = 'body_en';
+        }
+
+        String bodyHtml = data[bodyKey] ?? data['body_tm'] ?? "No content available."; // Fallback
+
+        setState(() {
+          // Use the `RichText` widget to display the styled HTML content
+          bodyText = bodyHtml; // Assign the selected HTML content
+          isLoading = false; // Set loading to false when data is loaded
+        });
+      } else {
+        setState(() {
+          bodyText = 'Failed to load data. Status code: ${response.statusCode}';
+          isLoading = false; // Set loading to false even in error cases
+        });
+      }
+    } catch (error) {
+      setState(() {
+        bodyText = 'Error: $error';
+        isLoading = false; // Set loading to false on error
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+            child: Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(8.0),
+              child: Html(
+                data: bodyText,
+                style: {
+                  "body": Style(
+                    backgroundColor: Colors.white,
+                    color: Colors.black,
+                    fontFamily: 'GilroyMedium',
+                    lineHeight: const LineHeight(2.0), // Adjust line height as needed
+                    fontSize: FontSize.xLarge, // Adjust font size as needed
+                  ),
+                  "p": Style(
+                    margin: Margins.all(1), // Remove default paragraph margins
+                    padding: HtmlPaddings.all(1), // Remove default paragraph padding
+                  ),
+                  "span": Style(
+                    fontFamily: 'GilroyMediumBam', // Ensure consistent font family
+                    fontSize: FontSize.large, // Adjust font size as needed
+                  ),
+                },
+              ),
+            ),
+          );
   }
 }

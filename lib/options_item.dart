@@ -48,30 +48,7 @@ class _OptionsItemState extends State<OptionsItem> {
         category: Constants.op_category,
         values: Constants.op_values));
     loading = false;
-    // var response3 = await http.get(Uri.https(Constants.api, '/api/v1/sets/${Constants.op_id}'));
-    // print(Uri.https(Constants.api, '/api/v1/sets/${Constants.op_id}'));
-    // log(response3.body);
 
-    // var mitem = json.decode(utf8.decode(response3.bodyBytes))['data']['products'];
-
-    // for (int i = 0; i < mitem.length; i++) {
-    //   product.add(products(
-    //       id: mitem[i]['id'],
-    //       name_tm: mitem[i]['name_tm'] ?? '',
-    //       name_ru: mitem[i]['name_ru'] ?? '',
-    //       name_en: mitem[i]['name_en'] ?? '',
-    //       description_tm: mitem[i]['description_tm'] ?? '',
-    //       description_ru: mitem[i]['description_ru'] ?? '',
-    //       description_en: mitem[i]['description_en'] ?? '',
-    //       image: mitem[i]['image'],
-    //       price: double.parse(mitem[i]['price']),
-    //       count: 0,
-    //       rating: double.parse(mitem[i]['rating']),
-    //       discount: mitem[i]['discount'],
-    //       discount_price: double.parse((mitem[i]['discounted_price'].toString() != null) ? mitem[i]['discounted_price'].toString() : "0.00"),
-    //       category: mitem[i]['category']['id'].toString(),
-    //       values: mitem[i]['values']));
-    // }
     sizes = [];
     colors = [];
 
@@ -169,19 +146,20 @@ class _OptionsItemState extends State<OptionsItem> {
                                     '${Constants.op_discount_price} TMT ',
                                     style: const TextStyle(
                                       fontSize: 18,
+                                      fontWeight: FontWeight.bold,
                                       color: Colors.black,
                                       fontFamily: 'Semi',
                                     ),
                                   ),
                                   Text(
                                     '${Constants.op_price} TMT ',
-                                    style: const TextStyle(fontSize: 16, color: AppColors.light_black, fontFamily: 'Semi', decoration: TextDecoration.lineThrough),
+                                    style: const TextStyle(fontSize: 16, color: AppColors.light_black, fontWeight: FontWeight.bold, fontFamily: 'Semi', decoration: TextDecoration.lineThrough),
                                   ),
                                 ],
                               )
                             : Text(
                                 '${Constants.op_price} TMT ',
-                                style: const TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'Semi'),
+                                style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold, fontFamily: 'Semi'),
                               ),
                       ),
                     ],
@@ -193,6 +171,9 @@ class _OptionsItemState extends State<OptionsItem> {
               ),
               GestureDetector(
                 onTap: () {
+                  print("Asdasdasdasdasd");
+                  print(prov.dil);
+                  print(Constants.op_description_ru);
                   setState(() {
                     descrip = !descrip;
                   });
@@ -205,7 +186,6 @@ class _OptionsItemState extends State<OptionsItem> {
                     children: [
                       Text(
                         Constants.ru_full_dep[prov.dil],
-                        // ignore:
                         style: const TextStyle(
                           fontSize: 22,
                           color: Colors.black,
@@ -227,25 +207,31 @@ class _OptionsItemState extends State<OptionsItem> {
               Visibility(
                 visible: descrip,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Html(
-                    data: (prov.dil == 1)
-                        ? Constants.op_description_tm
-                        : prov.dil == 0
-                            ? Constants.op_description_ru
-                            : Constants.op_description_en,
-                    style: {
-                      "body": Style(
-                        backgroundColor: Colors.white,
-                        color: Colors.black,
-                        fontFamily: 'Semi',
-                        lineHeight: const LineHeight(1.5),
-                        textAlign: TextAlign.justify,
-                        fontSize: FontSize.xxLarge,
-                      ),
-                    },
-                  ),
-                ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: Html(
+                      data: (prov.dil == 1)
+                          ? Constants.op_description_tm
+                          : prov.dil == 0
+                              ? Constants.op_description_ru
+                              : Constants.op_description_en,
+                      style: {
+                        "body": Style(
+                          backgroundColor: Colors.white,
+                          color: Colors.black,
+                          fontFamily: 'GilroyMedium',
+                          lineHeight: const LineHeight(2.0), // Adjust line height as needed
+                          fontSize: FontSize.xLarge, // Adjust font size as needed
+                        ),
+                        "p": Style(
+                          margin: Margins.all(1), // Remove default paragraph margins
+                          padding: HtmlPaddings.all(1), // Remove default paragraph padding
+                        ),
+                        "span": Style(
+                          fontFamily: 'GilroyMediumBam', // Ensure consistent font family
+                          fontSize: FontSize.large, // Adjust font size as needed
+                        ),
+                      },
+                    )),
               ),
               const SizedBox(
                 height: 10,
@@ -446,7 +432,7 @@ class _OptionsItemState extends State<OptionsItem> {
               ),
             ],
           ),
-          Positioned(bottom: 80, child: addCartButton(context)),
+          Positioned(bottom: 10, child: addCartButton(context)),
         ],
       ),
     );

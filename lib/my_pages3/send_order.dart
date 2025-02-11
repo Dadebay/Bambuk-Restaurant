@@ -576,10 +576,16 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
     );
   }
 
+  bool addMoreMoney = false;
   GestureDetector _buildOrderTypeItem(int type, String label, int provDil, [BuildContext? context]) {
     return GestureDetector(
       onTap: () {
         setState(() {
+          if (type == 3) {
+            addMoreMoney = true;
+          } else {
+            addMoreMoney = false;
+          }
           _typeOrder = type;
           if (type == 2 && context != null) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -733,6 +739,12 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
   }
 
   Widget _buildPriceInfo(BuildContext context, int provDil) {
+    double productPrice = double.parse(Provider.of<ProvItem>(context).price.toStringAsFixed(2)); // Replace this with the actual product price
+    double discountPercentage = 10.0; // 10%
+
+    // Calculate 10% of the product price
+    double tenPercentOfPrice = (productPrice * discountPercentage) / 100;
+
     return Container(
       margin: const EdgeInsets.only(top: 30),
       padding: const EdgeInsets.only(top: 25, bottom: 25),
@@ -752,6 +764,12 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
             constants.ru_discount_info[provDil],
             '${Provider.of<ProvItem>(context).dis.toStringAsFixed(2)}TMT',
           ),
+          if (addMoreMoney) const SizedBox(height: 25),
+          if (addMoreMoney)
+            _buildPriceRow(
+              constants.service[provDil],
+              '$tenPercentOfPrice TMT',
+            ),
           if (_selectBonus)
             Container(
               margin: const EdgeInsets.only(left: 10, right: 10, top: 25),
@@ -802,6 +820,14 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
               ? (provItem.total_price + shippingFee)
               : provItem.total_price
           : provItem.total_price;
+    }
+    if (addMoreMoney) {
+      double productPrice = double.parse(Provider.of<ProvItem>(context).price.toStringAsFixed(2)); // Replace this with the actual product price
+      double discountPercentage = 10.0; // 10%
+
+      // Calculate 10% of the product price
+      double tenPercentOfPrice = (productPrice * discountPercentage) / 100;
+      totalPrice += tenPercentOfPrice;
     }
     return "${totalPrice.toStringAsFixed(2)}TMT";
   }

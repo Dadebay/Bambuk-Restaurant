@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bamboo/DB/db.dart';
 import 'package:bamboo/main.dart';
 import 'package:bamboo/providers/bottom_prov.dart';
@@ -182,6 +184,7 @@ class _SplashState extends State<Splash> {
       final response = await _get(endpoint);
       if (response != null && response['data'] != null) {
         final productsData = response['data'] as List<dynamic>;
+        log(productsData.toString());
         if (productsData.isNotEmpty) {
           targetList.clear();
           for (var product in productsData) {
@@ -191,9 +194,9 @@ class _SplashState extends State<Splash> {
                 name_tm: product['name_tm'] ?? '',
                 name_ru: product['name_ru'] ?? '',
                 name_en: product['name_en'] ?? '',
-                description_tm: product['descrioption_tm'] ?? "",
-                description_ru: product['descrioption_ru'] ?? "",
-                description_en: product['descrioption_en'] ?? "",
+                description_tm: product['description_tm'] ?? "",
+                description_ru: product['description_ru'] ?? "",
+                description_en: product['description_en'] ?? "",
                 image: product['image'],
                 price: double.parse(product['price'].toString()),
                 count: 0,

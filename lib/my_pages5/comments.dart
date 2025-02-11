@@ -1,16 +1,14 @@
+import 'dart:convert';
+
+// ignore: library_prefixes
+import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../providers/page1provider.dart';
 import '../values/colors.dart';
-
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-
-// ignore: library_prefixes
-import 'package:bamboo/values/constants.dart' as Constants;
 
 class Comments extends StatefulWidget {
   const Comments({super.key});
@@ -27,10 +25,16 @@ class _CommentsState extends State<Comments> {
   Future getTime() async {
     Map<String, String> header = {'Authorization': 'Bearer ${Constants.token}'};
     var response3 = await http.get(Uri.https(Constants.api, '/api/v1/users/me/comments/'), headers: header);
+    print(response3);
+    print(response3);
+    print(response3);
+    print(response3);
+    print(utf8.decode(response3.bodyBytes));
     var mitem = json.decode(utf8.decode(response3.bodyBytes))['data'];
     messageBody.clear();
     for (int i = 0; i < mitem.length; i++) {
       messageBody.add(mitem[i]['body']);
+      print(mitem[i]['body']);
     }
     setState(() {
       k = 1;
@@ -62,6 +66,10 @@ class _CommentsState extends State<Comments> {
           ..fields.addAll(data)
           ..headers.addAll(headers);
         var res = await req.send();
+        print(res.statusCode);
+        print(res.statusCode);
+        print(res.statusCode);
+        print(res.statusCode);
         if (res.statusCode == 201) {}
       }
     } catch (_) {

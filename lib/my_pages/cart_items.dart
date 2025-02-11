@@ -38,9 +38,11 @@ class CartItems extends StatefulWidget {
 class _CartItemsState extends State<CartItems> {
   @override
   Widget build(BuildContext context) {
-    print(widget.discount);
     return GestureDetector(
       onTap: () {
+        print(widget.description_en);
+        print(widget.description_ru);
+        print(widget.description_en);
         Constants.op_id = widget.id;
         Constants.op_name_tm = widget.name_tm;
         Constants.op_name_ru = widget.name_ru;

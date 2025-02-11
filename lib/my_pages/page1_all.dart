@@ -1,15 +1,12 @@
-import 'package:bamboo/values/constants.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:iconly/iconly.dart';
-import 'package:provider/provider.dart';
 import 'package:bamboo/providers/page1settings.dart';
-import 'package:bamboo/values/colors.dart';
-
-import '../providers/page1provider.dart';
 // ignore: library_prefixes
 import 'package:bamboo/values/constants.dart' as Constants;
+import 'package:bamboo/values/constants.dart';
+import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/page1provider.dart';
 import '../values/models.dart';
 import 'cart_items.dart';
 

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class BottomProv with ChangeNotifier {
   final PageController _pageController = PageController(initialPage: 0);
   PageController get pageController => _pageController;
+
+  // Navigator keys for each tab
   GlobalKey<NavigatorState> yourKey1 = GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> yourKey2 = GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> yourKey3 = GlobalKey<NavigatorState>();
@@ -19,6 +21,24 @@ class BottomProv with ChangeNotifier {
   bool get ver => _ver;
   bool _reg = false;
   bool get reg => _reg;
+
+  // Method to get the current NavigatorState based on the selected tab
+  NavigatorState? getCurrentNavigator() {
+    switch (_page) {
+      case 0:
+        return yourKey1.currentState;
+      case 1:
+        return yourKey2.currentState;
+      case 2:
+        return yourKey3.currentState;
+      case 3:
+        return yourKey4.currentState;
+      case 4:
+        return yourKey5.currentState;
+      default:
+        return null;
+    }
+  }
 
   void set_page0() {
     _pageController.animateToPage(
@@ -45,8 +65,6 @@ class BottomProv with ChangeNotifier {
     _reg = value;
     notifyListeners();
   }
-  //64655643
-
 
   void setPage1() {
     _pageController.animateToPage(
