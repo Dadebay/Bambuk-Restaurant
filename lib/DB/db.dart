@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
 class DatabaseHelper {
@@ -125,15 +124,12 @@ class DatabaseHelper {
     final db = await DatabaseHelper.db();
     try {
       await db.delete("user");
-    } catch (err) {
-      debugPrint("Something went wrong when deleting an item: $err");
-    }
+    } catch (err) {}
   }
 
 // 863285198
   // Create new item
-  static Future<int> createItem(int productId, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, int count,
-      double rating, int discount, double discountPrice, String category) async {
+  static Future<int> createItem(int productId, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, int count, double rating, int discount, double discountPrice, String category) async {
     final db = await DatabaseHelper.db();
     final data = {
       'productId': productId,
@@ -175,8 +171,7 @@ class DatabaseHelper {
   }
 
   //add favourites
-  static Future<int> createFavor(int productId, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, int count,
-      double rating, int discount, double discountPrice, String category) async {
+  static Future<int> createFavor(int productId, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, int count, double rating, int discount, double discountPrice, String category) async {
     final db = await DatabaseHelper.db();
     final data = {
       'productId': productId,
@@ -247,9 +242,7 @@ class DatabaseHelper {
     final db = await DatabaseHelper.db();
     try {
       await db.delete("items", where: "productId = ?", whereArgs: [id]);
-    } catch (err) {
-      debugPrint("Something went wrong when deleting an item: $err");
-    }
+    } catch (err) {}
   }
 
   //delete itemall
@@ -257,9 +250,7 @@ class DatabaseHelper {
     final db = await DatabaseHelper.db();
     try {
       await db.delete("items");
-    } catch (err) {
-      debugPrint("Something went wrong when deleting an item: $err");
-    }
+    } catch (err) {}
   }
 
   //delete favourites
@@ -267,8 +258,6 @@ class DatabaseHelper {
     final db = await DatabaseHelper.db();
     try {
       await db.delete("favourites", where: "productId = ?", whereArgs: [id]);
-    } catch (err) {
-      debugPrint("Something went wrong when deleting an item: $err");
-    }
+    } catch (err) {}
   }
 }

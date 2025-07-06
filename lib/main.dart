@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:bamboo/firebase_options.dart';
 import 'package:bamboo/my_pages/categories.dart';
@@ -22,9 +23,11 @@ import 'package:bamboo/splash.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
 import 'package:bamboo/values/notification_service.dart';
+import 'package:bamboo/webview_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -33,6 +36,7 @@ import 'package:provider/provider.dart';
 
 import 'my_pages/bash sahypa/search.dart';
 
+final FCMConfig _fcmConfig = FCMConfig();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -54,13 +58,25 @@ Future<void> main() async {
   );
 }
 
+@pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print("Background Message: ${message.notification?.title}");
-  FCMConfig().sendNotification(
-    body: message.notification?.body ?? "",
-    title: message.notification?.title ?? "",
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await _fcmConfig.ensureAwesomeInitializedForBackground();
+
+  debugPrint("Handling a background message: ${message.messageId}");
+  final String? title = message.notification?.title;
+  final String? body = message.notification?.body; // URL burada olacak
+  debugPrint("Background Message Title: $title");
+  debugPrint("Background Message Body (URL if present): $body");
+  debugPrint("Background Message Data: ${message.data}");
+
+  if (title != null || body != null) {
+    // En az biri varsa bildirim oluştur
+    await _fcmConfig.sendNotification(
+      title: title ?? "Yeni Bildirim", // Başlık yoksa varsayılan
+      body: body ?? "Detaylar için dokunun.", // Body (URL) yoksa varsayılan
+    );
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -74,46 +90,78 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _initializeFCM();
+    _setupFCMListeners();
   }
 
-  Future<void> _initializeFCM() async {
-    try {
-      await FirebaseMessaging.instance.requestPermission();
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-      final firebaseMessaging = FirebaseMessaging.instance;
+  Future<void> _setupFCMListeners() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      debugPrint('FCM Token: $token');
+    });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint('Got a message whilst in the foreground!');
+      final String? title = message.notification?.title;
+      final String? body = message.notification?.body; // URL burada olacak
+      debugPrint('Foreground Message Title: $title');
+      debugPrint('Foreground Message Body (URL if present): $body');
+      debugPrint('Foreground Message data: ${message.data}');
 
-      String? deviceToken;
-      if (Platform.isAndroid) {
-        deviceToken = await firebaseMessaging.getToken();
-      } else if (Platform.isIOS) {
-        deviceToken = await firebaseMessaging.getAPNSToken();
-      }
-
-      if (deviceToken != null && deviceToken.isNotEmpty) {
-        print("Device Token: $deviceToken");
-
-        await firebaseMessaging.subscribeToTopic('ttf_channel');
-        print("Subscribed to topic: ttf_channel");
-      } else {
-        print("Failed to fetch device token. Cannot subscribe to topic.");
-      }
-
-      FirebaseMessaging.onMessage.listen((message) {
-        print("Foreground Message: ${message.notification?.title}");
-        FCMConfig().sendNotification(
-          body: message.notification?.body ?? "",
-          title: message.notification?.title ?? "",
+      if (title != null || body != null) {
+        _fcmConfig.sendNotification(
+          title: title ?? "Yeni Bildirim",
+          body: body ?? "Detaylar için dokunun.",
         );
-      });
-    } catch (e) {
-      print("An error occurred during FCM initialization: $e");
-    }
+        // final url = message.notification?.body;
+        // if (url != null && url.startsWith("http")) {
+        //   navigatorKey.currentState?.push(
+        //     MaterialPageRoute(builder: (_) => WebViewPage(url: url)),
+        //   );
+        // } else {
+        //   navigatorKey.currentState?.pushNamed('/home');
+        // }
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      final url = message.notification?.body;
+      if (url != null && url.startsWith("http")) {
+        navigatorKey.currentState?.push(
+          MaterialPageRoute(builder: (_) => WebViewPage(url: url)),
+        );
+      } else {
+        navigatorKey.currentState?.pushNamed('/home');
+      }
+    });
+
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+      if (message != null) {
+        final url = message.notification?.body;
+        if (url != null && url.startsWith("http")) {
+          navigatorKey.currentState?.push(
+            MaterialPageRoute(builder: (_) => WebViewPage(url: url)),
+          );
+        } else {
+          navigatorKey.currentState?.pushNamed('/home');
+        }
+      }
+    });
+  }
+
+  Map<String, WidgetBuilder> _buildRoutes() {
+    return {
+      '/home': (context) => const MyHomePage(),
+      '/splash': (context) => const Splash(),
+      '/options_item': (context) => const OptionsItem(image: ''),
+      '/verify': (context) => const Verify(phoneNumber: ""),
+      '/page4': (context) => const Page4(),
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(
@@ -130,16 +178,6 @@ class _MyAppState extends State<MyApp> {
       home: const Splash(),
     );
   }
-
-  Map<String, WidgetBuilder> _buildRoutes() {
-    return {
-      '/home': (context) => const MyHomePage(),
-      '/splash': (context) => const Splash(),
-      '/options_item': (context) => const OptionsItem(image: ''),
-      '/verify': (context) => const Verify(phoneNumber: ""),
-      '/page4': (context) => const Page4(),
-    };
-  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -150,16 +188,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
-  final _pageController = PageController(initialPage: 0);
-  int which_page = 1;
   int selectedIndex = 0;
-  late TabController _tabController;
+  int which_page = 1;
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
+  final _pageController = PageController(initialPage: 0);
+  late TabController _tabController;
 
   @override
   void dispose() {
@@ -169,134 +202,20 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   }
 
   @override
-  Widget build(BuildContext context) {
-    final bottomBarPages = <Widget>[
-      _buildNavigatorPage(
-        key: Provider.of<BottomProv>(context).yourKey1,
-        initialPage: const Page1(),
-      ),
-      _buildNavigatorPage(
-        key: Provider.of<BottomProv>(context).yourKey2,
-        initialPage: const Categories(),
-      ),
-      _buildNavigatorPage(
-        key: Provider.of<BottomProv>(context).yourKey3,
-        initialPage: const Page3(),
-      ),
-      _buildNavigatorPage(
-        key: Provider.of<BottomProv>(context).yourKey4,
-        initialPage: const MyFavourites(),
-      ),
-      _buildNavigatorPage(
-        key: Provider.of<BottomProv>(context).yourKey5,
-        initialPage: const Page5(),
-      ),
-    ];
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+    });
 
-    selectedIndex = Provider.of<BottomProv>(context).page;
-
-    return WillPopScope(
-      onWillPop: () async {
-        final currentNavigator = Provider.of<BottomProv>(context, listen: false).getCurrentNavigator();
-
-        // If the current navigator can pop, pop the route
-        if (currentNavigator?.canPop() ?? false) {
-          currentNavigator?.pop();
-          return false; // Prevent the app from closing
-        } else {
-          // Show the confirmation dialog if on the main page
-          return await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text(
-                    Constants.ruCykmak[Provider.of<Which_page>(context).dil],
-                    style: const TextStyle(
-                      fontFamily: gilroyMedium,
-                      fontSize: 20,
-                    ),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: Text(
-                        Constants.ruCykmakNo[Provider.of<Which_page>(context).dil],
-                        style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: gilroyMedium),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: Text(
-                        Constants.ruCykmakYes[Provider.of<Which_page>(context).dil],
-                        style: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: gilroyRegular),
-                      ),
-                    ),
-                  ],
-                ),
-              ) ??
-              false;
-        }
-      },
-      child: Scaffold(
-        appBar: const PreferredSize(preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
-        body: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 35),
-              color: const Color(0xfff1fff9),
-              child: TabBar(
-                labelPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                indicator: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xff2cf420).withOpacity(0.3),
-                      spreadRadius: 2,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                  border: Border.all(color: const Color(0xff2cf420), width: 2),
-                ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: const Color(0xff2cf420),
-                unselectedLabelColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                indicatorPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                controller: _tabController,
-                labelStyle: const TextStyle(fontSize: 18, fontFamily: gilroyBold),
-                unselectedLabelStyle: const TextStyle(fontSize: 18, fontFamily: gilroyMedium),
-                onTap: (value) {
-                  setState(() {
-                    which_page = value;
-                  });
-                },
-                tabs: [
-                  Tab(text: Constants.tabBarName1[Provider.of<Which_page>(context).dil]),
-                  Tab(text: Constants.tabBarName2[Provider.of<Which_page>(context).dil]),
-                  Tab(text: Constants.tabBarName3[Provider.of<Which_page>(context).dil]),
-                ],
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  PageView(
-                    controller: Provider.of<BottomProv>(context).pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: bottomBarPages,
-                  ),
-                  const Page2Content(),
-                  const Page3Content(),
-                ],
-              ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: _tabController.index == 0 ? _buildBottomNavigationBar(context) : const SizedBox.shrink(),
-      ),
-    );
+    AwesomeNotifications().setListeners(
+        onActionReceivedMethod: NotificationController.onActionReceivedMethod,
+        onNotificationCreatedMethod: NotificationController.onNotificationCreatedMethod,
+        onNotificationDisplayedMethod: NotificationController.onNotificationDisplayedMethod,
+        onDismissActionReceivedMethod: NotificationController.onDismissActionReceivedMethod);
   }
 
   Widget _buildNavigatorPage({
@@ -423,6 +342,137 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         break;
     }
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomBarPages = <Widget>[
+      _buildNavigatorPage(
+        key: Provider.of<BottomProv>(context).yourKey1,
+        initialPage: const Page1(),
+      ),
+      _buildNavigatorPage(
+        key: Provider.of<BottomProv>(context).yourKey2,
+        initialPage: const Categories(),
+      ),
+      _buildNavigatorPage(
+        key: Provider.of<BottomProv>(context).yourKey3,
+        initialPage: const Page3(),
+      ),
+      _buildNavigatorPage(
+        key: Provider.of<BottomProv>(context).yourKey4,
+        initialPage: const MyFavourites(),
+      ),
+      _buildNavigatorPage(
+        key: Provider.of<BottomProv>(context).yourKey5,
+        initialPage: const Page5(),
+      ),
+    ];
+
+    selectedIndex = Provider.of<BottomProv>(context).page;
+
+    return WillPopScope(
+      onWillPop: () async {
+        final currentNavigator = Provider.of<BottomProv>(context, listen: false).getCurrentNavigator();
+        if (currentNavigator?.canPop() ?? false) {
+          currentNavigator?.pop();
+          return false;
+        } else {
+          return await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(
+                    Constants.ruCykmak[Provider.of<Which_page>(context).dil],
+                    style: const TextStyle(
+                      fontFamily: gilroyMedium,
+                      fontSize: 20,
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text(
+                        Constants.ruCykmakNo[Provider.of<Which_page>(context).dil],
+                        style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: gilroyMedium),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        SystemNavigator.pop();
+                        exit(0);
+                      },
+                      child: Text(
+                        Constants.ruCykmakYes[Provider.of<Which_page>(context).dil],
+                        style: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: gilroyRegular),
+                      ),
+                    ),
+                  ],
+                ),
+              ) ??
+              false;
+        }
+      },
+      child: Scaffold(
+        appBar: const PreferredSize(preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
+        body: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 30),
+              color: const Color(0xfff1fff9),
+              child: TabBar(
+                labelPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                indicator: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xff2cf420).withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                  border: Border.all(color: const Color(0xff2cf420), width: 2),
+                ),
+                indicatorSize: TabBarIndicatorSize.tab,
+                labelColor: const Color(0xff2cf420),
+                unselectedLabelColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                indicatorPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                controller: _tabController,
+                labelStyle: const TextStyle(fontSize: 18, fontFamily: gilroyBold),
+                unselectedLabelStyle: const TextStyle(fontSize: 18, fontFamily: gilroyMedium),
+                onTap: (value) {
+                  setState(() {
+                    which_page = value;
+                  });
+                },
+                tabs: [
+                  Tab(text: Constants.tabBarName1[Provider.of<Which_page>(context).dil]),
+                  Tab(text: Constants.tabBarName2[Provider.of<Which_page>(context).dil]),
+                  Tab(text: Constants.tabBarName3[Provider.of<Which_page>(context).dil]),
+                ],
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  PageView(
+                    controller: Provider.of<BottomProv>(context).pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: bottomBarPages,
+                  ),
+                  const Page2Content(),
+                  const Page3Content(),
+                ],
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: _tabController.index == 0 ? _buildBottomNavigationBar(context) : const SizedBox.shrink(),
+      ),
+    );
+  }
 }
 
 class Page2Content extends StatefulWidget {
@@ -434,7 +484,7 @@ class Page2Content extends StatefulWidget {
 
 class _Page2ContentState extends State<Page2Content> {
   String bodyText = "Loading...";
-  bool isLoading = true; // Add an isLoading state
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -444,7 +494,7 @@ class _Page2ContentState extends State<Page2Content> {
 
   Future<void> fetchData() async {
     setState(() {
-      isLoading = true; // Set loading to true when starting the request
+      isLoading = true;
     });
 
     try {
@@ -456,35 +506,31 @@ class _Page2ContentState extends State<Page2Content> {
         final jsonResponse = jsonDecode(response.body);
         final data = jsonResponse['data'];
 
-        // Get the language code from the Which_page provider
         int languageCode = Provider.of<Which_page>(context, listen: false).dil;
-        String bodyKey = 'body_tm'; // Default to Turkmen
+        String bodyKey = 'body_tm';
         print(languageCode);
         if (languageCode == 1) {
-          // Assuming 1 is Russian
           bodyKey = 'body_ru';
         } else if (languageCode == 2) {
-          // Assuming 2 is English
           bodyKey = 'body_en';
         }
 
-        String bodyHtml = data[bodyKey] ?? data['body_tm'] ?? "No content available."; // Fallback
+        String bodyHtml = data[bodyKey] ?? data['body_tm'] ?? "No content available.";
 
         setState(() {
-          // Use the `RichText` widget to display the styled HTML content
-          bodyText = bodyHtml; // Assign the selected HTML content
-          isLoading = false; // Set loading to false when data is loaded
+          bodyText = bodyHtml;
+          isLoading = false;
         });
       } else {
         setState(() {
           bodyText = 'Failed to load data. Status code: ${response.statusCode}';
-          isLoading = false; // Set loading to false even in error cases
+          isLoading = false;
         });
       }
     } catch (error) {
       setState(() {
         bodyText = 'Error: $error';
-        isLoading = false; // Set loading to false on error
+        isLoading = false;
       });
     }
   }
@@ -504,16 +550,16 @@ class _Page2ContentState extends State<Page2Content> {
                     backgroundColor: Colors.white,
                     color: Colors.black,
                     fontFamily: 'GilroyMedium',
-                    lineHeight: const LineHeight(2.0), // Adjust line height as needed
-                    fontSize: FontSize.xLarge, // Adjust font size as needed
+                    lineHeight: const LineHeight(2.0),
+                    fontSize: FontSize.xLarge,
                   ),
                   "p": Style(
-                    margin: Margins.all(1), // Remove default paragraph margins
-                    padding: HtmlPaddings.all(1), // Remove default paragraph padding
+                    margin: Margins.all(1),
+                    padding: HtmlPaddings.all(1),
                   ),
                   "span": Style(
-                    fontFamily: 'GilroyMediumBam', // Ensure consistent font family
-                    fontSize: FontSize.large, // Adjust font size as needed
+                    fontFamily: 'GilroyMediumBam',
+                    fontSize: FontSize.large,
                   ),
                 },
               ),
@@ -531,7 +577,7 @@ class Page3Content extends StatefulWidget {
 
 class _Page3ContentState extends State<Page3Content> {
   String bodyText = "Loading...";
-  bool isLoading = true; // Add an isLoading state
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -541,7 +587,7 @@ class _Page3ContentState extends State<Page3Content> {
 
   Future<void> fetchData() async {
     setState(() {
-      isLoading = true; // Set loading to true when starting the request
+      isLoading = true;
     });
 
     try {
@@ -553,35 +599,31 @@ class _Page3ContentState extends State<Page3Content> {
         final jsonResponse = jsonDecode(response.body);
         final data = jsonResponse['data'];
 
-        // Get the language code from the Which_page provider
         int languageCode = Provider.of<Which_page>(context, listen: false).dil;
-        String bodyKey = 'body_tm'; // Default to Turkmen
+        String bodyKey = 'body_tm';
         print(languageCode);
         if (languageCode == 1) {
-          // Assuming 1 is Russian
           bodyKey = 'body_ru';
         } else if (languageCode == 2) {
-          // Assuming 2 is English
           bodyKey = 'body_en';
         }
 
-        String bodyHtml = data[bodyKey] ?? data['body_tm'] ?? "No content available."; // Fallback
+        String bodyHtml = data[bodyKey] ?? data['body_tm'] ?? "No content available.";
 
         setState(() {
-          // Use the `RichText` widget to display the styled HTML content
-          bodyText = bodyHtml; // Assign the selected HTML content
-          isLoading = false; // Set loading to false when data is loaded
+          bodyText = bodyHtml;
+          isLoading = false;
         });
       } else {
         setState(() {
           bodyText = 'Failed to load data. Status code: ${response.statusCode}';
-          isLoading = false; // Set loading to false even in error cases
+          isLoading = false;
         });
       }
     } catch (error) {
       setState(() {
         bodyText = 'Error: $error';
-        isLoading = false; // Set loading to false on error
+        isLoading = false;
       });
     }
   }
@@ -601,20 +643,57 @@ class _Page3ContentState extends State<Page3Content> {
                     backgroundColor: Colors.white,
                     color: Colors.black,
                     fontFamily: 'GilroyMedium',
-                    lineHeight: const LineHeight(2.0), // Adjust line height as needed
-                    fontSize: FontSize.xLarge, // Adjust font size as needed
+                    lineHeight: const LineHeight(2.0),
+                    fontSize: FontSize.xLarge,
                   ),
                   "p": Style(
-                    margin: Margins.all(1), // Remove default paragraph margins
-                    padding: HtmlPaddings.all(1), // Remove default paragraph padding
+                    margin: Margins.all(1),
+                    padding: HtmlPaddings.all(1),
                   ),
                   "span": Style(
-                    fontFamily: 'GilroyMediumBam', // Ensure consistent font family
-                    fontSize: FontSize.large, // Adjust font size as needed
+                    fontFamily: 'GilroyMediumBam',
+                    fontSize: FontSize.large,
                   ),
                 },
               ),
             ),
           );
+  }
+}
+
+class NotificationController {
+  @pragma("vm:entry-point")
+  static Future<void> onNotificationCreatedMethod(ReceivedNotification receivedNotification) async {
+    debugPrint('onNotificationCreatedMethod: ${receivedNotification.toMap()}');
+  }
+
+  @pragma("vm:entry-point")
+  static Future<void> onNotificationDisplayedMethod(ReceivedNotification receivedNotification) async {
+    debugPrint('onNotificationDisplayedMethod: ${receivedNotification.toMap()}');
+  }
+
+  @pragma("vm:entry-point")
+  static Future<void> onDismissActionReceivedMethod(ReceivedAction receivedAction) async {
+    debugPrint('onDismissActionReceivedMethod: ${receivedAction.toMap()}');
+  }
+
+  @pragma("vm:entry-point")
+  static Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
+    debugPrint('onActionReceivedMethod - Payload: ${receivedAction.payload}');
+    debugPrint('onActionReceivedMethod - Summary: ${receivedAction.summary}');
+
+    String? urlToLaunch = receivedAction.payload?['url'];
+
+    if ((urlToLaunch == null || urlToLaunch.isEmpty) && receivedAction.summary != null && (receivedAction.summary!.startsWith('http://') || receivedAction.summary!.startsWith('https://'))) {
+      urlToLaunch = receivedAction.summary;
+    }
+
+    if (urlToLaunch != null && urlToLaunch.isNotEmpty) {
+      debugPrint('Navigating to WebViewPage with: $urlToLaunch');
+      Get.to(() => WebViewPage(url: urlToLaunch!));
+    } else {
+      debugPrint('No valid URL found. Navigating to Home');
+      Get.to(() => const MyHomePage());
+    }
   }
 }

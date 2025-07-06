@@ -69,24 +69,8 @@ class _MainVisiblesState extends State<MainVisibles> {
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
-              print(widget.items[index].description_tm);
-              print(widget.items[index].description_en);
-              return CartItems(
-                  widget.items[index].id,
-                  widget.items[index].name_tm,
-                  widget.items[index].name_ru,
-                  widget.items[index].name_en,
-                  widget.items[index].description_tm,
-                  widget.items[index].description_ru,
-                  widget.items[index].description_en,
-                  widget.items[index].image,
-                  widget.items[index].price,
-                  widget.items[index].count,
-                  widget.items[index].rating,
-                  widget.items[index].discount,
-                  widget.items[index].discount_price,
-                  widget.items[index].category,
-                  widget.items[index].values);
+              return CartItems(widget.items[index].id, widget.items[index].name_tm, widget.items[index].name_ru, widget.items[index].name_en, widget.items[index].description_tm, widget.items[index].description_ru, widget.items[index].description_en, widget.items[index].image,
+                  widget.items[index].price, widget.items[index].count, widget.items[index].rating, widget.items[index].discount, widget.items[index].discount_price, widget.items[index].category, widget.items[index].values);
             },
           ),
         ),

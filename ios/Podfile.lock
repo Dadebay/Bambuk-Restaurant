@@ -83,6 +83,9 @@ PODS:
     - FlutterMacOS
   - url_launcher_ios (0.0.1):
     - Flutter
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
   - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
@@ -94,6 +97,7 @@ DEPENDENCIES:
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - sqflite (from `.symlinks/plugins/sqflite/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
 SPEC REPOS:
   trunk:
@@ -128,6 +132,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
   awesome_notifications: 0f432b28098d193920b11a44cfa9d2d9313a3888
@@ -150,6 +156,7 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 32793e867593cfc1177f5d16491e3a197d2fccda
   sqflite: c35dad70033b8862124f8337cc994a809fcd9fa3
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
 
 PODFILE CHECKSUM: e4e83f925ea682751c9d9ee544f7e8e2c0a1f3d3
 

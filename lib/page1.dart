@@ -116,7 +116,6 @@ class _Page1State extends State<Page1> {
   }
 
   Widget reviewListDesign(Which_page prov) {
-    print(prov.dil);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

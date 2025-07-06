@@ -80,23 +80,13 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       if (response != null && response['data'] != null) {
         final locationsData = response['data'] as List<dynamic>;
         setState(() {
-          _locations = locationsData
-              .map((location) => locations(
-                  id: location['id'],
-                  name_tm: location['name_tm'] ?? '',
-                  name_ru: location['name_ru'] ?? '',
-                  name_en: location['name_en'] ?? '',
-                  min_order_fee: location['min_order_fee'],
-                  shipping_fee: location['shipping_fee']))
-              .toList();
+          _locations = locationsData.map((location) => locations(id: location['id'], name_tm: location['name_tm'] ?? '', name_ru: location['name_ru'] ?? '', name_en: location['name_en'] ?? '', min_order_fee: location['min_order_fee'], shipping_fee: location['shipping_fee'])).toList();
           if (_locations.isNotEmpty) {
             _selectedLocation = _locations[0];
           }
         });
       }
-    } catch (e) {
-      print('Error fetching locations: $e');
-    }
+    } catch (e) {}
   }
 
   Future<dynamic> _get(String url) async {
@@ -107,7 +97,6 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       }
       return null;
     } catch (e) {
-      print('Error fetching data from $url: $e');
       return null;
     }
   }
@@ -316,11 +305,7 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
         ),
         value: _selectedLocation,
         items: _locations.map((location) {
-          return DropdownMenuItem<locations>(
-              value: location,
-              child: Text(constants.dil == true
-                  ? "${location.name_tm} (${location.shipping_fee} TMT)"
-                  : (constants.dil == false ? "${location.name_ru} (${location.shipping_fee} TMT)" : "${location.name_en} (${location.shipping_fee} TMT)")));
+          return DropdownMenuItem<locations>(value: location, child: Text(constants.dil == true ? "${location.name_tm} (${location.shipping_fee} TMT)" : (constants.dil == false ? "${location.name_ru} (${location.shipping_fee} TMT)" : "${location.name_en} (${location.shipping_fee} TMT)")));
         }).toList(),
         onChanged: (value) {
           setState(() {

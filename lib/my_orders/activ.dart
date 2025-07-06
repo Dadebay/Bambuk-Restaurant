@@ -27,31 +27,20 @@ class _ActivState extends State<Activ> {
     loading = false;
     Map<String, String> header = {'Authorization': 'Bearer ${Constants.token}'};
     var response3 = await http.get(Uri.https(Constants.api, '/api/v1/users/me/orders/'), headers: header);
+    print("_______-_______-_______-_______-_______-_______-_______-_______-_______-_______-_______-_______-");
+    print(response3.body);
+    print(response3.statusCode);
     var mitem = json.decode(utf8.decode(response3.bodyBytes))['data'];
     Constants.dis_activ.clear();
     product.clear();
     if (mitem.length == 0) loading = true;
     for (int i = 0; i < mitem.length; i++) {
-      if (mitem[i]['status']['id'] == 1 || mitem[i]['status']['id'] == 2 || mitem[i]['st6060atus']['id'] == 3) {
+      if (mitem[i]['status']['id'] == 1 || mitem[i]['status']['id'] == 2 || mitem[i]['status']['id'] == 3) {
         product.add(orders(
-            id: mitem[i]['id'],
-            date: mitem[i]['created_at'],
-            status_id: mitem[i]['status']['id'],
-            status: mitem[i]['status']['name_tm'],
-            status_ru: mitem[i]['status']['name_ru'],
-            order_no: mitem[i]['track_code'],
-            my_products: mitem[i]['products'],
-            total_price: mitem[i]['total_price'].toString()));
+            id: mitem[i]['id'], date: mitem[i]['created_at'], status_id: mitem[i]['status']['id'], status: mitem[i]['status']['name_tm'], status_ru: mitem[i]['status']['name_ru'], order_no: mitem[i]['track_code'], my_products: mitem[i]['products'], total_price: mitem[i]['total_price'].toString()));
       } else {
         Constants.dis_activ.add(orders(
-            id: mitem[i]['id'],
-            date: mitem[i]['created_at'],
-            status_id: mitem[i]['status']['id'],
-            status: mitem[i]['status']['name_tm'],
-            status_ru: mitem[i]['status']['name_ru'],
-            order_no: mitem[i]['track_code'],
-            my_products: mitem[i]['products'],
-            total_price: mitem[i]['total_price'].toString()));
+            id: mitem[i]['id'], date: mitem[i]['created_at'], status_id: mitem[i]['status']['id'], status: mitem[i]['status']['name_tm'], status_ru: mitem[i]['status']['name_ru'], order_no: mitem[i]['track_code'], my_products: mitem[i]['products'], total_price: mitem[i]['total_price'].toString()));
       }
     }
     setState(() {

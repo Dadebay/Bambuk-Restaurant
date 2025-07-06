@@ -171,9 +171,6 @@ class _OptionsItemState extends State<OptionsItem> {
               ),
               GestureDetector(
                 onTap: () {
-                  print("Asdasdasdasdasd");
-                  print(prov.dil);
-                  print(Constants.op_description_ru);
                   setState(() {
                     descrip = !descrip;
                   });
@@ -451,22 +448,8 @@ class _OptionsItemState extends State<OptionsItem> {
       child: (Provider.of<ProvItem>(context).items[Constants.op_id]?.count == null)
           ? GestureDetector(
               onTap: () {
-                Provider.of<ProvItem>(context, listen: false).addItem(
-                    Constants.op_id,
-                    Constants.op_name_tm,
-                    Constants.op_name_ru,
-                    Constants.op_name_en,
-                    Constants.op_description_tm,
-                    Constants.op_description_ru,
-                    Constants.op_description_en,
-                    Constants.op_image,
-                    Constants.op_price,
-                    1,
-                    Constants.op_rating,
-                    Constants.op_discount,
-                    Constants.op_discount_price,
-                    Constants.op_category,
-                    Constants.op_values);
+                Provider.of<ProvItem>(context, listen: false).addItem(Constants.op_id, Constants.op_name_tm, Constants.op_name_ru, Constants.op_name_en, Constants.op_description_tm, Constants.op_description_ru, Constants.op_description_en, Constants.op_image, Constants.op_price, 1,
+                    Constants.op_rating, Constants.op_discount, Constants.op_discount_price, Constants.op_category, Constants.op_values);
               },
               child: Center(
                 child: Text(
@@ -484,12 +467,7 @@ class _OptionsItemState extends State<OptionsItem> {
                   onTap: () {
                     Provider.of<ProvItem>(context, listen: false).removeItem(Constants.op_id, 5);
                   },
-                  child: Container(
-                      width: 40,
-                      height: 40,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: const Icon(CupertinoIcons.minus, color: Colors.black)),
+                  child: Container(width: 40, height: 40, alignment: Alignment.center, decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))), child: const Icon(CupertinoIcons.minus, color: Colors.black)),
                 ),
                 Container(
                   height: 40,
@@ -504,28 +482,10 @@ class _OptionsItemState extends State<OptionsItem> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Provider.of<ProvItem>(context, listen: false).addItem(
-                        Constants.op_id,
-                        Constants.op_name_tm,
-                        Constants.op_name_ru,
-                        Constants.op_name_en,
-                        Constants.op_description_tm,
-                        Constants.op_description_ru,
-                        Constants.op_description_en,
-                        Constants.op_image,
-                        Constants.op_price,
-                        1,
-                        Constants.op_rating,
-                        Constants.op_discount,
-                        Constants.op_discount_price,
-                        Constants.op_category,
-                        Constants.op_values);
+                    Provider.of<ProvItem>(context, listen: false).addItem(Constants.op_id, Constants.op_name_tm, Constants.op_name_ru, Constants.op_name_en, Constants.op_description_tm, Constants.op_description_ru, Constants.op_description_en, Constants.op_image, Constants.op_price, 1,
+                        Constants.op_rating, Constants.op_discount, Constants.op_discount_price, Constants.op_category, Constants.op_values);
                   },
-                  child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: const Icon(Icons.add, color: Colors.black)),
+                  child: Container(width: 40, height: 40, decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))), child: const Icon(Icons.add, color: Colors.black)),
                 ),
               ],
             ),
@@ -543,22 +503,8 @@ class imageview extends StatelessWidget {
     return GestureDetector(
       onTap: (() {
         if (Provider.of<Favourite>(context, listen: false).items[Constants.op_id]?.count == null) {
-          Provider.of<Favourite>(context, listen: false).addItem(
-              Constants.op_id,
-              Constants.op_name_tm,
-              Constants.op_name_ru,
-              Constants.op_name_en,
-              Constants.op_description_tm,
-              Constants.op_description_ru,
-              Constants.op_description_en,
-              Constants.op_image,
-              Constants.op_price,
-              Constants.op_count,
-              Constants.op_rating,
-              Constants.op_discount,
-              Constants.op_discount_price,
-              Constants.op_category,
-              Constants.op_values);
+          Provider.of<Favourite>(context, listen: false).addItem(Constants.op_id, Constants.op_name_tm, Constants.op_name_ru, Constants.op_name_en, Constants.op_description_tm, Constants.op_description_ru, Constants.op_description_en, Constants.op_image, Constants.op_price, Constants.op_count,
+              Constants.op_rating, Constants.op_discount, Constants.op_discount_price, Constants.op_category, Constants.op_values);
         } else {
           Provider.of<Favourite>(context, listen: false).removeItem(Constants.op_id);
         }

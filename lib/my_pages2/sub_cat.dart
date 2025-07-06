@@ -64,7 +64,6 @@ class _SubCatState extends State<SubCat> {
           category: mitem[i]['category']['id'].toString(),
           values: mitem[i]['values']));
     }
-    print('object1');
     try {
       setState(() {
         loading = false;
@@ -84,8 +83,7 @@ class _SubCatState extends State<SubCat> {
       children.add(category_home2(id: Constants.myCatID, name_tm: 'Ählisi', name_ru: 'Все', name_en: 'All'));
       for (int j = 0; j < Constants.children.length; j++) {
         try {
-          children.add(category_home2(
-              id: Constants.children[j]['id'], name_tm: Constants.children[j]['name_tm'] ?? '', name_ru: Constants.children[j]['name_ru'] ?? '', name_en: Constants.children[j]['name_en'] ?? ''));
+          children.add(category_home2(id: Constants.children[j]['id'], name_tm: Constants.children[j]['name_tm'] ?? '', name_ru: Constants.children[j]['name_ru'] ?? '', name_en: Constants.children[j]['name_en'] ?? ''));
         } catch (e) {}
       }
     } catch (e) {}
@@ -265,22 +263,8 @@ class _SubCatState extends State<SubCat> {
                               if (index == product.length - 1 && canGet) {
                                 getTime();
                               }
-                              return CartItemsLinear(
-                                  product[index].id,
-                                  product[index].name_tm,
-                                  product[index].name_ru,
-                                  product[index].name_en,
-                                  product[index].description_tm,
-                                  product[index].description_ru,
-                                  product[index].description_en,
-                                  product[index].image,
-                                  product[index].price,
-                                  product[index].count,
-                                  product[index].rating,
-                                  product[index].discount,
-                                  product[index].discount_price,
-                                  product[index].category,
-                                  product[index].values);
+                              return CartItemsLinear(product[index].id, product[index].name_tm, product[index].name_ru, product[index].name_en, product[index].description_tm, product[index].description_ru, product[index].description_en, product[index].image, product[index].price,
+                                  product[index].count, product[index].rating, product[index].discount, product[index].discount_price, product[index].category, product[index].values);
                             },
                           )
                         : GridView.builder(
@@ -296,22 +280,8 @@ class _SubCatState extends State<SubCat> {
                               if (index == product.length - 1 && canGet) {
                                 getTime();
                               }
-                              return CartItems(
-                                  product[index].id,
-                                  product[index].name_tm,
-                                  product[index].name_ru,
-                                  product[index].name_en,
-                                  product[index].description_tm,
-                                  product[index].description_ru,
-                                  product[index].description_en,
-                                  product[index].image,
-                                  product[index].price,
-                                  product[index].count,
-                                  product[index].rating,
-                                  product[index].discount,
-                                  product[index].discount_price,
-                                  product[index].category,
-                                  product[index].values);
+                              return CartItems(product[index].id, product[index].name_tm, product[index].name_ru, product[index].name_en, product[index].description_tm, product[index].description_ru, product[index].description_en, product[index].image, product[index].price, product[index].count,
+                                  product[index].rating, product[index].discount, product[index].discount_price, product[index].category, product[index].values);
                             },
                           ),
                   )

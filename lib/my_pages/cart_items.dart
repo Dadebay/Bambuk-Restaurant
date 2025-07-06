@@ -27,9 +27,7 @@ class CartItems extends StatefulWidget {
   double discount_price;
   String category;
   var values;
-  CartItems(this.id, this.name_tm, this.name_ru, this.name_en, this.description_tm, this.description_ru, this.description_en, this.image, this.price, this.count, this.rating, this.discount,
-      this.discount_price, this.category, this.values,
-      {super.key});
+  CartItems(this.id, this.name_tm, this.name_ru, this.name_en, this.description_tm, this.description_ru, this.description_en, this.image, this.price, this.count, this.rating, this.discount, this.discount_price, this.category, this.values, {super.key});
 
   @override
   _CartItemsState createState() => _CartItemsState();
@@ -40,9 +38,6 @@ class _CartItemsState extends State<CartItems> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print(widget.description_en);
-        print(widget.description_ru);
-        print(widget.description_en);
         Constants.op_id = widget.id;
         Constants.op_name_tm = widget.name_tm;
         Constants.op_name_ru = widget.name_ru;
@@ -128,8 +123,8 @@ class _CartItemsState extends State<CartItems> {
         onTap: () {
           if (Provider.of<ProvItem>(context, listen: false).items[widget.id]?.count == null) {
             widget.count++;
-            Provider.of<ProvItem>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru, widget.description_en,
-                widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values);
+            Provider.of<ProvItem>(context, listen: false)
+                .addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru, widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values);
           } else {
             widget.count = 0;
             Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, widget.count);
@@ -221,8 +216,8 @@ class _CartItemsState extends State<CartItems> {
           GestureDetector(
             onTap: (() {
               if (Provider.of<Favourite>(context, listen: false).items[widget.id]?.count == null) {
-                Provider.of<Favourite>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru, widget.description_en,
-                    widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values);
+                Provider.of<Favourite>(context, listen: false)
+                    .addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru, widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values);
               } else {
                 Provider.of<Favourite>(context, listen: false).removeItem(widget.id);
               }

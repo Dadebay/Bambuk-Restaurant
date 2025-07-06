@@ -23,6 +23,7 @@ if (flutterVersionName == null) {
     flutterVersionName = '2.1.0'
 }
 
+
 android {
     namespace = "com.softpage.bamboo"
     compileSdk = flutter.compileSdkVersion

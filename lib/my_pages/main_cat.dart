@@ -22,8 +22,6 @@ class _MainCatState extends State<MainCat> {
   @override
   Widget build(BuildContext context) {
     var prov = Provider.of<Which_page>(context);
-    print(Constants.category.length);
-    // double length = Constants.category.length / 2;
     return Column(
       children: [
         topPartName(prov, context),

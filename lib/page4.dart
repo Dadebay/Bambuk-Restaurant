@@ -53,21 +53,13 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
   bool loading = false;
 
   Future sending(String name) async {
-    //if (name=="")name=Constants.pname;
-    print(name);
-    print("------------------------------------------------");
     var headers = {
       "phone": name,
     };
 
     var url = Uri.https(Constants.api, '/api/v1/login');
     var response = await http.post(url, body: headers);
-    print(response.statusCode);
-    print(response.body);
     if (response.statusCode == 200) {
-      print(response.body);
-      print(headers);
-      // DatabaseHelper.Constants2.phone = name;
       setState(() {
         loading = false;
       });
@@ -118,10 +110,6 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
         var url = Uri.https(Constants.api, '/api/v1/register');
         Constants.phone = phone;
         var response = await http.post(url, body: headers);
-        print("------------------------------------------------");
-
-        print(response.statusCode);
-        print(response.body);
         if (response.statusCode == 200) {
           setState(() {
             loading = false;

@@ -1,12 +1,13 @@
-import 'package:bamboo/values/constants.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
+
 import 'package:bamboo/providers/bottom_prov.dart';
 import 'package:bamboo/providers/page1provider.dart';
 import 'package:bamboo/values/colors.dart';
-import 'package:http/http.dart' as http;
 import 'package:bamboo/values/constants.dart' as Constants;
+import 'package:bamboo/values/constants.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'dart:convert';
 
 import '../DB/db.dart';
 
@@ -42,16 +43,12 @@ class _VerifyState extends State<Verify> with SingleTickerProviderStateMixin {
   TextEditingController verifyCode = TextEditingController();
   bool loading = false;
   Future sending(String name) async {
-    print(name);
-    print(Constants.phone);
     var headers = {
       "phone": widget.phoneNumber,
       "otp": name,
     };
     var url = Uri.https(Constants.api, '/api/v1/login/verify');
-    // Await the http get response, then decode the json-formatted response.
     var response = await http.post(url, body: headers);
-    print(response.body);
     if (response.statusCode == 200) {
       Constants.phone = widget.phoneNumber;
       var jsonData = json.decode(utf8.decode(response.bodyBytes));

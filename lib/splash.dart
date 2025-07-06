@@ -72,9 +72,7 @@ class _SplashState extends State<Splash> {
         final response = await _dio.get('https://${Constants.api}/api/v1/users/me/bonus');
         Constants.bonusMoney = response.data['amount'].toString();
       }
-    } catch (e) {
-      print('Error fetching bonus data: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _fetchDeliverySettings() async {
@@ -85,9 +83,7 @@ class _SplashState extends State<Splash> {
         Provider.of<Which_page>(context, listen: false).setDosMin(double.parse(location['min_order_fee']));
         Provider.of<Which_page>(context, listen: false).setDosPrice(double.parse(location['shipping_fee']));
       }
-    } catch (e) {
-      print('Error fetching delivery settings: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _fetchCategories() async {
@@ -111,9 +107,7 @@ class _SplashState extends State<Splash> {
           }
         }
       }
-    } catch (e) {
-      print('Error fetching categories: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _fetchBanners() async {
@@ -135,9 +129,7 @@ class _SplashState extends State<Splash> {
           }
         }
       }
-    } catch (e) {
-      print('Error fetching banners: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _fetchCommentBanners() async {
@@ -162,9 +154,7 @@ class _SplashState extends State<Splash> {
           }
         }
       }
-    } catch (e) {
-      print('Error fetching comment banners: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _fetchDiscountProducts() async {
@@ -210,17 +200,15 @@ class _SplashState extends State<Splash> {
           }
         }
       }
-    } catch (e) {
-      print('Error fetching products from $endpoint: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _loadCartItems() async {
     final cartItems = await DatabaseHelper.getItems();
     Provider.of<ProvItem>(context, listen: false).clearItem();
     for (var item in cartItems) {
-      Provider.of<ProvItem>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
-          item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
+      Provider.of<ProvItem>(context, listen: false)
+          .addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'], item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
     }
   }
 
@@ -231,17 +219,15 @@ class _SplashState extends State<Splash> {
       for (var address in addresses) {
         Provider.of<Favourite>(context, listen: false).addAddress(address['name'], address['address_txt']);
       }
-    } catch (e) {
-      print('Error fetching addresses from database: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _loadFavoriteItems() async {
     final favoriteItems = await DatabaseHelper.getFavor();
     Provider.of<Favourite>(context, listen: false);
     for (var item in favoriteItems) {
-      Provider.of<Favourite>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
-          item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
+      Provider.of<Favourite>(context, listen: false)
+          .addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'], item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
     }
   }
 
@@ -273,7 +259,6 @@ class _SplashState extends State<Splash> {
       setState(() {
         _connection = false;
       });
-      print('Error fetching data from $url: $e');
       return null;
     }
   }
