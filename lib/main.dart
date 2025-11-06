@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:bamboo/firebase_options.dart';
 import 'package:bamboo/my_pages/categories.dart';
@@ -22,7 +21,8 @@ import 'package:bamboo/providers/user_info.dart';
 import 'package:bamboo/splash.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
-import 'package:bamboo/values/notification_service.dart';
+import 'package:bamboo/values/firebase_messaging_service.dart';
+import 'package:bamboo/values/local_notifications_service.dart';
 import 'package:bamboo/webview_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -33,16 +33,22 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'my_pages/bash sahypa/search.dart';
 
-final FCMConfig _fcmConfig = FCMConfig();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+  final localNotificationsService = LocalNotificationsService.instance();
+  await localNotificationsService.init();
+
+  final firebaseMessagingService = FirebaseMessagingService.instance();
+  await firebaseMessagingService.init(localNotificationsService: localNotificationsService);
+  await FirebaseMessaging.instance.subscribeToTopic('ttf_channel');
   runApp(
     MultiProvider(
       providers: [
@@ -61,21 +67,34 @@ Future<void> main() async {
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await _fcmConfig.ensureAwesomeInitializedForBackground();
 
+  print('');
+  print('🔔 BACKGROUND MESSAGE RECEIVED 🔔');
+  print('═══════════════════════════════════════════════════════════════');
   debugPrint("Handling a background message: ${message.messageId}");
   final String? title = message.notification?.title;
-  final String? body = message.notification?.body; // URL burada olacak
+  final String? body = message.notification?.body;
+  print("Message ID: ${message.messageId}");
+  print("Title: $title");
+  print("Body: $body");
+  print("Data: ${message.data}");
+  print('═══════════════════════════════════════════════════════════════');
+  print('');
   debugPrint("Background Message Title: $title");
   debugPrint("Background Message Body (URL if present): $body");
   debugPrint("Background Message Data: ${message.data}");
 
+  // Save notification to SharedPreferences, but do not show it manually
   if (title != null || body != null) {
-    // En az biri varsa bildirim oluştur
-    await _fcmConfig.sendNotification(
-      title: title ?? "Yeni Bildirim", // Başlık yoksa varsayılan
-      body: body ?? "Detaylar için dokunun.", // Body (URL) yoksa varsayılan
-    );
+    final prefs = await SharedPreferences.getInstance();
+    final notifications = prefs.getStringList('notifications') ?? [];
+    final newNotification = jsonEncode({
+      'title': title,
+      'body': body,
+      'date': DateTime.now().toIso8601String(),
+    });
+    notifications.add(newNotification);
+    await prefs.setStringList('notifications', notifications);
   }
 }
 
@@ -90,62 +109,36 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _setupFCMListeners();
+    _setupInteractedMessage();
   }
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  Future<void> _setupFCMListeners() async {
-    await FirebaseMessaging.instance.getToken().then((token) {
-      debugPrint('FCM Token: $token');
-    });
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      debugPrint('Got a message whilst in the foreground!');
-      final String? title = message.notification?.title;
-      final String? body = message.notification?.body; // URL burada olacak
-      debugPrint('Foreground Message Title: $title');
-      debugPrint('Foreground Message Body (URL if present): $body');
-      debugPrint('Foreground Message data: ${message.data}');
+  void _setupInteractedMessage() {
+    FirebaseMessaging.instance.getInitialMessage().then((message) => _handleMessage(message));
 
-      if (title != null || body != null) {
-        _fcmConfig.sendNotification(
-          title: title ?? "Yeni Bildirim",
-          body: body ?? "Detaylar için dokunun.",
-        );
-        // final url = message.notification?.body;
-        // if (url != null && url.startsWith("http")) {
-        //   navigatorKey.currentState?.push(
-        //     MaterialPageRoute(builder: (_) => WebViewPage(url: url)),
-        //   );
-        // } else {
-        //   navigatorKey.currentState?.pushNamed('/home');
-        // }
-      }
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) => _handleMessage(message));
+  }
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      final url = message.notification?.body;
-      if (url != null && url.startsWith("http")) {
-        navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (_) => WebViewPage(url: url)),
-        );
-      } else {
-        navigatorKey.currentState?.pushNamed('/home');
-      }
-    });
+  void _handleMessage(RemoteMessage? message) {
+    if (message == null) return;
 
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      if (message != null) {
-        final url = message.notification?.body;
-        if (url != null && url.startsWith("http")) {
-          navigatorKey.currentState?.push(
-            MaterialPageRoute(builder: (_) => WebViewPage(url: url)),
-          );
-        } else {
-          navigatorKey.currentState?.pushNamed('/home');
-        }
-      }
-    });
+    String? urlToLaunch = message.data['url'];
+
+    if ((urlToLaunch == null || urlToLaunch.isEmpty) &&
+        message.notification?.body != null &&
+        (message.notification!.body!.startsWith('http://') ||
+            message.notification!.body!.startsWith('https://'))) {
+      urlToLaunch = message.notification!.body;
+    }
+
+    if (urlToLaunch != null && urlToLaunch.isNotEmpty) {
+      debugPrint('Navigating to WebViewPage with: $urlToLaunch');
+      Get.to(() => WebViewPage(url: urlToLaunch!));
+    } else {
+      debugPrint('No valid URL found. Navigating to Home');
+      Get.to(() => const MyHomePage());
+    }
   }
 
   Map<String, WidgetBuilder> _buildRoutes() {
@@ -210,12 +203,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         setState(() {});
       }
     });
-
-    AwesomeNotifications().setListeners(
-        onActionReceivedMethod: NotificationController.onActionReceivedMethod,
-        onNotificationCreatedMethod: NotificationController.onNotificationCreatedMethod,
-        onNotificationDisplayedMethod: NotificationController.onNotificationDisplayedMethod,
-        onDismissActionReceivedMethod: NotificationController.onDismissActionReceivedMethod);
   }
 
   Widget _buildNavigatorPage({
@@ -315,28 +302,30 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     setState(() {
       selectedIndex = index;
     });
-    final bottomProv = Provider.of<BottomProv>(context, listen: false);
+
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 5),
+      curve: Curves.easeIn,
+    );
+
+    Provider.of<BottomProv>(context, listen: false).setPage(index);
 
     switch (index) {
       case 0:
         which_page = 1;
-        bottomProv.set_page0();
         break;
       case 1:
         which_page = 2;
-        bottomProv.setPage1();
         break;
       case 2:
         which_page = 3;
-        bottomProv.setPage2();
         break;
       case 3:
         which_page = 4;
-        bottomProv.setPage3();
         break;
       case 4:
         which_page = 5;
-        bottomProv.setPage4();
         break;
       default:
         break;
@@ -458,7 +447,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                 controller: _tabController,
                 children: [
                   PageView(
-                    controller: Provider.of<BottomProv>(context).pageController,
+                    controller: _pageController,
                     physics: const NeverScrollableScrollPhysics(),
                     children: bottomBarPages,
                   ),
@@ -661,39 +650,3 @@ class _Page3ContentState extends State<Page3Content> {
   }
 }
 
-class NotificationController {
-  @pragma("vm:entry-point")
-  static Future<void> onNotificationCreatedMethod(ReceivedNotification receivedNotification) async {
-    debugPrint('onNotificationCreatedMethod: ${receivedNotification.toMap()}');
-  }
-
-  @pragma("vm:entry-point")
-  static Future<void> onNotificationDisplayedMethod(ReceivedNotification receivedNotification) async {
-    debugPrint('onNotificationDisplayedMethod: ${receivedNotification.toMap()}');
-  }
-
-  @pragma("vm:entry-point")
-  static Future<void> onDismissActionReceivedMethod(ReceivedAction receivedAction) async {
-    debugPrint('onDismissActionReceivedMethod: ${receivedAction.toMap()}');
-  }
-
-  @pragma("vm:entry-point")
-  static Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
-    debugPrint('onActionReceivedMethod - Payload: ${receivedAction.payload}');
-    debugPrint('onActionReceivedMethod - Summary: ${receivedAction.summary}');
-
-    String? urlToLaunch = receivedAction.payload?['url'];
-
-    if ((urlToLaunch == null || urlToLaunch.isEmpty) && receivedAction.summary != null && (receivedAction.summary!.startsWith('http://') || receivedAction.summary!.startsWith('https://'))) {
-      urlToLaunch = receivedAction.summary;
-    }
-
-    if (urlToLaunch != null && urlToLaunch.isNotEmpty) {
-      debugPrint('Navigating to WebViewPage with: $urlToLaunch');
-      Get.to(() => WebViewPage(url: urlToLaunch!));
-    } else {
-      debugPrint('No valid URL found. Navigating to Home');
-      Get.to(() => const MyHomePage());
-    }
-  }
-}

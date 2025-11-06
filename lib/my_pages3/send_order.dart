@@ -238,7 +238,7 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                   const SizedBox(height: 10),
                   GestureDetector(
                       onTap: () {
-                        Provider.of<BottomProv>(context, listen: false).set_page0();
+                        Provider.of<BottomProv>(context, listen: false).setPage(0);
                         Navigator.pop(context);
                       },
                       child: Container(

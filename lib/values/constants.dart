@@ -207,7 +207,7 @@ List<String> ru_help = [
 ];
 List<String> ru_about_us = [
   'О приложении',
-  'Programma barada',
+  'Mobil goşundy barada',
   'About app',
 ];
 List<String> ru_contuct_us = [
@@ -355,8 +355,13 @@ List<String> ru_profil = [
 ];
 List<String> ru_ttt = [
   'Отзывы и предложения',
-  'Bellikler we teklipler',
+  'Bellikler we teklipler ',
   'Comments and suggestions',
+];
+List<String> ru_ttt_subtitle = [
+  'Замечания и предложения доступны только руководству ресторана. Спасибо за ваш вклад в совершенствование ресторана!',
+  'Bellikler we teklipler diňe Restoranyň ýolbaşçylaryna elýeterlidir. Restoranyň kämilleşmegine berýän ýardamyňyza sag boluň ! ',
+  'Notes and suggestions are available only to the restaurant management. Thank you for your contribution to the improvement of the restaurant!',
 ];
 List<String> ru_addNew = [
   'Добавить новый адрес',
@@ -370,9 +375,9 @@ List<String> ru_addSal = [
 ];
 List<String> ru_addtow = ['Добавить товар', 'Haryt goş', 'Add item'];
 List<String> ru_programma = [
-  'О программе',
-  'Programma barada',
-  'About the program',
+  'О приложении',
+  'Mobil goşundy barada',
+  'About app',
 ];
 List<String> ru_timeDos = [
   'Время доставки',
@@ -513,6 +518,30 @@ List<String> ru_selectBank = [
   'Выберите банк',
   'Bank saýlaň',
   'Select bank',
+];
+
+List<String> ru_notifications = [
+  'Уведомления',
+  'Bildirişler',
+  'Notifications',
+];
+
+List<String> ru_no_notifications = [
+  'Уведомлений пока нет.',
+  'Häzirlikçe bildiriş ýok.',
+  'No notifications yet.',
+];
+
+List<String> ru_failed_to_load = [
+  'Не удалось загрузить уведомления.',
+  'Bildirişleri ýükläp bolmady.',
+  'Failed to load notifications.',
+];
+
+List<String> ru_error_occurred = [
+  'Произошла ошибка:',
+  'Ýalňyşlyk ýüze çykdy:',
+  'An error occurred:',
 ];
 
 //Доставка

@@ -65,7 +65,7 @@ class _BlocViewState extends State<BlocView> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Provider.of<BottomProv>(context, listen: false).set_page0();
+                    Provider.of<BottomProv>(context, listen: false).setPage(0);
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },

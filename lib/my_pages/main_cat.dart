@@ -91,7 +91,7 @@ class _MainCatState extends State<MainCat> {
   Widget topPartName(Which_page prov, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Provider.of<BottomProv>(context, listen: false).setPage1();
+        Provider.of<BottomProv>(context, listen: false).setPage(1);
       },
       child: Padding(
         padding: const EdgeInsets.all(10.0),

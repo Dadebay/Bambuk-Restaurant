@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/page1provider.dart';
@@ -127,6 +128,31 @@ class _CommentsState extends State<Comments> {
         alignment: Alignment.center,
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Icon(
+                      IconlyLight.info_circle,
+                      color: Colors.grey.shade400,
+                      size: 30,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      Constants.ru_ttt_subtitle[Provider.of<Which_page>(context).dil],
+                      maxLines: 3,
+                      style: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(
               height: 20,
             ),

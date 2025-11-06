@@ -29,7 +29,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
     animation = Tween(begin: 0.0, end: 1.0).animate(controller)
       ..addListener(() {
         setState(() {});
-      });
+      }); 
     controller.repeat();
   }
 

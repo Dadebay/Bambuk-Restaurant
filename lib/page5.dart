@@ -9,9 +9,11 @@ import 'package:bamboo/page4.dart';
 import 'package:bamboo/providers/bottom_prov.dart';
 import 'package:bamboo/providers/page1provider.dart';
 import 'package:bamboo/providers/page1settings.dart';
+import 'package:bamboo/user_reviews_page/notifications_page.dart';
 import 'package:bamboo/values/colors.dart';
 import 'package:bamboo/values/constants.dart' as constants;
 import 'package:bamboo/widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iconly/iconly.dart';
@@ -87,6 +89,7 @@ class _Page5State extends State<Page5> {
               _buildTile('6', constants.ru_help[pageProvider.dil], 'assets/images/help.svg'),
               _buildTile('7', constants.ru_about_us[pageProvider.dil], 'assets/images/about_us.svg'),
               _buildTile('17', constants.ru_ttt[pageProvider.dil], 'assets/images/news.svg'),
+              _buildTile('18', constants.ru_notifications[pageProvider.dil], CupertinoIcons.bell),
               const SizedBox(height: 80),
               if (bottomProv.reg) _buildLogoutButton(context, pageProvider, bottomProv),
             ],
@@ -96,7 +99,7 @@ class _Page5State extends State<Page5> {
     );
   }
 
-  Widget _buildTile(String id, String name, String icon) {
+  Widget _buildTile(String id, String name, dynamic icon) {
     return _Tile(id: id, name: name, icon: icon);
   }
 
@@ -146,7 +149,7 @@ class _Page5State extends State<Page5> {
 class _Tile extends StatefulWidget {
   final String id;
   final String name;
-  final String icon;
+  final dynamic icon;
 
   const _Tile({super.key, required this.id, required this.name, required this.icon});
 
@@ -192,6 +195,9 @@ class __TileState extends State<_Tile> {
       case "17":
         _navigateToComments(context);
         break;
+      case "18":
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsPage()));
+        break;
     }
   }
 
@@ -227,13 +233,19 @@ class __TileState extends State<_Tile> {
               children: [
                 Container(
                   margin: const EdgeInsets.only(right: 15),
-                  child: SvgPicture.asset(
-                    widget.icon,
-                    height: 20,
-                    width: 20,
-                    color: AppColors.primary,
-                    allowDrawingOutsideViewBox: true,
-                  ),
+                  child: widget.icon is String
+                      ? SvgPicture.asset(
+                          widget.icon,
+                          height: 20,
+                          width: 20,
+                          color: AppColors.primary,
+                          allowDrawingOutsideViewBox: true,
+                        )
+                      : Icon(
+                          widget.icon as IconData,
+                          color: AppColors.primary,
+                          size: 24,
+                        ),
                 ),
                 Expanded(
                   child: Text(
