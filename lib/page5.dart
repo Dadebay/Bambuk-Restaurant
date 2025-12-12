@@ -166,7 +166,7 @@ class __TileState extends State<_Tile> {
       case "2":
         constants.which_sign = true;
         Provider.of<BottomProv>(context, listen: false).set_ver_false();
-        Navigator.pushNamed(context, '/page4');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Page4()));
         break;
       case "3":
         constants.which_sign = false;

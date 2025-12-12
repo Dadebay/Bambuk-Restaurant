@@ -29,7 +29,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
     animation = Tween(begin: 0.0, end: 1.0).animate(controller)
       ..addListener(() {
         setState(() {});
-      }); 
+      });
     controller.repeat();
   }
 
@@ -99,41 +99,32 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
   String gmail = '';
   String mail = '';
   Future reg_sending(String name, String surname, String email, String phone) async {
-    if ((name.isNotEmpty) && (email.isNotEmpty) && (phone.length > 7)) {
-      if (email.contains('@')) {
-        var headers = {
-          "name": name,
-          "surname": surname,
-          "email": email,
-          "phone": phone,
-        };
-        var url = Uri.https(Constants.api, '/api/v1/register');
-        Constants.phone = phone;
-        var response = await http.post(url, body: headers);
-        if (response.statusCode == 200) {
-          setState(() {
-            loading = false;
-          });
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Verify(
-                        phoneNumber: phone,
-                      )));
-        } else {
-          setState(() {
-            loading = false;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Siz hasaba alynan"),
-          ));
-        }
+    if ((name.isNotEmpty) && (phone.length > 7)) {
+      var headers = {
+        "name": name,
+        "surname": surname,
+        "email": email,
+        "phone": phone,
+      };
+      var url = Uri.https(Constants.api, '/api/v1/register');
+      Constants.phone = phone;
+      var response = await http.post(url, body: headers);
+      if (response.statusCode == 200) {
+        setState(() {
+          loading = false;
+        });
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Verify(
+                      phoneNumber: phone,
+                    )));
       } else {
         setState(() {
           loading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Mailiňizi dogry giriziň"),
+          content: Text("Siz hasaba alynan"),
         ));
       }
     } else {

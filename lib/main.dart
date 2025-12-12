@@ -84,6 +84,22 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint("Background Message Body (URL if present): $body");
   debugPrint("Background Message Data: ${message.data}");
 
+  // Extract URL from data payload or body
+  String? urlToLaunch = message.data['url'] as String?;
+
+  if ((urlToLaunch == null || urlToLaunch.isEmpty) && body != null) {
+    if (body.startsWith('http://') || body.startsWith('https://')) {
+      urlToLaunch = body;
+    }
+  }
+
+  print('');
+  print('🔗 EXTRACTED URL (BACKGROUND) 🔗');
+  print('═══════════════════════════════════════════════════════════════');
+  print('URL: $urlToLaunch');
+  print('═══════════════════════════════════════════════════════════════');
+  print('');
+
   // Save notification to SharedPreferences, but do not show it manually
   if (title != null || body != null) {
     final prefs = await SharedPreferences.getInstance();
@@ -91,6 +107,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     final newNotification = jsonEncode({
       'title': title,
       'body': body,
+      'url': urlToLaunch,
       'date': DateTime.now().toIso8601String(),
     });
     notifications.add(newNotification);
@@ -106,6 +123,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  RemoteMessage? _initialMessage;
+  bool _initialMessageHandled = false;
+
   @override
   void initState() {
     super.initState();
@@ -115,9 +135,26 @@ class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   void _setupInteractedMessage() {
-    FirebaseMessaging.instance.getInitialMessage().then((message) => _handleMessage(message));
+    // Terminated state - uygulama kapalıyken bildirime tıklanmış
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        print('');
+        print('🚀 INITIAL MESSAGE (TERMINATED STATE) 🚀');
+        print('═══════════════════════════════════════════════════════════════');
+        print('Message will be handled after app initialization');
+        print('═══════════════════════════════════════════════════════════════');
+        print('');
+        _initialMessage = message;
+      }
+    });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((message) => _handleMessage(message));
+    // Background state - uygulama arka planda iken bildirime tıklanmış
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('');
+      print('📱 MESSAGE OPENED APP (BACKGROUND STATE) 📱');
+      print('═══════════════════════════════════════════════════════════════');
+      _handleMessage(message);
+    });
   }
 
   void _handleMessage(RemoteMessage? message) {
@@ -127,17 +164,39 @@ class _MyAppState extends State<MyApp> {
 
     if ((urlToLaunch == null || urlToLaunch.isEmpty) &&
         message.notification?.body != null &&
-        (message.notification!.body!.startsWith('http://') ||
-            message.notification!.body!.startsWith('https://'))) {
+        (message.notification!.body!.startsWith('http://') || message.notification!.body!.startsWith('https://'))) {
       urlToLaunch = message.notification!.body;
     }
 
+    print('');
+    print('🔗 HANDLING MESSAGE 🔗');
+    print('═══════════════════════════════════════════════════════════════');
+    print('URL: $urlToLaunch');
+    print('═══════════════════════════════════════════════════════════════');
+    print('');
+
     if (urlToLaunch != null && urlToLaunch.isNotEmpty) {
       debugPrint('Navigating to WebViewPage with: $urlToLaunch');
-      Get.to(() => WebViewPage(url: urlToLaunch!));
+      // Biraz bekle ve sonra navigate et (GetX context hazır olması için)
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => WebViewPage(url: urlToLaunch!));
+      });
     } else {
       debugPrint('No valid URL found. Navigating to Home');
-      Get.to(() => const MyHomePage());
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => const MyHomePage());
+      });
+    }
+  }
+
+  // İlk frame render edildikten sonra initial message'ı handle et
+  void _handleInitialMessageAfterBuild() {
+    if (_initialMessage != null && !_initialMessageHandled) {
+      _initialMessageHandled = true;
+      print('');
+      print('✅ HANDLING INITIAL MESSAGE NOW ✅');
+      print('═══════════════════════════════════════════════════════════════');
+      _handleMessage(_initialMessage);
     }
   }
 
@@ -153,6 +212,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    // İlk frame render edildikten sonra initial message'ı kontrol et
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleInitialMessageAfterBuild();
+    });
+
     return GetMaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
@@ -649,4 +713,3 @@ class _Page3ContentState extends State<Page3Content> {
           );
   }
 }
-

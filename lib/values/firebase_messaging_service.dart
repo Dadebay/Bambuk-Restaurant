@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -17,10 +16,40 @@ class FirebaseMessagingService {
   Future<void> init({
     required LocalNotificationsService localNotificationsService,
   }) async {
+    // Bildirim izni iste (Android 13+ ve iOS için gerekli)
+    NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    print('');
+    print('🔔 NOTIFICATION PERMISSION STATUS 🔔');
+    print('═══════════════════════════════════════════════════════════════');
+    print('Authorization Status: ${settings.authorizationStatus}');
+    print('Alert: ${settings.alert}');
+    print('Badge: ${settings.badge}');
+    print('Sound: ${settings.sound}');
+    print('═══════════════════════════════════════════════════════════════');
+    print('');
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('✅ User granted notification permission');
+    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      print('⚠️ User granted provisional notification permission');
+    } else {
+      print('❌ User declined or has not accepted notification permission');
+    }
+
+    // iOS için foreground bildirimleri göster
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: false,
-      badge: false,
-      sound: false,
+      alert: true,
+      badge: true,
+      sound: true,
     );
 
     await FirebaseMessaging.instance.getToken().then((token) {
@@ -52,9 +81,26 @@ class FirebaseMessagingService {
       debugPrint('Foreground Message data: ${message.data}');
 
       if (title != null || body != null) {
+        // Extract URL from data payload or body
+        String? urlToLaunch = message.data['url'] as String?;
+
+        if ((urlToLaunch == null || urlToLaunch.isEmpty) && body != null) {
+          if (body.startsWith('http://') || body.startsWith('https://')) {
+            urlToLaunch = body;
+          }
+        }
+
+        print('');
+        print('🔗 EXTRACTED URL 🔗');
+        print('═══════════════════════════════════════════════════════════════');
+        print('URL: $urlToLaunch');
+        print('═══════════════════════════════════════════════════════════════');
+        print('');
+
         localNotificationsService.showNotification(
           title: title ?? "Yeni Bildirim",
           body: body ?? "Detaylar için dokunun.",
+          payload: urlToLaunch,
         );
 
         // Save notification to SharedPreferences
@@ -63,6 +109,7 @@ class FirebaseMessagingService {
         final newNotification = jsonEncode({
           'title': title,
           'body': body,
+          'url': urlToLaunch,
           'date': DateTime.now().toIso8601String(),
         });
         notifications.add(newNotification);
