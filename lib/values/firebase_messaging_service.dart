@@ -81,9 +81,22 @@ class FirebaseMessagingService {
       debugPrint('Foreground Message data: ${message.data}');
 
       if (title != null || body != null) {
-        // Extract URL from data payload or body
-        String? urlToLaunch = message.data['url'] as String?;
+        // Extract URL from data payload based on platform
+        String? urlToLaunch;
 
+        // Platform-specific link extraction
+        if (Platform.isAndroid) {
+          urlToLaunch = message.data['android_link'] as String?;
+        } else if (Platform.isIOS) {
+          urlToLaunch = message.data['ios_link'] as String?;
+        }
+
+        // Fallback to generic 'url' field if platform-specific link not found
+        if (urlToLaunch == null || urlToLaunch.isEmpty) {
+          urlToLaunch = message.data['url'] as String?;
+        }
+
+        // Fallback to body if it's a URL
         if ((urlToLaunch == null || urlToLaunch.isEmpty) && body != null) {
           if (body.startsWith('http://') || body.startsWith('https://')) {
             urlToLaunch = body;

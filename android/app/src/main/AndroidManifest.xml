@@ -7,10 +7,33 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Android 13+ için bildirim izni -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+       <queries>
+        <!-- Browser intent -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" />
+        </intent>
+        
+        <!-- YouTube için özel -->
+        <package android:name="com.google.android.youtube" />
+        
+        <!-- Diğer yaygın tarayıcılar -->
+        <package android:name="com.android.chrome" />
+        <package android:name="com.android.browser" />
+    </queries>
     <application
         android:label="Bamboo Restaurant"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+                         <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -84,9 +84,22 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint("Background Message Body (URL if present): $body");
   debugPrint("Background Message Data: ${message.data}");
 
-  // Extract URL from data payload or body
-  String? urlToLaunch = message.data['url'] as String?;
+  // Extract URL from data payload based on platform
+  String? urlToLaunch;
 
+  // Platform-specific link extraction
+  if (Platform.isAndroid) {
+    urlToLaunch = message.data['android_link'] as String?;
+  } else if (Platform.isIOS) {
+    urlToLaunch = message.data['ios_link'] as String?;
+  }
+
+  // Fallback to generic 'url' field if platform-specific link not found
+  if (urlToLaunch == null || urlToLaunch.isEmpty) {
+    urlToLaunch = message.data['url'] as String?;
+  }
+
+  // Fallback to body if it's a URL
   if ((urlToLaunch == null || urlToLaunch.isEmpty) && body != null) {
     if (body.startsWith('http://') || body.startsWith('https://')) {
       urlToLaunch = body;
@@ -160,8 +173,22 @@ class _MyAppState extends State<MyApp> {
   void _handleMessage(RemoteMessage? message) {
     if (message == null) return;
 
-    String? urlToLaunch = message.data['url'];
+    // Extract URL from data payload based on platform
+    String? urlToLaunch;
 
+    // Platform-specific link extraction
+    if (Platform.isAndroid) {
+      urlToLaunch = message.data['android_link'];
+    } else if (Platform.isIOS) {
+      urlToLaunch = message.data['ios_link'];
+    }
+
+    // Fallback to generic 'url' field if platform-specific link not found
+    if (urlToLaunch == null || urlToLaunch.isEmpty) {
+      urlToLaunch = message.data['url'];
+    }
+
+    // Fallback to body if it's a URL
     if ((urlToLaunch == null || urlToLaunch.isEmpty) &&
         message.notification?.body != null &&
         (message.notification!.body!.startsWith('http://') || message.notification!.body!.startsWith('https://'))) {
