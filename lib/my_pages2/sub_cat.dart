@@ -5,6 +5,7 @@ import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,6 @@ class SubCat extends StatefulWidget {
 
 class _SubCatState extends State<SubCat> {
   List<products> product = [];
-  bool _list = false;
   int _selected = 0;
   List<category_home2> children = [];
   bool loading = true;
@@ -83,7 +83,8 @@ class _SubCatState extends State<SubCat> {
       children.add(category_home2(id: Constants.myCatID, name_tm: 'Ählisi', name_ru: 'Все', name_en: 'All'));
       for (int j = 0; j < Constants.children.length; j++) {
         try {
-          children.add(category_home2(id: Constants.children[j]['id'], name_tm: Constants.children[j]['name_tm'] ?? '', name_ru: Constants.children[j]['name_ru'] ?? '', name_en: Constants.children[j]['name_en'] ?? ''));
+          children.add(category_home2(
+              id: Constants.children[j]['id'], name_tm: Constants.children[j]['name_tm'] ?? '', name_ru: Constants.children[j]['name_ru'] ?? '', name_en: Constants.children[j]['name_en'] ?? ''));
         } catch (e) {}
       }
     } catch (e) {}
@@ -163,143 +164,104 @@ class _SubCatState extends State<SubCat> {
           ),
         ),
       ),
-      body: Container(
-        padding: const EdgeInsets.only(left: 10, right: 10),
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 80,
+            padding: const EdgeInsets.only(left: 16, right: 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(
-                  width: 3,
+                Text(
+                  Constants.myCatName,
+                  style: const TextStyle(fontFamily: 'Semi', fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
                 ),
                 Expanded(
-                  child: Text(
-                    Constants.myCatName,
-                    style: const TextStyle(fontFamily: 'Semi', fontSize: 16, color: Colors.black),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _list = false;
-                    });
-                  },
-                  child: SvgPicture.asset(
-                    'assets/images/man2.svg',
-                    color: !_list ? AppColors.primary : Colors.black,
-                    fit: BoxFit.none,
-                    allowDrawingOutsideViewBox: true,
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _list = true;
-                    });
-                  },
-                  child: SvgPicture.asset(
-                    'assets/images/listview.svg',
-                    color: _list ? AppColors.primary : Colors.black,
-                    fit: BoxFit.none,
-                    allowDrawingOutsideViewBox: true,
-                  ),
-                ),
-                const SizedBox(
-                  width: 7,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: children.length,
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selected = index;
+                              loading == true;
+                              product = [];
+                              canGet = true;
+                              page = 0;
+                            });
+                            Constants.myCatID = children[index].id;
+                            getTime();
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: (index == _selected) ? AppColors.primary.withOpacity(0.4) : AppColors.light_silver),
+                            child: Text(
+                              Provider.of<Which_page>(context).dil == 0
+                                  ? children[index].name_ru
+                                  : Provider.of<Which_page>(context).dil == 1
+                                      ? children[index].name_tm
+                                      : children[index].name_en,
+                              style: TextStyle(fontSize: 15, fontFamily: gilroyMedium, color: (index == _selected) ? Colors.black : Colors.black),
+                            ),
+                          ),
+                        );
+                      }),
                 ),
               ],
             ),
-            SizedBox(
-              height: 60,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: children.length,
-                  shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selected = index;
-                          loading == true;
-                          product = [];
-                          canGet = true;
-                          page = 0;
-                        });
-                        Constants.myCatID = children[index].id;
+          ),
+          (loading == false)
+              ? Expanded(
+                  child: MasonryGridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: const ScrollPhysics(),
+                    itemCount: product.length,
+                    itemBuilder: (context, index) {
+                      if (index == product.length - 1 && canGet) {
                         getTime();
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: (index == _selected) ? AppColors.primary.withOpacity(0.4) : AppColors.light_silver),
-                        child: Text(
-                          Provider.of<Which_page>(context).dil == 0
-                              ? children[index].name_ru
-                              : Provider.of<Which_page>(context).dil == 1
-                                  ? children[index].name_tm
-                                  : children[index].name_en,
-                          style: TextStyle(fontSize: 15, fontFamily: gilroyMedium, color: (index == _selected) ? Colors.black : Colors.black),
-                        ),
-                      ),
-                    );
-                  }),
-            ),
-            (loading == false)
-                ? Expanded(
-                    child: _list
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: product.length,
-                            itemBuilder: (context, index) {
-                              if (index == product.length - 1 && canGet) {
-                                getTime();
-                              }
-                              return CartItemsLinear(product[index].id, product[index].name_tm, product[index].name_ru, product[index].name_en, product[index].description_tm, product[index].description_ru, product[index].description_en, product[index].image, product[index].price,
-                                  product[index].count, product[index].rating, product[index].discount, product[index].discount_price, product[index].category, product[index].values);
-                            },
-                          )
-                        : GridView.builder(
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisExtent: 315,
-                            ),
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            primary: false,
-                            itemCount: product.length,
-                            itemBuilder: (context, index) {
-                              if (index == product.length - 1 && canGet) {
-                                getTime();
-                              }
-                              return CartItems(product[index].id, product[index].name_tm, product[index].name_ru, product[index].name_en, product[index].description_tm, product[index].description_ru, product[index].description_en, product[index].image, product[index].price, product[index].count,
-                                  product[index].rating, product[index].discount, product[index].discount_price, product[index].category, product[index].values);
-                            },
-                          ),
-                  )
-                : Expanded(
-                    child: Center(
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        alignment: Alignment.center,
-                        child: const CircularProgressIndicator(
-                          strokeWidth: 4.0,
-                          semanticsLabel: 'Circular progress indicator',
-                        ),
+                      }
+                      return CartItems(
+                          product[index].id,
+                          product[index].name_tm,
+                          product[index].name_ru,
+                          product[index].name_en,
+                          product[index].description_tm,
+                          product[index].description_ru,
+                          product[index].description_en,
+                          product[index].image,
+                          product[index].price,
+                          product[index].count,
+                          product[index].rating,
+                          product[index].discount,
+                          product[index].discount_price,
+                          product[index].category,
+                          product[index].values,
+                          imageHeight: index % 2 == 0 ? 280.0 : 250.0);
+                    },
+                  ),
+                )
+              : Expanded(
+                  child: Center(
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      alignment: Alignment.center,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 4.0,
+                        semanticsLabel: 'Circular progress indicator',
                       ),
                     ),
                   ),
-          ],
-        ),
+                ),
+        ],
       ),
     );
   }

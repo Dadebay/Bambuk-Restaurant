@@ -72,6 +72,12 @@ var op_values;
 String tm_onum = 'Gündelik harytlar';
 String tm_category = 'Kategoriýalar';
 String tm_favourites = 'Halanlarym';
+List<String> emptyFavouritesTitle = ['Нет избранных товаров', 'Halanan önüm ýok', 'No favourite items'];
+List<String> emptyFavouritesSubtitle = [
+  'Нажмите на сердечко, чтобы сохранить понравившийся товар',
+  'Haladyňyz önümi ýürek belgisine basyp saklap bilersiňiz',
+  'Tap the heart icon to save your favourite items'
+];
 String tm_orders = 'Sargytlarym';
 String tm_product = 'Haryt';
 String tm_products = 'Harytlar';
@@ -358,6 +364,16 @@ List<String> ru_ttt = [
   'Bellikler we teklipler ',
   'Comments and suggestions',
 ];
+List<String> ru_ttt_empty = [
+  'Пока нет комментариев',
+  'Häzirlikçe teswir ýok',
+  'No comments yet',
+];
+List<String> ru_ttt_hint = [
+  'Написать...',
+  'Ýaz...',
+  'Write...',
+];
 List<String> ru_ttt_subtitle = [
   'Замечания и предложения доступны только руководству ресторана. Спасибо за ваш вклад в совершенствование ресторана!',
   'Bellikler we teklipler diňe Restoranyň ýolbaşçylaryna elýeterlidir. Restoranyň kämilleşmegine berýän ýardamyňyza sag boluň ! ',
@@ -544,4 +560,230 @@ List<String> ru_error_occurred = [
   'An error occurred:',
 ];
 
+// Banner/Announcements
+List<String> announcements_title = [
+  'Объявления',
+  'Habarlar',
+  'Announcements',
+];
+
+List<String> announcements_subtitle = [
+  'Акции и новости',
+  'Kampaniýalar we habarlar',
+  'Promotions and news',
+];
+
+List<String> view_details = [
+  'Посмотреть детали',
+  'Jikme-jiklikleri gör',
+  'View details',
+];
+
+// Reviews
+List<String> customer_reviews_title = [
+  'Отзывы наших клиентов',
+  'Müşderilerimizin pikirleri',
+  'Our customers\' opinions',
+];
+
+List<String> no_reviews_yet = [
+  'Пока нет отзывов',
+  'Henizçe syn ýok',
+  'No reviews yet',
+];
+
+List<String> review_label = [
+  'Отзыв',
+  'Syn',
+  'Review',
+];
+
+List<String> no_image = [
+  'Нет изображения',
+  'Surat ýok',
+  'No image',
+];
+
+// Location Services
+List<String> location_service_disabled = [
+  'Служба определения местоположения отключена',
+  'Ýerleşiş hyzmaty ýapyk',
+  'Location service is disabled',
+];
+
+List<String> location_permission_required = [
+  'Требуется разрешение на определение местоположения',
+  'Ýerleşiş rugsady gerek',
+  'Location permission required',
+];
+
+List<String> location_permission_message = [
+  'Для отображения местоположения ресторана необходимо разрешение.',
+  'Restoranyň ýerleşişini görmek üçin rugsat gerek.',
+  'Permission is required to view the restaurant location.',
+];
+
+List<String> location_service_message = [
+  'Служба определения местоположения отключена. Пожалуйста, включите в настройках устройства.',
+  'Ýerleşiş hyzmaty ýapyk. Enjam sazlamalaryndan açyň.',
+  'Location service is disabled. Please enable it in device settings.',
+];
+
+List<String> go_to_settings = [
+  'Перейти в настройки',
+  'Sazlamalara git',
+  'Go to settings',
+];
+
+List<String> our_address = [
+  'Наш адрес',
+  'Bizin salgymyz',
+  'Our address',
+];
+
+List<String> press_map_to_find_us = [
+  'Нажмите на карту, чтобы найти нас',
+  'Bizi tapmak üçin karta basyň',
+  'Press on the map to find us',
+];
+
+List<String> choose_what_you_need = [
+  'Выберите то, что вам нужно',
+  'Size gerekli zady saýlaň',
+  'Choose what you need',
+];
+
+// Map page UI strings
+List<String> open_map = [
+  'Открыть карту',
+  'Kartany aç',
+  'Open map',
+];
+
+List<String> route_showing_subtitle = [
+  'Маршрут отображается',
+  'Ugur görkezilýär',
+  'Route is showing',
+];
+
+List<String> clear_route_tooltip = [
+  'Очистить маршрут',
+  'Ugury arassala',
+  'Clear route',
+];
+
+List<String> focus_restaurant_tooltip = [
+  'Сосредоточиться на ресторане',
+  'Restorana üns çek',
+  'Focus on restaurant',
+];
+
+List<String> location_permission_needed = [
+  'Необходимо разрешение на местоположение',
+  'Ýerleşiş rugsady gerek',
+  'Location permission required',
+];
+
+List<String> location_found = [
+  'Ваше местоположение найдено',
+  'Siziň ýeriňiz tapyldy',
+  'Your location found',
+];
+
+List<String> location_timeout_msg = [
+  'Местоположение не получено. Включите GPS/Wi-Fi и попробуйте на открытом месте.',
+  'Ýerleşiş alynmady. GPS/Wi-Fi-ny açyň we açyk ýerde synanyşyň.',
+  'Location not found. Please enable GPS/Wi-Fi and try in an open area.',
+];
+
+List<String> location_error_msg = [
+  'Ошибка при получении местоположения: ',
+  'Ýerleşiş alnyşynda ýalňyşlyk: ',
+  'Error getting location: ',
+];
+
+List<String> activate_location_first = [
+  'Сначала активируйте местоположение',
+  'Ilki ýerleşişiňizi işjeňleşdiriň',
+  'Activate your location first',
+];
+
+List<String> route_error_msg = [
+  'Не удалось получить маршрут. Проверьте подключение к Интернету и повторите попытку.',
+  'Ugur alynmady. Internet baglanyşygyňyzy barlaň we gaýtadan synanyşyň.',
+  'Could not get route. Check your internet connection and try again.',
+];
+
+List<String> route_drawn = [
+  'Маршрут нарисован',
+  'Ugur çekildi',
+  'Route drawn',
+];
+
+List<String> route_cleared = [
+  'Маршрут очищен',
+  'Ugur arassalandy',
+  'Route cleared',
+];
+
+List<String> calculating_route = [
+  'Расчет маршрута...',
+  'Ugur hasaplanylýar...',
+  'Calculating route...',
+];
+
+List<String> show_route = [
+  'Показать маршрут',
+  'Ugry Görkez',
+  'Show route',
+];
+
+List<String> route_active_label = [
+  'Маршрут показывается',
+  'Ugur Görkezilýär',
+  'Route showing',
+];
+
+// Splash screen strings
+List<String> splash_slogan = [
+  'УДИВИТЕЛЬНАЯ АЗИАТСКАЯ КУХНЯ',
+  'AJAÝYP AZIÝA TAGAMLARY',
+  'AMAZING ASIAN CUISINE',
+];
+
+List<String> splash_loading = [
+  'Загрузка...',
+  'Ýüklenýär...',
+  'Loading...',
+];
+
+List<String> splash_no_internet = [
+  'Нет интернет-соединения',
+  'Internet birikmesi ýok',
+  'No internet connection',
+];
+
+List<String> splash_check_internet = [
+  'Проверьте интернет-соединение',
+  'Internet birikmesini barlaň',
+  'Check your internet connection',
+];
+
 //Доставка
+List<String> ru_irrev_warning = [
+  'Это действие нельзя отменить!',
+  'Bu amal yzyna alynmaz!',
+  'This action cannot be undone!',
+];
+
+List<String> ru_acc_deleted = [
+  'Аккаунт удалён!',
+  'Hasap pozuldy!',
+  'Account deleted!',
+];
+
+List<String> ru_acc_delete_error = [
+  'Произошла ошибка, попробуйте снова!',
+  'Ýalňyşlyk ýüze çykdy, täzeden synanyşyň!',
+  'An error occurred, try again!',
+];

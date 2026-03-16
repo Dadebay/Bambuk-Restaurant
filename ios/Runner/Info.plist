@@ -56,6 +56,15 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Restoran konumunu ve rotayı göstermek için konum erişimi gereklidir.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Restoran konumunu ve rotayı göstermek için konum erişimi gereklidir.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 <!-- URL AÇMA İZİNLERİ - BU KISIM YENİ EKLENEN -->
 	<key>LSApplicationQueriesSchemes</key>
 	<array>

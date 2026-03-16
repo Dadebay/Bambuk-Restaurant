@@ -1,9 +1,9 @@
 import 'package:bamboo/values/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:bamboo/providers/page1provider.dart';
-import 'package:bamboo/values/colors.dart';
+// import 'package:bamboo/values/colors.dart';
 // import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart' as Constants;
 
@@ -18,56 +18,19 @@ class _AboutAppState extends State<AboutApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.appBar_back,
-      appBar: PreferredSize(
-        // ignore: sort_child_properties_last
-        child: SafeArea(
-          child: Container(
-            height: 60,
-            padding: const EdgeInsets.all(5),
-            decoration: const BoxDecoration(color: AppColors.appBar_back),
-            child: Stack(
-              children: [
-                Center(
-                  child: Text(
-                    Constants.ru_programma[Provider.of<Which_page>(context).dil],
-                    // ignore: prefer_const_constructors
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        margin: const EdgeInsets.only(left: 5, right: 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: AppColors.light_silver,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/images/back.svg',
-                          color: Colors.black,
-                          allowDrawingOutsideViewBox: true,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(IconlyLight.arrow_left, color: Colors.black),
         ),
-        preferredSize: const Size.fromHeight(100),
+        title: Text(
+          Constants.ru_programma[Provider.of<Which_page>(context).dil],
+          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+        ),
       ),
       body: Container(
         color: Colors.white,

@@ -4,7 +4,7 @@ import 'package:bamboo/values/colors.dart';
 // ignore: library_prefixes
 import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/page1provider.dart';
@@ -25,118 +25,81 @@ class _MainOrdersState extends State<MainOrders> {
     if (Provider.of<PageSettings>(context).page == 1) {
       Navigator.pop(context);
     }
-    var prov = Provider.of<Which_page>(context);
+    final prov = Provider.of<Which_page>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        // ignore: sort_child_properties_last
-        child: SafeArea(
-          child: Container(
-            height: 60,
-            padding: const EdgeInsets.all(5),
-            decoration: const BoxDecoration(color: AppColors.appBar_back),
-            child: Stack(
-              children: [
-                Center(
-                  child: Text(
-                    Constants.ru_orders[Provider.of<Which_page>(context).dil],
-                    // ignore: prefer_const_constructors
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        margin: const EdgeInsets.only(left: 10, right: 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: AppColors.light_silver,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/images/back.svg',
-                          color: Colors.black,
-                          allowDrawingOutsideViewBox: true,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
+      backgroundColor: const Color(0xFFF6F7FA),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(IconlyLight.arrow_left_circle, color: Colors.black),
         ),
-        preferredSize: const Size.fromHeight(100),
+        title: Text(
+          Constants.ru_orders[prov.dil],
+          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 1, color: const Color(0xFFEEEEEE)),
+        ),
       ),
-      body: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: Column(
+        children: [
+          // Tab switcher
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            child: Container(
+              height: 46,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0F0F0),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        aktiw = true;
-                      });
-                    },
-                    child: Container(
-                      width: 150,
-                      height: 50,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        // ignore: unrelated_type_equality_checks
-                        color: (aktiw == true) ? AppColors.primary : AppColors.light_silver,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Text(
-                        Constants.ru_active[Provider.of<Which_page>(context).dil],
-                        style: TextStyle(color: (aktiw == true) ? Colors.white : Colors.black, fontFamily: 'Semi'),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        aktiw = false;
-                      });
-                    },
-                    child: Container(
-                      width: 150,
-                      height: 50,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        // ignore: unrelated_type_equality_checks
-                        color: (aktiw == false) ? AppColors.primary : AppColors.light_silver,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Text(
-                        Constants.ru_oldOrder[Provider.of<Which_page>(context).dil],
-                        style: TextStyle(color: (aktiw == false) ? Colors.white : Colors.black, fontFamily: 'Semi'),
-                      ),
-                    ),
-                  )
+                  _buildTab(Constants.ru_active[prov.dil], true),
+                  _buildTab(Constants.ru_oldOrder[prov.dil], false),
                 ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              (aktiw == true) ? const Activ() : const Disactiv(),
-            ],
+            ),
+          ),
+          // Content
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+              child: aktiw ? const Activ() : const Disactiv(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTab(String label, bool isActive) {
+    final selected = aktiw == isActive;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => aktiw = isActive),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.all(3),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: selected ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: selected ? [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 6, offset: const Offset(0, 2))] : [],
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontFamily: selected ? 'Semi' : 'GilroyRegular',
+              fontSize: 14,
+              color: selected ? AppColors.primary : Colors.grey.shade500,
+            ),
           ),
         ),
       ),

@@ -22,6 +22,7 @@ class Page4 extends StatefulWidget {
 class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> animation;
+
   @override
   void initState() {
     super.initState();
@@ -137,6 +138,302 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
     }
   }
 
+  // ============ Shared UI Helpers ============
+
+  /// Modern styled input field with icon
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+    bool readOnly = false,
+    Widget? prefixOverride,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.08),
+            blurRadius: 20,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        readOnly: readOnly,
+        style: TextStyle(
+          color: Color(0xFF2D2D2D),
+          fontSize: 15,
+          fontFamily: 'GilroyMedium',
+        ),
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          prefixIcon: prefixOverride ??
+              Container(
+                width: 48,
+                alignment: Alignment.center,
+                child: Icon(icon, color: AppColors.primary, size: 22),
+              ),
+          labelText: label,
+          labelStyle: TextStyle(
+            color: Color(0xFF9E9E9E),
+            fontSize: 14,
+            fontFamily: 'GilroyMedium',
+          ),
+          floatingLabelStyle: TextStyle(
+            color: AppColors.primary,
+            fontSize: 14,
+            fontFamily: 'GilroySemiBold',
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Color(0xFFEEEEEE), width: 1.5),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        ),
+      ),
+    );
+  }
+
+  /// Phone number input field with +993 prefix
+  Widget _buildPhoneField({
+    required TextEditingController controller,
+    required String label,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.08),
+            blurRadius: 20,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        style: TextStyle(
+          color: Color(0xFF2D2D2D),
+          fontSize: 15,
+          fontFamily: 'GilroyMedium',
+        ),
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          prefixIcon: Container(
+            width: 90,
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.only(left: 16),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.phone_rounded, color: AppColors.primary, size: 20),
+                SizedBox(width: 6),
+                Text(
+                  '+993',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 15,
+                    fontFamily: 'GilroySemiBold',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          labelText: label,
+          labelStyle: TextStyle(
+            color: Color(0xFF9E9E9E),
+            fontSize: 14,
+            fontFamily: 'GilroyMedium',
+          ),
+          floatingLabelStyle: TextStyle(
+            color: AppColors.primary,
+            fontSize: 14,
+            fontFamily: 'GilroySemiBold',
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Color(0xFFEEEEEE), width: 1.5),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        ),
+      ),
+    );
+  }
+
+  /// Primary action button (gradient green)
+  Widget _buildPrimaryButton({
+    required String text,
+    required VoidCallback onTap,
+    required bool isLoading,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        width: double.infinity,
+        height: 56,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primary,
+              Color(0xFF6BA31A),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.35),
+              blurRadius: 16,
+              offset: Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Center(
+          child: isLoading
+              ? SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : Text(
+                  text,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontFamily: 'GilroyBold',
+                    letterSpacing: 0.5,
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+
+  /// Page background with subtle gradient
+  Widget _buildBackground() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFFF0F7E4),
+            Colors.white,
+            Colors.white,
+          ],
+          stops: [0.0, 0.4, 1.0],
+        ),
+      ),
+    );
+  }
+
+  /// Decorative circle elements
+  Widget _buildDecorativeCircles() {
+    return Stack(
+      children: [
+        Positioned(
+          top: -60,
+          right: -40,
+          child: Container(
+            width: 180,
+            height: 180,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.primary.withOpacity(0.06),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 40,
+          right: 30,
+          child: Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.primary.withOpacity(0.04),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 120,
+          left: -50,
+          child: Container(
+            width: 140,
+            height: 140,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.primary.withOpacity(0.05),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Back button
+  Widget _buildBackButton() {
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + 8,
+      left: 8,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => Navigator.pop(context),
+          borderRadius: BorderRadius.circular(14),
+          child: Container(
+            height: 44,
+            width: 44,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 10,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Color(0xFF2D2D2D),
+              size: 18,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ============ Build Method ============
+
   @override
   Widget build(BuildContext context) {
     var prov = Provider.of<Which_page>(context);
@@ -147,639 +444,487 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
         regEmail1 = TextEditingController(text: Constants.email);
         regPhone1 = TextEditingController(text: Constants.phone);
       });
-      return Scaffold(
-        body: Stack(
-          children: [
-            Container(
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(left: 35, right: 35),
-              child: Center(
-                child: ListView(
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          SizedBox(
-                            height: 60,
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            child: Container(
-                              height: 100,
-                              width: 100,
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.only(right: 5),
-                              decoration: BoxDecoration(
-                                color: AppColors.silver,
-                                borderRadius: BorderRadius.circular(75),
-                              ),
-                              child: Image.asset(
-                                'assets/images/profil.png',
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
-                            controller: regName1,
-                            style: TextStyle(color: AppColors.primary),
-                            keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
-                                prefixIcon: Icon(
-                                  Icons.person,
-                                  color: AppColors.primary,
-                                ),
-                                labelStyle: TextStyle(color: AppColors.primary),
-                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: AppColors.primary)),
-                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                                hintStyle: TextStyle(
-                                  inherit: true,
-                                  fontSize: 14.0,
-                                  fontFamily: "WorkSansLight",
-                                  color: Color.fromRGBO(0, 0, 0, 0.25),
-                                ),
-                                labelText: Constants.ru_name[prov.dil]),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          TextFormField(
-                            controller: regSurname1,
-                            style: TextStyle(color: AppColors.primary),
-                            keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
-                                prefixIcon: Icon(
-                                  Icons.person,
-                                  color: AppColors.primary,
-                                ),
-                                labelStyle: TextStyle(color: AppColors.primary),
-                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: AppColors.primary)),
-                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                                hintStyle: TextStyle(
-                                  inherit: true,
-                                  fontSize: 14.0,
-                                  fontFamily: "WorkSansLight",
-                                  color: Color.fromRGBO(0, 0, 0, 0.25),
-                                ),
-                                labelText: Constants.ru_surname[prov.dil]),
-                          ),
-                          Visibility(
-                            visible: false,
-                            child: TextFormField(
-                              controller: regEmail1,
-                              style: TextStyle(color: AppColors.primary),
-                              keyboardType: TextInputType.text,
-                              decoration: InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.person,
-                                    color: AppColors.primary,
-                                  ),
-                                  labelStyle: TextStyle(color: AppColors.primary),
-                                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: AppColors.primary)),
-                                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                                  hintStyle: TextStyle(
-                                    inherit: true,
-                                    fontSize: 14.0,
-                                    fontFamily: "WorkSansLight",
-                                    color: Color.fromRGBO(0, 0, 0, 0.25),
-                                  ),
-                                  labelText: 'Email'),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          TextFormField(
-                            controller: regPhone1,
-                            style: TextStyle(color: AppColors.primary),
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                                prefixIcon: Icon(
-                                  Icons.phone,
-                                  color: AppColors.primary,
-                                ),
-                                labelStyle: TextStyle(color: AppColors.primary),
-                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: AppColors.primary)),
-                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                                hintStyle: TextStyle(
-                                  inherit: true,
-                                  fontSize: 14.0,
-                                  fontFamily: "WorkSansLight",
-                                  color: Color.fromRGBO(0, 0, 0, 0.25),
-                                ),
-                                labelText: '** ** ** **'),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          TextFormField(
-                            controller: regMoney,
-                            readOnly: true,
-                            style: TextStyle(color: AppColors.primary),
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                                labelStyle: TextStyle(color: AppColors.primary),
-                                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
-                                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                                hintStyle: TextStyle(
-                                  inherit: true,
-                                  fontSize: 14.0,
-                                  fontFamily: "WorkSansLight",
-                                  color: Color.fromRGBO(0, 0, 0, 0.25),
-                                ),
-                                hintText: '** ** ** **'),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              (Provider.of<BottomProv>(context).reg)
-                                  ? GestureDetector(
-                                      onTap: (() async {
-                                        Map<String, String> header = {'Authorization': 'Bearer ${Constants.token}'};
-                                        var url = Uri.https(Constants.api, '/api/v1/users/me/destroy');
-                                        // Await the http get response, then decode the json-formatted response.
-                                        var response = await http.delete(url, headers: header);
-                                        if (response.statusCode == 204) {
-                                          DatabaseHelper.deleteUserAll();
-                                          setState(() {
-                                            Constants.phone = '';
-                                            Constants.token = '';
-                                            Constants.name = '';
-                                            Constants.name1 = '';
-                                            Constants.name2 = '';
-                                            Constants.email = '';
-                                            regName1 = TextEditingController(text: Constants.name1);
-                                            regSurname1 = TextEditingController(text: Constants.name2);
-                                            regEmail1 = TextEditingController(text: Constants.email);
-                                            regPhone1 = TextEditingController(text: Constants.phone);
-                                          });
-                                          Provider.of<BottomProv>(context, listen: false).set_reg(false);
-
-                                          // ignore: prefer_const_constructors, use_build_context_synchronously
-                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                            content: const Text("Siz ulgamdan çykdyňyz!"),
-                                          ));
-                                        } else {
-                                          // ignore: prefer_const_constructors, use_build_context_synchronously
-                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                            content: const Text("Ýalňyşlyk ýüze çykdy täzeden synanyşyň!"),
-                                          ));
-                                        }
-                                      }),
-                                      child: Container(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Container(
-                                          height: 60,
-                                          padding: const EdgeInsets.only(left: 20, right: 20),
-                                          alignment: Alignment.center,
-                                          margin: const EdgeInsets.only(bottom: 10, left: 20, right: 20),
-                                          decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          child: Text(
-                                            Constants.ru_delete[Provider.of<Which_page>(context).dil],
-                                            style: TextStyle(fontFamily: 'Semi', color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      height: 55,
-                      width: 55,
-                      margin: const EdgeInsets.only(top: 40, left: 10),
-                      color: Color.fromARGB(0, 255, 255, 255),
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
+      return _buildProfilePage(prov, context);
     } else {
       if (!sign) {
-        return loginPage(prov, context);
+        return _buildLoginPage(prov, context);
       } else {
-        return registrationPage(context, prov);
+        return _buildRegistrationPage(context, prov);
       }
     }
   }
 
-  Scaffold loginPage(Which_page prov, BuildContext context) {
+  // ============ Profile Page (Logged In) ============
+
+  Widget _buildProfilePage(Which_page prov, BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 35, right: 35),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    logoImage,
-                    height: 180,
-                    width: 130,
-                  ),
-                  TextField(
-                    controller: loginName,
-                    style: TextStyle(color: AppColors.primary),
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      prefixIcon: Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(bottom: 2.5),
-                        width: 80,
-                        child: Row(
-                          // ignore: prefer_const_literals_to_create_immutables
-                          children: [
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Icon(
-                              Icons.phone,
-                              color: AppColors.primary,
-                            ),
-                            Text(
-                              '+993',
-                              style: TextStyle(color: AppColors.primary, fontSize: 16),
-                            ),
-                          ],
-                        ),
+          _buildBackground(),
+          _buildDecorativeCircles(),
+          SafeArea(
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 28),
+              children: [
+                SizedBox(height: 60),
+                // Profile avatar
+                Center(
+                  child: Container(
+                    width: 110,
+                    height: 110,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primary.withOpacity(0.15),
+                          AppColors.primary.withOpacity(0.05),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      labelStyle: TextStyle(color: AppColors.primary, fontSize: 16),
-                      labelText: '** ** ** **',
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: AppColors.primary)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                      hintStyle: TextStyle(
-                        inherit: true,
-                        fontSize: 14.0,
-                        fontFamily: "WorkSansLight",
-                        color: Color.fromRGBO(0, 0, 0, 0.25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.15),
+                          blurRadius: 24,
+                          offset: Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      padding: EdgeInsets.all(8),
+                      child: Image.asset(
+                        'assets/images/profil.png',
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (!loading) {
-                            sending(loginName.text);
-                          }
-                          setState(() {
-                            loading = true;
-                          });
-                        },
-                        child: Container(
-                          width: 220,
-                          height: 50,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(8)),
-                          child: (!loading)
-                              ? Text(
-                                  Constants.ru_login[prov.dil],
-                                  style: TextStyle(color: Colors.white, fontSize: 25, fontFamily: 'Semi'),
-                                )
-                              : LinearProgressIndicator(
-                                  minHeight: 15,
-                                  value: animation.value,
-                                  color: AppColors.light_silver,
-                                  backgroundColor: AppColors.primary,
-                                  semanticsLabel: 'Linear progress indicator',
-                                ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        Constants.ru_did_login[prov.dil],
-                        style: TextStyle(
-                          color: AppColors.silver,
-                          fontSize: 10,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      GestureDetector(
-                        onTap: (() {
-                          setState(() {
-                            sign = true;
-                          });
-                        }),
-                        child: Text(
-                          Constants.ru_sign[prov.dil],
-                          style: TextStyle(color: AppColors.primary, fontSize: 10, fontFamily: 'Semi'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  height: 55,
-                  width: 55,
-                  margin: const EdgeInsets.only(top: 40, left: 10),
-                  color: Color.fromARGB(0, 255, 255, 255),
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
+                ),
+                SizedBox(height: 28),
+                // Name field
+                _buildInputField(
+                  controller: regName1,
+                  label: Constants.ru_name[prov.dil],
+                  icon: Icons.person_outline_rounded,
+                ),
+                SizedBox(height: 16),
+                // Surname field
+                _buildInputField(
+                  controller: regSurname1,
+                  label: Constants.ru_surname[prov.dil],
+                  icon: Icons.person_outline_rounded,
+                ),
+                // Email field (hidden)
+                Visibility(
+                  visible: false,
+                  child: _buildInputField(
+                    controller: regEmail1,
+                    label: 'Email',
+                    icon: Icons.email_outlined,
                   ),
                 ),
-              ),
-            ],
+                SizedBox(height: 16),
+                // Phone field
+                _buildPhoneField(
+                  controller: regPhone1,
+                  label: '** ** ** **',
+                ),
+                SizedBox(height: 16),
+                // Bonus field
+                _buildInputField(
+                  controller: regMoney,
+                  label: Constants.ru_bonus[prov.dil],
+                  icon: Icons.wallet_rounded,
+                  readOnly: true,
+                ),
+                SizedBox(height: 32),
+                // Delete account button
+                (Provider.of<BottomProv>(context).reg)
+                    ? GestureDetector(
+                        onTap: () async {
+                          Map<String, String> header = {'Authorization': 'Bearer ${Constants.token}'};
+                          var url = Uri.https(Constants.api, '/api/v1/users/me/destroy');
+                          var response = await http.delete(url, headers: header);
+                          if (response.statusCode == 204) {
+                            DatabaseHelper.deleteUserAll();
+                            setState(() {
+                              Constants.phone = '';
+                              Constants.token = '';
+                              Constants.name = '';
+                              Constants.name1 = '';
+                              Constants.name2 = '';
+                              Constants.email = '';
+                              regName1 = TextEditingController(text: Constants.name1);
+                              regSurname1 = TextEditingController(text: Constants.name2);
+                              regEmail1 = TextEditingController(text: Constants.email);
+                              regPhone1 = TextEditingController(text: Constants.phone);
+                            });
+                            Provider.of<BottomProv>(context, listen: false).set_reg(false);
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text("Siz ulgamdan çykdyňyz!"),
+                            ));
+                          } else {
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text("Ýalňyşlyk ýüze çykdy täzeden synanyşyň!"),
+                            ));
+                          }
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.red.shade300, width: 1.5),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.red.withOpacity(0.08),
+                                blurRadius: 16,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              Constants.ru_delete[Provider.of<Which_page>(context).dil],
+                              style: TextStyle(
+                                fontFamily: 'GilroySemiBold',
+                                color: Colors.red.shade400,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : SizedBox.shrink(),
+                SizedBox(height: 24),
+              ],
+            ),
           ),
+          _buildBackButton(),
         ],
       ),
     );
   }
 
-  Scaffold registrationPage(BuildContext context, Which_page prov) {
+  // ============ Login Page ============
+
+  Widget _buildLoginPage(Which_page prov, BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    height: 55,
-                    width: 55,
-                    margin: const EdgeInsets.only(top: 40, left: 10),
-                    color: Color.fromARGB(0, 255, 255, 255),
-                    child: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 35, right: 35),
-            child: ListView(
-              children: [
-                const SizedBox(
-                  height: 60,
-                ),
-                Image.asset(
-                  logoImage,
-                  height: 100,
-                  width: 100,
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                TextFormField(
-                  controller: regName,
-                  style: TextStyle(color: AppColors.primary),
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.person,
-                        color: AppColors.primary,
-                      ),
-                      labelStyle: TextStyle(color: AppColors.primary),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: AppColors.primary)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                      hintStyle: TextStyle(
-                        inherit: true,
-                        fontSize: 14.0,
-                        fontFamily: "WorkSansLight",
-                        color: Color.fromRGBO(0, 0, 0, 0.25),
-                      ),
-                      labelText: Constants.ru_name[prov.dil]),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  controller: regSurname,
-                  style: TextStyle(color: AppColors.primary),
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.person,
-                        color: AppColors.primary,
-                      ),
-                      labelStyle: TextStyle(color: AppColors.primary),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: AppColors.primary)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                      hintStyle: TextStyle(
-                        inherit: true,
-                        fontSize: 14.0,
-                        fontFamily: "WorkSansLight",
-                        color: Color.fromRGBO(0, 0, 0, 0.25),
-                      ),
-                      labelText: Constants.ru_surname[prov.dil]),
-                ),
-                Visibility(
-                  visible: false,
-                  child: TextFormField(
-                    controller: regEmail,
-                    style: TextStyle(color: AppColors.primary),
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.mail,
-                          color: AppColors.primary,
-                        ),
-                        labelStyle: TextStyle(color: AppColors.primary),
-                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: AppColors.primary)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                        hintStyle: TextStyle(
-                          inherit: true,
-                          fontSize: 14.0,
-                          fontFamily: "WorkSansLight",
-                          color: Color.fromRGBO(0, 0, 0, 0.25),
-                        ),
-                        labelText: 'Email'),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  controller: regPhone,
-                  style: TextStyle(color: AppColors.primary),
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    prefixIcon: Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 2.5),
-                      width: 80,
-                      child: Row(
-                        // ignore: prefer_const_literals_to_create_immutables
-                        children: [
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Icon(
-                            Icons.phone,
-                            color: AppColors.primary,
-                          ),
-                          Text(
-                            '+993',
-                            style: TextStyle(color: AppColors.primary, fontSize: 16),
+          _buildBackground(),
+          _buildDecorativeCircles(),
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 20),
+                    // Logo with decorative ring
+                    Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.12),
+                            blurRadius: 30,
+                            offset: Offset(0, 10),
                           ),
                         ],
                       ),
+                      padding: EdgeInsets.all(12),
+                      child: Image.asset(
+                        logoImage,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                    labelStyle: TextStyle(color: AppColors.primary, fontSize: 16),
-                    labelText: '** ** ** **',
-                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: AppColors.primary)),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                    hintStyle: TextStyle(
-                      inherit: true,
-                      fontSize: 14.0,
-                      fontFamily: "WorkSansLight",
-                      color: Color.fromRGBO(0, 0, 0, 0.25),
+                    SizedBox(height: 36),
+                    // Welcome text
+                    Text(
+                      Constants.ru_login[prov.dil],
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontFamily: 'GilroyBold',
+                        color: Color(0xFF1A1A1A),
+                      ),
                     ),
-                  ),
-                ),
-                // TextFormField(
-                //   controller: regPhone,
-                //   style: TextStyle(color: AppColors.primary),
-                //   keyboardType: TextInputType.number,
-                //   decoration: InputDecoration(
-                //       // ignore: prefer_const_constructors
-                //       prefixIcon: Icon(
-                //         Icons.phone,
-                //         color: AppColors.primary,
-                //       ),
-                //       labelStyle: TextStyle(color: AppColors.primary),
-                //       focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: AppColors.primary)),
-                //       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                //       hintStyle: TextStyle(
-                //         inherit: true,
-                //         fontSize: 14.0,
-                //         fontFamily: "WorkSansLight",
-                //         color: Color.fromRGBO(0, 0, 0, 0.25),
-                //       ),
-                //       labelText: 'kerim** ** ** **'),
-                // ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
+                    SizedBox(height: 8),
+                    Text(
+                      Constants.ru_telefon[prov.dil],
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'GilroyMedium',
+                        color: Color(0xFF9E9E9E),
+                      ),
+                    ),
+                    SizedBox(height: 36),
+                    // Phone input
+                    _buildPhoneField(
+                      controller: loginName,
+                      label: '** ** ** **',
+                    ),
+                    SizedBox(height: 28),
+                    // Login button
+                    _buildPrimaryButton(
+                      text: Constants.ru_login[prov.dil],
+                      isLoading: loading,
                       onTap: () {
                         if (!loading) {
-                          reg_sending(regName.text, regSurname.text, 'test@gmail.como', regPhone.text);
-                        } else {}
+                          sending(loginName.text);
+                        }
                         setState(() {
                           loading = true;
                         });
                       },
-                      child: Container(
-                        width: 220,
-                        height: 50,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(8)),
-                        // ignore: prefer_const_constructors
-                        child: (!loading)
-                            ? Text(
-                                Constants.ru_sign[prov.dil],
-                                style: TextStyle(color: Colors.white, fontSize: 25, fontFamily: 'Semi'),
-                              )
-                            : LinearProgressIndicator(
-                                minHeight: 15,
-                                value: animation.value,
-                                color: AppColors.light_silver,
-                                backgroundColor: AppColors.primary,
-                                semanticsLabel: 'Linear progress indicator',
-                              ),
-                      ),
                     ),
+                    SizedBox(height: 28),
+                    // Divider
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 1,
+                            color: Color(0xFFEEEEEE),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            '•',
+                            style: TextStyle(
+                              color: Color(0xFFCCCCCC),
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 1,
+                            color: Color(0xFFEEEEEE),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    // Sign up link
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          Constants.ru_did_login[prov.dil],
+                          style: TextStyle(
+                            color: Color(0xFF9E9E9E),
+                            fontSize: 13,
+                            fontFamily: 'GilroyMedium',
+                          ),
+                        ),
+                        SizedBox(width: 6),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              sign = true;
+                            });
+                          },
+                          child: Text(
+                            Constants.ru_sign[prov.dil],
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 13,
+                              fontFamily: 'GilroyBold',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      Constants.ru_did_signin[prov.dil],
-                      style: TextStyle(
-                        color: AppColors.silver,
-                        fontSize: 10,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    GestureDetector(
-                      onTap: (() {
-                        setState(() {
-                          sign = false;
-                        });
-                      }),
-                      child: Text(
-                        Constants.ru_login[prov.dil],
-                        style: TextStyle(color: AppColors.primary, fontSize: 10, fontFamily: 'Semi'),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
+          _buildBackButton(),
+        ],
+      ),
+    );
+  }
+
+  // ============ Registration Page ============
+
+  Widget _buildRegistrationPage(BuildContext context, Which_page prov) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          _buildBackground(),
+          _buildDecorativeCircles(),
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                children: [
+                  SizedBox(height: 60),
+                  // Logo
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.12),
+                          blurRadius: 24,
+                          offset: Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.all(10),
+                    child: Image.asset(
+                      logoImage,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  // Title
+                  Text(
+                    Constants.ru_sign[prov.dil],
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontFamily: 'GilroyBold',
+                      color: Color(0xFF1A1A1A),
+                    ),
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    Constants.ru_telefon[prov.dil],
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'GilroyMedium',
+                      color: Color(0xFF9E9E9E),
+                    ),
+                  ),
+                  SizedBox(height: 32),
+                  // Name field
+                  _buildInputField(
+                    controller: regName,
+                    label: Constants.ru_name[prov.dil],
+                    icon: Icons.person_outline_rounded,
+                  ),
+                  SizedBox(height: 16),
+                  // Surname field
+                  _buildInputField(
+                    controller: regSurname,
+                    label: Constants.ru_surname[prov.dil],
+                    icon: Icons.person_outline_rounded,
+                  ),
+                  // Email field (hidden)
+                  Visibility(
+                    visible: false,
+                    child: _buildInputField(
+                      controller: regEmail,
+                      label: 'Email',
+                      icon: Icons.email_outlined,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  // Phone field
+                  _buildPhoneField(
+                    controller: regPhone,
+                    label: '** ** ** **',
+                  ),
+                  SizedBox(height: 28),
+                  // Register button
+                  _buildPrimaryButton(
+                    text: Constants.ru_sign[prov.dil],
+                    isLoading: loading,
+                    onTap: () {
+                      if (!loading) {
+                        reg_sending(regName.text, regSurname.text, 'test@gmail.como', regPhone.text);
+                      }
+                      setState(() {
+                        loading = true;
+                      });
+                    },
+                  ),
+                  SizedBox(height: 24),
+                  // Divider
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: Color(0xFFEEEEEE),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          '•',
+                          style: TextStyle(
+                            color: Color(0xFFCCCCCC),
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: Color(0xFFEEEEEE),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  // Login link
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        Constants.ru_did_signin[prov.dil],
+                        style: TextStyle(
+                          color: Color(0xFF9E9E9E),
+                          fontSize: 13,
+                          fontFamily: 'GilroyMedium',
+                        ),
+                      ),
+                      SizedBox(width: 6),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            sign = false;
+                          });
+                        },
+                        child: Text(
+                          Constants.ru_login[prov.dil],
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontSize: 13,
+                            fontFamily: 'GilroyBold',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 32),
+                ],
+              ),
+            ),
+          ),
+          _buildBackButton(),
         ],
       ),
     );

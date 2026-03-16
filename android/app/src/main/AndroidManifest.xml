@@ -5,8 +5,13 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <!-- Android 13+ için bildirim izni -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Android 14+ foreground service location izni -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+        <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
        <queries>
         <!-- Browser intent -->
         <intent>
@@ -26,11 +31,14 @@
         <!-- Diğer yaygın tarayıcılar -->
         <package android:name="com.android.chrome" />
         <package android:name="com.android.browser" />
+        <!-- Harita uygulamaları -->
+        <package android:name="com.google.android.apps.maps" />
     </queries>
     <application
         android:label="Bamboo Restaurant"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
                          <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />

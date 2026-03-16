@@ -22,11 +22,14 @@ if (flutterVersionName == null) {
     flutterVersionName = '2.1.0'
 }
 
+def flutterMinSdkVersion = localProperties.getProperty('flutter.minSdkVersion') ?: flutter.minSdkVersion.toString()
+def flutterTargetSdkVersion = localProperties.getProperty('flutter.targetSdkVersion') ?: flutter.targetSdkVersion.toString()
+
 
 android {
     namespace = "com.softpage.bamboo"
     compileSdk = 35
-    ndkVersion = flutter.ndkVersion
+    // ndkVersion = flutter.ndkVersion
 
     compileOptions {
         coreLibraryDesugaringEnabled true 
@@ -41,10 +44,10 @@ android {
 
     defaultConfig {
         applicationId = "com.softpage.bamboo"
-        minSdkVersion localProperties.getProperty('flutter.minSdkVersion').toInteger()
-        targetSdkVersion localProperties.getProperty('flutter.targetSdkVersion').toInteger()
-        versionCode localProperties.getProperty('flutter.versionCode').toInteger()
-        versionName localProperties.getProperty('flutter.versionName')
+        minSdkVersion 23
+        targetSdkVersion 35
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
         multiDexEnabled true
     }
 
@@ -64,6 +67,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
     implementation platform('com.google.firebase:firebase-bom:32.7.0')
     implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

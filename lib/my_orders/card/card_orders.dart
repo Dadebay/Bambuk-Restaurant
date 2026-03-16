@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:bamboo/my_orders/about_products.dart';
 import 'package:bamboo/my_orders/contorl_my_order.dart';
@@ -10,154 +11,206 @@ import 'package:bamboo/values/models.dart';
 import '../../providers/page1provider.dart';
 
 class CardOrders extends StatefulWidget {
-  List<orders> product;
-  int index;
-  CardOrders(this.product, this.index, {super.key});
+  final List<orders> product;
+  final int index;
+  const CardOrders(this.product, this.index, {super.key});
 
   @override
   _CardOrdersState createState() => _CardOrdersState();
 }
 
 class _CardOrdersState extends State<CardOrders> {
-  String s_name_tm = '';
-  String s_name_ru = '';
-  String s_name_en = '';
+  // status label & color
+  _StatusInfo _getStatus(int id, int dil) {
+    final labels = {
+      1: ['Sargyt barlanýar', 'Заказ в ожидании'],
+      2: ['Sargyt tassyklandy', 'Заказ подтвержден'],
+      3: ['Sargyt ugradyldy', 'Заказ в пути'],
+      4: ['Sargyt gowşuryldy', 'Заказ доставлен'],
+      5: ['Sargyt ýatyryldy', 'Заказ отменен'],
+    };
+    final colors = {
+      1: const Color(0xFFFF9800),
+      2: AppColors.primary,
+      3: const Color(0xFF2196F3),
+      4: AppColors.green,
+      5: Colors.red,
+    };
+    final label = labels[id] ?? ['', ''];
+    return _StatusInfo(
+      text: dil != 0 ? label[0] : label[1],
+      color: colors[id] ?? Colors.grey,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var prov = Provider.of<Which_page>(context);
-    var card = widget.product[widget.index];
+    final prov = Provider.of<Which_page>(context);
+    final card = widget.product[widget.index];
+    final status = _getStatus(card.status_id, prov.dil);
 
-    if (card.status_id == 1) {
-      s_name_tm = 'Sargyt barlanýar';
-      s_name_ru = 'Заказ в ожидании';
-    }
-    if (card.status_id == 2) {
-      s_name_tm = 'Sargyt tassyklandy';
-      s_name_ru = 'Заказ подтвержден';
-    }
-    if (card.status_id == 3) {
-      s_name_tm = 'Sargyt ugradyldy';
-      s_name_ru = 'Заказ в пути';
-    }
-    if (card.status_id == 4) {
-      s_name_tm = 'Sargyt gowşuryldy';
-      s_name_ru = 'Заказ доставлен';
-    }
-    if (card.status_id == 5) {
-      s_name_tm = 'Sargyt ýatyryldy';
-      s_name_ru = 'Заказ отменен';
-    }
     return Container(
-      height: 200,
-      margin: const EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
         color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 3,
-            offset: const Offset(0, 0), // changes position of shadow
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              // ignore: prefer_const_constructors
-              Text(
-                widget.product[widget.index].date.toString(),
-                // ignore: prefer_const_constructors
-                style: TextStyle(color: Colors.black, fontSize: 16, fontFamily: 'Semi'),
-              ),
-              // ignore: prefer_const_constructors
-              Text(
-                '${card.total_price} TMT',
-                // ignore: prefer_const_constructors
-                style: TextStyle(color: AppColors.green, fontSize: 12, fontFamily: 'Semi'),
-              ),
-            ],
-          ),
-          Text(
-            '${Constants.ru_orderNo[prov.dil]} №: ${card.order_no}',
-            style: const TextStyle(color: AppColors.silver, fontSize: 14),
-          ),
-          Text(
-            (prov.dil != 0) ? '* $s_name_tm' : '* $s_name_ru',
-            style: const TextStyle(color: AppColors.green, fontSize: 14),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: (() {
-                    var towarlar = widget.product[widget.index].my_products;
-
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => AboutProducts(towarlar)));
-                  }),
-                  child: Container(
-                    height: 60,
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 1,
-                          blurRadius: 3,
-                          offset: const Offset(0, 0), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      Constants.ru_inform[prov.dil],
-                      style: const TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    ),
+          // Header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(IconlyLight.bag_2, color: AppColors.primary, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${Constants.ru_orderNo[prov.dil]} #${card.order_no}',
+                        style: const TextStyle(fontFamily: 'Semi', fontSize: 14, color: Colors.black),
+                      ),
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          const Icon(IconlyLight.time_circle, size: 13, color: AppColors.silver),
+                          const SizedBox(width: 4),
+                          Text(
+                            card.date.toString(),
+                            style: const TextStyle(fontSize: 12, color: AppColors.silver),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    Constants.or_status = card.status_id;
-                    Constants.or_track_code = card.order_no;
-                    Constants.or_total_price = card.total_price;
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ContorlMyOrder()));
-                  },
-                  child: Container(
-                    height: 60,
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(
-                      left: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.white,
-                      border: Border.all(color: AppColors.primary, width: 2),
-                    ),
-                    child: Text(
-                      Constants.ru_control_oder[prov.dil],
-                      style: const TextStyle(color: Colors.black),
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                Text(
+                  '${card.total_price} TMT',
+                  style: const TextStyle(fontFamily: 'GilroyBold', fontSize: 18, color: AppColors.primary),
+                ),
+              ],
+            ),
+          ),
+          // Status pill
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                decoration: BoxDecoration(
+                  color: status.color.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  status.text,
+                  style: TextStyle(fontSize: 12, fontFamily: 'Semi', color: status.color),
                 ),
               ),
-            ],
-          )
+            ),
+          ),
+          const SizedBox(height: 14),
+          // Divider
+          const Divider(height: 1, color: Color(0xFFF0F0F0)),
+          // Action buttons
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  child: _ActionButton(
+                    label: Constants.ru_inform[prov.dil],
+                    icon: IconlyLight.document,
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => AboutProducts(widget.product[widget.index].my_products),
+                      ));
+                    },
+                  ),
+                ),
+                const VerticalDivider(width: 1, color: Color(0xFFF0F0F0)),
+                Expanded(
+                  child: _ActionButton(
+                    label: Constants.ru_control_oder[prov.dil],
+                    icon: IconlyLight.activity,
+                    isPrimary: true,
+                    onTap: () {
+                      Constants.or_status = card.status_id;
+                      Constants.or_track_code = card.order_no;
+                      Constants.or_total_price = card.total_price;
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const ContorlMyOrder(),
+                      ));
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _StatusInfo {
+  final String text;
+  final Color color;
+  _StatusInfo({required this.text, required this.color});
+}
+
+class _ActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool isPrimary;
+  const _ActionButton({required this.label, required this.icon, required this.onTap, this.isPrimary = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 48,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(16),
+            bottomRight: Radius.circular(16),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: isPrimary ? AppColors.primary : Colors.grey.shade500),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontFamily: 'Semi',
+                color: isPrimary ? AppColors.primary : Colors.grey.shade600,
+              ),
+              maxLines: 1,
+            ),
+          ],
+        ),
       ),
     );
   }

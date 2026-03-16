@@ -10,7 +10,8 @@ import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/models.dart';
 
 class Page2Item extends StatefulWidget {
-  const Page2Item({super.key});
+  final bool isGrid;
+  const Page2Item({super.key, this.isGrid = false});
 
   @override
   _Page2ItemState createState() => _Page2ItemState();
@@ -19,6 +20,7 @@ class Page2Item extends StatefulWidget {
 class _Page2ItemState extends State<Page2Item> {
   int page = 0;
   bool loading = false;
+  final ScrollController _scrollController = ScrollController();
 
   List<products> product = [];
   Future getTime() async {
@@ -80,10 +82,55 @@ class _Page2ItemState extends State<Page2Item> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (Provider.of<PageSettings>(context) == 1) Navigator.pop(context);
+
+    if (widget.isGrid) {
+      return GridView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.all(12),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.72,
+        ),
+        itemCount: product.length,
+        itemBuilder: (BuildContext context, int index) {
+          if (index == product.length - 1 && !loading) {
+            loading = true;
+            getTime();
+          }
+          return CardItem(
+              product[index].id,
+              product[index].name_tm,
+              product[index].name_ru,
+              product[index].name_en,
+              product[index].description_tm,
+              product[index].description_ru,
+              product[index].description_en,
+              product[index].image,
+              product[index].price,
+              product[index].count,
+              product[index].rating,
+              product[index].discount,
+              product[index].discount_price,
+              product[index].category,
+              product[index].values,
+              isGrid: true);
+        },
+      );
+    }
+
     return ListView.builder(
         shrinkWrap: true,
+        controller: _scrollController,
         itemCount: product.length,
         itemBuilder: (BuildContext context, int index) {
           if (index == product.length - 1) {
@@ -107,7 +154,8 @@ class _Page2ItemState extends State<Page2Item> {
               product[index].discount,
               product[index].discount_price,
               product[index].category,
-              product[index].values);
+              product[index].values,
+              scrollController: _scrollController);
         });
   }
 }

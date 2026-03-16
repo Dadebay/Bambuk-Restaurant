@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 // ignore: library_prefixes
 import 'package:bamboo/values/constants.dart' as Constants;
@@ -16,287 +16,277 @@ class ContorlMyOrder extends StatefulWidget {
 }
 
 class _ContorlMyOrderState extends State<ContorlMyOrder> {
+  static const _steps = [
+    _StepData(
+      tm: 'Sargyt barlan\u00fdar',
+      ru: '\u0417\u0430\u043a\u0430\u0437 \u0432 \u043e\u0436\u0438\u0434\u0430\u043d\u0438\u0438',
+      icon: IconlyBold.time_circle,
+      color: Color(0xFFFF9800),
+      minStatus: 1,
+    ),
+    _StepData(
+      tm: 'Sargyt tassyklandy',
+      ru: '\u0417\u0430\u043a\u0430\u0437 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d',
+      icon: IconlyBold.tick_square,
+      color: AppColors.primary,
+      minStatus: 2,
+    ),
+    _StepData(
+      tm: 'Sargyt ugradyldy',
+      ru: '\u0417\u0430\u043a\u0430\u0437 \u0432 \u043f\u0443\u0442\u0438',
+      icon: IconlyBold.send,
+      color: Color(0xFF2196F3),
+      minStatus: 3,
+    ),
+    _StepData(
+      tm: 'Sargyt gow\u015furyldy',
+      ru: '\u0417\u0430\u043a\u0430\u0437 \u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d',
+      icon: IconlyBold.home,
+      color: AppColors.green,
+      minStatus: 4,
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     if (Provider.of<PageSettings>(context).page == 1) {
-      Navigator.pop(context);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) Navigator.pop(context);
+      });
     }
-    var prov = Provider.of<Which_page>(context);
-    return Scaffold(
-      appBar: PreferredSize(
-        // ignore: sort_child_properties_last
-        child: SafeArea(
-          child: Container(
-            height: 55,
-            margin: const EdgeInsets.only(top: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.25),
-                  spreadRadius: 3,
-                  blurRadius: 4,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: (() {
-                    Provider.of<PageSettings>(context, listen: false).set_page0();
-                    Navigator.pop(context);
-                  }),
-                  child: Container(
-                    height: 50,
-                    width: 50,
-                    margin: const EdgeInsets.only(left: 10, right: 10),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: AppColors.light_silver,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/images/back.svg',
-                      color: Colors.black,
-                      allowDrawingOutsideViewBox: true,
-                    ),
-                  ),
-                ),
+    final prov = Provider.of<Which_page>(context);
+    final status = Constants.or_status;
+    final isCancelled = status == 5;
 
-                // ignore: prefer_const_constructors
-                Text(
-                  Constants.ru_control_oder[prov.dil],
-                  // ignore: prefer_const_constructors
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                  ),
-                ),
-              ],
-            ),
-          ),
+    return Scaffold(
+      backgroundColor: const Color(0xFFF6F7FA),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Provider.of<PageSettings>(context, listen: false).set_page0();
+            Navigator.pop(context);
+          },
+          icon: const Icon(IconlyLight.arrow_left, color: Colors.black),
         ),
-        preferredSize: const Size.fromHeight(100),
+        title: Text(
+          Constants.ru_control_oder[prov.dil],
+          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 1, color: const Color(0xFFEEEEEE)),
+        ),
       ),
       body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         children: [
-          Container(
-            height: 55,
-            margin: const EdgeInsets.only(top: 15, left: 20, right: 20),
-            padding: const EdgeInsets.only(right: 5, left: 5),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.25),
-                  spreadRadius: 3,
-                  blurRadius: 4,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Row(
-              // ignore: prefer_const_literals_to_create_immutables
-              children: [
-                Expanded(
-                  child: Text(
-                    '${Constants.ru_orderNo} №: ${Constants.or_track_code}',
-                    // ignore: prefer_const_constructors
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: "Semi",
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    '${Constants.ru_fullJem} : ${Constants.or_total_price}TMT',
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          /**
-          Container(
-            height: 55,
-            margin: const EdgeInsets.only(top: 15, left: 20, right: 20),
-            padding: const EdgeInsets.only(right: 5, left: 5),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.25),
-                  spreadRadius: 3,
-                  blurRadius: 4,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Row(
-              // ignore: prefer_const_literals_to_create_immutables
-              children: [
-                const Icon(
-                  Icons.location_on_outlined,
-                  color: Colors.green,
-                ),
-                Text(
-                  'Azatlyk Saheri',
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ), */
-          Container(
-            height: 55,
-            margin: const EdgeInsets.only(top: 15, left: 20, right: 20),
-            padding: const EdgeInsets.only(right: 5, left: 5),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.25),
-                  spreadRadius: 3,
-                  blurRadius: 4,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Row(
-              // ignore: prefer_const_literals_to_create_immutables
-              children: [
-                Container(
-                  height: 35,
-                  width: 35,
-                  margin: const EdgeInsets.only(right: 20),
-                  // ignore: prefer_const_constructors
-                  decoration: BoxDecoration(
-                    color: AppColors.silver,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    // ignore: prefer_const_literals_to_create_immutables
-                    children: [
-                      // ignore: prefer_const_constructors
-                      Text(
-                        Constants.name,
-                        // ignore: prefer_const_constructors
-                        style: TextStyle(color: Colors.black, fontSize: 16, fontFamily: 'Semi'),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      Text(Constants.email),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          (Constants.or_status > 0)
-              ? Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.only(left: 40, top: 20),
-                  child: Row(children: [
-                    Image.asset('assets/images/accept.png', width: 30, height: 30),
-                    const SizedBox(width: 5),
-                    Text((Provider.of<Which_page>(context).dil != 0) ? 'Sargyt barlanýar' : 'Заказ в ожидании', style: const TextStyle(fontFamily: 'Semi')),
-                  ]),
-                )
-              : Container(),
-          (Constants.or_status > 1)
-              ? Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.only(left: 54, top: 2),
-                  child: Image.asset('assets/images/order_stick.png'),
-                )
-              : Container(),
-          (Constants.or_status > 1)
-              ? Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.only(left: 40, top: 2),
-                  child: Row(children: [
-                    Image.asset('assets/images/accept.png', width: 30, height: 30),
-                    const SizedBox(width: 5),
-                    Text((Provider.of<Which_page>(context).dil != 0) ? 'Sargyt tassyklandy' : 'Заказ подтвержден', style: const TextStyle(fontFamily: 'Semi')),
-                  ]),
-                )
-              : Container(),
-          (Constants.or_status > 2)
-              ? Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.only(left: 54, top: 2),
-                  child: Image.asset('assets/images/order_stick.png'),
-                )
-              : Container(),
-          (Constants.or_status > 2)
-              ? Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.only(left: 40, top: 2),
-                  child: Row(children: [
-                    Image.asset('assets/images/accept.png', width: 30, height: 30),
-                    const SizedBox(width: 5),
-                    Text((Provider.of<Which_page>(context).dil != 0) ? 'Sargyt ugradyldy' : 'Заказ в пути', style: const TextStyle(fontFamily: 'Semi')),
-                  ]),
-                )
-              : Container(),
-          (Constants.or_status > 3)
-              ? Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.only(left: 54, top: 2),
-                  child: Image.asset('assets/images/order_stick.png'),
-                )
-              : Container(),
-          (Constants.or_status > 3)
-              ? Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.only(left: 40, top: 2),
-                  child: Row(children: [
-                    Image.asset('assets/images/accept.png', width: 30, height: 30),
-                    const SizedBox(width: 5),
-                    Text((Provider.of<Which_page>(context).dil != 0) ? 'Sargyt gowşuryldy' : 'Заказ доставлен', style: const TextStyle(fontFamily: 'Semi')),
-                  ]),
-                )
-              : Container(),
-          (Constants.or_status > 4)
-              ? Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.only(left: 54, top: 2),
-                  child: Image.asset('assets/images/order_stick.png'),
-                )
-              : Container(),
-          (Constants.or_status > 4)
-              ? Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.only(left: 35, top: 2),
-                  child: Row(children: [
-                    Image.asset('assets/images/declined.png', width: 40, height: 40),
-                    const SizedBox(width: 5),
-                    Text((Provider.of<Which_page>(context).dil != 0) ? 'Sargyt ýatyryldy' : 'Заказ oтsменен', style: const TextStyle(fontFamily: 'Semi')),
-                  ]),
-                )
-              : Container(),
+          _buildInfoCard(),
+          const SizedBox(height: 16),
+          _buildTimelineCard(prov.dil, status, isCancelled),
         ],
       ),
     );
   }
+
+  Widget _buildInfoCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 3)),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(9),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(IconlyLight.bag_2, color: AppColors.primary, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  '${Constants.ru_orderNo} #${Constants.or_track_code}',
+                  style: const TextStyle(fontFamily: 'Semi', fontSize: 15, color: Colors.black),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '${Constants.or_total_price} TMT',
+                style: const TextStyle(fontFamily: 'Semi', fontSize: 15, color: AppColors.green),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          const Divider(height: 1, color: Color(0xFFF0F0F0)),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(IconlyLight.profile, color: AppColors.primary, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(Constants.name, style: const TextStyle(fontFamily: 'Semi', fontSize: 14, color: Colors.black)),
+                  const SizedBox(height: 2),
+                  Text(Constants.email, style: const TextStyle(fontSize: 12, color: AppColors.silver)),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTimelineCard(int dil, int status, bool isCancelled) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 3)),
+        ],
+      ),
+      child: isCancelled ? _buildCancelledState(dil) : _buildNormalTimeline(dil, status),
+    );
+  }
+
+  Widget _buildNormalTimeline(int dil, int status) {
+    return Column(
+      children: List.generate(_steps.length, (i) {
+        final step = _steps[i];
+        final active = status >= step.minStatus;
+        final isCurrent = status == step.minStatus;
+        final isLast = i == _steps.length - 1;
+        return _buildStep(
+          label: dil != 0 ? step.tm : step.ru,
+          icon: step.icon,
+          color: step.color,
+          active: active,
+          isCurrent: isCurrent,
+          showConnector: !isLast,
+        );
+      }),
+    );
+  }
+
+  Widget _buildCancelledState(int dil) {
+    return Column(
+      children: [
+        _buildStep(
+          label: dil != 0 ? 'Sargyt barlan\u00fdar' : '\u0417\u0430\u043a\u0430\u0437 \u0432 \u043e\u0436\u0438\u0434\u0430\u043d\u0438\u0438',
+          icon: IconlyBold.time_circle,
+          color: const Color(0xFFFF9800),
+          active: true,
+          isCurrent: false,
+          showConnector: true,
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.12),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(IconlyBold.close_square, size: 18, color: Colors.red),
+            ),
+            const SizedBox(width: 14),
+            Padding(
+              padding: const EdgeInsets.only(top: 9),
+              child: Text(
+                dil != 0 ? 'Sargyt \u00fdatyryldy' : '\u0417\u0430\u043a\u0430\u0437 \u043e\u0442\u043c\u0435\u043d\u0435\u043d',
+                style: const TextStyle(fontFamily: 'Semi', fontSize: 14, color: Colors.red),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStep({
+    required String label,
+    required IconData icon,
+    required Color color,
+    required bool active,
+    required bool isCurrent,
+    required bool showConnector,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: active ? color.withOpacity(0.15) : const Color(0xFFF0F0F0),
+                shape: BoxShape.circle,
+                border: isCurrent ? Border.all(color: color, width: 2) : null,
+              ),
+              child: Icon(icon, size: 18, color: active ? color : Colors.grey.shade400),
+            ),
+            if (showConnector)
+              Container(
+                width: 2,
+                height: 32,
+                margin: const EdgeInsets.symmetric(vertical: 2),
+                decoration: BoxDecoration(
+                  color: active ? color.withOpacity(0.35) : const Color(0xFFE0E0E0),
+                  borderRadius: BorderRadius.circular(1),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(width: 14),
+        Padding(
+          padding: const EdgeInsets.only(top: 9),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontFamily: 'Semi',
+              fontSize: 14,
+              color: active ? Colors.black : Colors.grey.shade400,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StepData {
+  final String tm;
+  final String ru;
+  final IconData icon;
+  final Color color;
+  final int minStatus;
+  const _StepData({required this.tm, required this.ru, required this.icon, required this.color, required this.minStatus});
 }

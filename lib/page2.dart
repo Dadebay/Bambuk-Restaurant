@@ -15,38 +15,24 @@ class Page2 extends StatefulWidget {
 class _Page2State extends State<Page2> {
   @override
   Widget build(BuildContext context) {
-    var prov = Provider.of<Which_page>(context).dil;
+    final prov = Provider.of<Which_page>(context).dil;
     return Scaffold(
-      backgroundColor: Colors.red,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: Container(
-          height: 55,
-          margin: const EdgeInsets.only(top: 10),
-          decoration: BoxDecoration(
-            color: Colors.red,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.25),
-                spreadRadius: 3,
-                blurRadius: 4,
-                offset: const Offset(0, 3), // changes position of shadow
-              ),
-            ],
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          Constants.ru_products[prov],
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontFamily: 'Semi',
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // ignore: prefer_const_constructors
-              Text(
-                Constants.ru_products[prov],
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(height: 1, color: Colors.grey.shade200),
         ),
       ),
       body: const Page2Item(),

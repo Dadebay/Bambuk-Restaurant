@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 import 'package:bamboo/my_pages5/news_option.dart';
 import 'package:bamboo/values/models.dart';
 import 'package:provider/provider.dart';
@@ -58,7 +58,7 @@ class _CardNewsState extends State<CardNews> {
                         fit: BoxFit.cover,
                         imageUrl: widget.product[widget.index].image,
                         errorWidget: (context, url, error) =>
-                            new Icon(Icons.local_dining),
+                            const Icon(IconlyLight.image, color: Colors.grey),
                       ),
                     ),
                   ),
@@ -89,7 +89,7 @@ class _CardNewsState extends State<CardNews> {
                                 Container(
                                   margin: const EdgeInsets.only(left: 10),
                                   child: const Icon(
-                                    Icons.watch_later_outlined,
+                                    IconlyLight.time_circle,
                                     size: 15,
                                     color: Colors.black,
                                   ),

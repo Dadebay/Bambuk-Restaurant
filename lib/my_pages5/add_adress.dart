@@ -1,6 +1,7 @@
 import 'package:bamboo/DB/db.dart';
 import 'package:bamboo/providers/favourite.dart';
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/page1provider.dart';
@@ -63,7 +64,7 @@ class _AddAddressState extends State<AddAddress> {
                         width: 55,
                         color: const Color.fromARGB(0, 255, 255, 255),
                         child: const Icon(
-                          Icons.arrow_back_ios,
+                          IconlyLight.arrow_left_circle,
                           color: Colors.black,
                         ),
                       ),

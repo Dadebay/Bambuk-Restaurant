@@ -49,6 +49,7 @@ class _Page3State extends State<Page3> {
         ],
       ),
       body: _buildBody(context),
+      bottomNavigationBar: _buildBottomBar(context),
     );
   }
 
@@ -57,113 +58,125 @@ class _Page3State extends State<Page3> {
     final pageProvider = Provider.of<Which_page>(context);
 
     if (provItem.total_price > 0) {
-      return Container(
-        color: Colors.white,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverList(
-              delegate: SliverChildListDelegate(
-                List.generate(provItem.myid.length, (idx) {
-                  final itemId = provItem.myid[idx];
-                  final item = provItem.items[itemId]!;
-                  return KarzinaCard(
-                    item.id,
-                    item.name_tm,
-                    item.name_ru,
-                    item.name_en,
-                    item.description_tm,
-                    item.description_ru,
-                    item.description_en,
-                    item.image,
-                    item.price,
-                    item.count,
-                    item.rating,
-                    item.discount,
-                    item.discount_price,
-                    item.category,
-                    item.values,
-                  );
-                }),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 25,
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: _buildTotalPriceCard(context),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 25,
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 25,
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: _buildOrderButton(context),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 70,
-              ),
-            ),
-          ],
-        ),
+      return ListView.builder(
+        // padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        itemCount: provItem.myid.length,
+        // separatorBuilder: (_, __) => const SizedBox(height: 10),
+        itemBuilder: (context, idx) {
+          final itemId = provItem.myid[idx];
+          final item = provItem.items[itemId]!;
+          return KarzinaCard(
+            item.id,
+            item.name_tm,
+            item.name_ru,
+            item.name_en,
+            item.description_tm,
+            item.description_ru,
+            item.description_en,
+            item.image,
+            item.price,
+            item.count,
+            item.rating,
+            item.discount,
+            item.discount_price,
+            item.category,
+            item.values,
+          );
+        },
       );
     } else {
-      return Container(
-        color: Colors.white,
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              color: Colors.white,
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(bottom: 30),
-              child: Image.asset(
-                'assets/images/empty.png',
-              ),
-            ),
+            Image.asset('assets/images/empty.png', width: 180),
+            const SizedBox(height: 20),
             Text(
               constants.ru_empty[pageProvider.dil],
-              style: const TextStyle(fontFamily: 'Semi', fontSize: 16, color: Colors.black),
-            )
+              style: const TextStyle(fontFamily: gilroyMedium, fontSize: 16, color: Colors.black54),
+            ),
           ],
         ),
       );
     }
   }
 
-  Widget _buildTotalPriceCard(BuildContext context) {
+  Widget _buildBottomBar(BuildContext context) {
     final provItem = Provider.of<ProvItem>(context);
     final pageProvider = Provider.of<Which_page>(context);
+    if (provItem.total_price <= 0) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.all(20),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: AppColors.light_silver, borderRadius: BorderRadius.circular(20), border: Border.all(width: 2, color: AppColors.light_silver)),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        boxShadow: [BoxShadow(color: Color(0x12000000), blurRadius: 16, offset: Offset(0, -4))],
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          _buildPriceRow(constants.ru_product_price[pageProvider.dil], '${provItem.price.toStringAsFixed(2)} TMT'),
+          // drag handle
           Container(
-            margin: const EdgeInsets.only(top: 25, bottom: 25),
-            child: _buildPriceRow(constants.ru_discount_info[pageProvider.dil], '${provItem.dis.toStringAsFixed(2)} TMT'),
+            width: 40,
+            height: 4,
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2)),
           ),
-          Divider(
-            thickness: 1,
-            color: AppColors.primary,
+          _priceRow(
+            constants.ru_product_price[pageProvider.dil],
+            '${provItem.price.toStringAsFixed(2)} TMT',
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 25),
-            child: _buildPriceRow(
-              constants.ru_net_price[pageProvider.dil],
-              (provItem.price < pageProvider.dostawka_min) ? '${provItem.total_price}TMT' : '${provItem.total_price.toStringAsFixed(2)} TMT',
-              priceTextStyle: TextStyle(fontSize: 18, color: AppColors.primary, fontFamily: gilroyBold),
+          const SizedBox(height: 10),
+          _priceRow(
+            constants.ru_discount_info[pageProvider.dil],
+            '- ${provItem.dis.toStringAsFixed(2)} TMT',
+            valueColor: Colors.green,
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Divider(height: 1),
+          ),
+          _priceRow(
+            constants.ru_net_price[pageProvider.dil],
+            (provItem.price < pageProvider.dostawka_min) ? '${provItem.total_price} TMT' : '${provItem.total_price.toStringAsFixed(2)} TMT',
+            labelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyBold, color: Colors.black),
+            valueStyle: TextStyle(fontSize: 18, fontFamily: gilroyBold, color: AppColors.primary),
+          ),
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: () {
+              if (constants.token.isNotEmpty) {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => SendOrder()));
+              } else {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const Page4()));
+              }
+            },
+            child: Container(
+              height: 56,
+              width: double.infinity,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(IconlyBold.bag_2, color: Colors.white, size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    constants.ru_order[pageProvider.dil],
+                    style: const TextStyle(color: Colors.white, fontSize: 16, fontFamily: gilroyBold),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    (provItem.price < pageProvider.dostawka_min) ? '(${provItem.total_price} TMT)' : '(${provItem.total_price.toStringAsFixed(2)} TMT)',
+                    style: const TextStyle(fontSize: 14, color: Colors.white70, fontFamily: gilroyMedium),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -171,76 +184,13 @@ class _Page3State extends State<Page3> {
     );
   }
 
-  Widget _buildPriceRow(String label, String value, {TextStyle? priceTextStyle}) {
+  Widget _priceRow(String label, String value, {Color? valueColor, TextStyle? labelStyle, TextStyle? valueStyle}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontFamily: 'Semi',
-            color: Colors.black,
-          ),
-        ),
-        Text(
-          value,
-          style: priceTextStyle ??
-              TextStyle(
-                fontSize: 16,
-                fontFamily: 'Semi',
-                color: Colors.black,
-              ),
-        ),
+        Text(label, style: labelStyle ?? const TextStyle(fontSize: 14, fontFamily: gilroyMedium, color: Colors.black54)),
+        Text(value, style: valueStyle ?? TextStyle(fontSize: 14, fontFamily: gilroyBold, color: valueColor ?? Colors.black)),
       ],
-    );
-  }
-
-  Widget _buildOrderButton(BuildContext context) {
-    final provItem = Provider.of<ProvItem>(context);
-    final pageProvider = Provider.of<Which_page>(context);
-
-    return GestureDetector(
-      onTap: () {
-        if (constants.token.isNotEmpty) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SendOrder()),
-          );
-        } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Page4()),
-          );
-        }
-      },
-      child: Container(
-        height: 60,
-        alignment: Alignment.center,
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Text(
-                constants.ru_order[pageProvider.dil],
-                style: const TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'Semi'),
-              ),
-            ),
-            const SizedBox(width: 5),
-            Text(
-              (provItem.price < pageProvider.dostawka_min) ? '(${provItem.total_price}TMT)' : '(${provItem.total_price.toStringAsFixed(2)}TMT)',
-              style: const TextStyle(fontSize: 18, color: Colors.white, fontFamily: 'Semi'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

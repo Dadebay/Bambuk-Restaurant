@@ -21,14 +21,47 @@ class Splash extends StatefulWidget {
   _SplashState createState() => _SplashState();
 }
 
-class _SplashState extends State<Splash> {
+class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   bool _connection = true;
   final Dio _dio = Dio();
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
+
+    // Animasyon controller
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    // Fade animasyonu
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+      ),
+    );
+
+    // Scale animasyonu
+    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOutBack),
+      ),
+    );
+
+    _animationController.forward();
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -207,8 +240,8 @@ class _SplashState extends State<Splash> {
     final cartItems = await DatabaseHelper.getItems();
     Provider.of<ProvItem>(context, listen: false).clearItem();
     for (var item in cartItems) {
-      Provider.of<ProvItem>(context, listen: false)
-          .addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'], item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
+      Provider.of<ProvItem>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
+          item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
     }
   }
 
@@ -226,8 +259,8 @@ class _SplashState extends State<Splash> {
     final favoriteItems = await DatabaseHelper.getFavor();
     Provider.of<Favourite>(context, listen: false);
     for (var item in favoriteItems) {
-      Provider.of<Favourite>(context, listen: false)
-          .addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'], item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
+      Provider.of<Favourite>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
+          item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
     }
   }
 
@@ -267,24 +300,203 @@ class _SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.primary.withOpacity(0.1),
+              Colors.white,
+              AppColors.primary.withOpacity(0.05),
+            ],
+          ),
+        ),
+        child: Stack(
           children: [
-            Image.asset(
-              logoImage,
-              width: 170,
-              height: 170,
+            // Dekoratif pattern circles
+            Positioned(
+              top: -50,
+              right: -50,
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.primary.withOpacity(0.05),
+                ),
+              ),
             ),
-            const SizedBox(height: 50),
-            if (_connection)
-              const CircularProgressIndicator(
-                strokeWidth: 4.0,
-                color: AppColors.primary,
-                semanticsLabel: 'Circular progress indicator',
-              )
-            else
-              const Text("No connection"),
+            Positioned(
+              bottom: -30,
+              left: -30,
+              child: Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.primary.withOpacity(0.05),
+                ),
+              ),
+            ),
+
+            // Ana içerik
+            Center(
+              child: AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  return FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: ScaleTransition(
+                      scale: _scaleAnimation,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Logo container
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primary.withOpacity(0.2),
+                                  blurRadius: 30,
+                                  offset: const Offset(0, 10),
+                                  spreadRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child: Image.asset(
+                              logoImage,
+                              width: 140,
+                              height: 140,
+                            ),
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          // Restaurant name
+                          Text(
+                            'BAMBOO RESTAURANT',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontFamily: 'GilroyBold',
+                              color: Colors.black87,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          // Slogan
+                          Text(
+                            'AJAÝYP AZIÝA TAGAMLARY',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'Gilroy',
+                              color: Colors.black,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+
+                          const SizedBox(height: 50),
+
+                          // Loading indicator veya connection mesajı
+                          Consumer<Which_page>(
+                            builder: (context, pageProvider, _) {
+                              if (_connection) {
+                                return Column(
+                                  children: [
+                                    SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 3.5,
+                                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      splash_loading[pageProvider.dil],
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontFamily: 'Semi',
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              } else {
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade50,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.red.shade200,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.wifi_off_rounded,
+                                        color: Colors.red.shade400,
+                                        size: 32,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        splash_no_internet[pageProvider.dil],
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: 'Semi',
+                                          color: Colors.red.shade700,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        splash_check_internet[pageProvider.dil],
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontFamily: 'Monto',
+                                          color: Colors.red.shade600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // Version text (alt kısımda)
+            Positioned(
+              bottom: 30,
+              left: 0,
+              right: 0,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Center(
+                  child: Consumer<Which_page>(
+                    builder: (context, pageProvider, _) => Text(
+                      ru_version[pageProvider.dil],
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontFamily: 'Monto',
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

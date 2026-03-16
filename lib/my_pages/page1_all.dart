@@ -35,6 +35,7 @@ class _Page1AllState extends State<Page1All> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
+        centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -48,18 +49,19 @@ class _Page1AllState extends State<Page1All> {
                   ? Constants.ru_newBlud[prov.dil]
                   : Constants.ru_hitBlud[prov.dil],
           // ignore: prefer_const_constructors
-          style: TextStyle(color: Colors.black, fontSize: 18, fontFamily: gilroySemiBold),
+          style: TextStyle(color: Colors.black, fontSize: 23, fontFamily: gilroySemiBold),
         ),
       ),
       body: Container(
         color: Colors.white,
-        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+        padding: const EdgeInsets.only(left: 4, right: 4),
         child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              mainAxisExtent: 315, // here set custom Height You Want
+              mainAxisExtent: 270, // here set custom Height You Want
             ),
             shrinkWrap: true,
+            padding: EdgeInsets.zero,
             physics: const ScrollPhysics(),
             primary: false,
             itemCount: widget.items.length,
@@ -85,5 +87,3 @@ class _Page1AllState extends State<Page1All> {
     );
   }
 }
-
-class UrlLauncher {}

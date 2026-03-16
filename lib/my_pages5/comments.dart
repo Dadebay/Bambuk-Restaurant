@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 
@@ -70,173 +69,202 @@ class _CommentsState extends State<Comments> {
     }
   }
 
+  final ScrollController _scrollController = ScrollController();
+
+  void _sendMessage() {
+    final text = mess.text.trim();
+    if (text.isEmpty) return;
+    sending(text, context);
+    setState(() {
+      messageBody.add(text);
+      mess.clear();
+    });
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final dil = Provider.of<Which_page>(context).dil;
     return Scaffold(
-      backgroundColor: AppColors.appBar_back,
-      appBar: PreferredSize(
-        // ignore: sort_child_properties_last
-        child: SafeArea(
-          child: Container(
-            height: 60,
-            padding: const EdgeInsets.all(5),
-            decoration: const BoxDecoration(color: AppColors.appBar_back),
-            child: Stack(
-              children: [
-                Center(
-                  child: Text(
-                    Constants.ru_ttt[Provider.of<Which_page>(context).dil],
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        margin: const EdgeInsets.only(left: 5, right: 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: AppColors.light_silver,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/images/back.svg',
-                          color: Colors.black,
-                          allowDrawingOutsideViewBox: true,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: const Color(0xFFF6F7FA),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(IconlyLight.arrow_left_circle, color: Colors.black),
         ),
-        preferredSize: const Size.fromHeight(100),
+        title: Text(
+          Constants.ru_ttt[dil],
+          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 1, color: const Color(0xFFEEEEEE)),
+        ),
       ),
-      body: Container(
-        color: Colors.white,
-        alignment: Alignment.center,
+      body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            // Info banner
+            Container(
+              margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Row(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: Icon(
-                      IconlyLight.info_circle,
-                      color: Colors.grey.shade400,
-                      size: 30,
-                    ),
-                  ),
+                  Icon(IconlyLight.info_circle, color: AppColors.primary, size: 20),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      Constants.ru_ttt_subtitle[Provider.of<Which_page>(context).dil],
+                      Constants.ru_ttt_subtitle[dil],
                       maxLines: 3,
-                      style: TextStyle(
-                        color: Colors.grey.shade400,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: AppColors.primary.withOpacity(0.85), fontSize: 13),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            // Messages list
             Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                primary: false,
-                physics: const BouncingScrollPhysics(),
-                itemCount: messageBody.length,
-                itemBuilder: (context, index) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 15, right: 15, top: 20, bottom: 10),
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(60),
-                            color: AppColors.primary,
-                          ),
-                          child: Text(
-                            messageBody[index],
-                            maxLines: 30,
-                            style: const TextStyle(color: Colors.white, fontSize: 16),
-                          ),
+              child: k == 0
+                  ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                  : messageBody.isEmpty
+                      ? _buildEmptyState(dil)
+                      : ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: messageBody.length,
+                          itemBuilder: (context, index) => _buildBubble(messageBody[index]),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
             ),
-            Container(
-              height: 60,
-              padding: const EdgeInsets.only(left: 15, right: 15),
-              margin: const EdgeInsets.only(bottom: 70),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: mess,
-                      style: const TextStyle(color: AppColors.primary),
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        labelStyle: const TextStyle(color: AppColors.primary),
-                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: const BorderSide(color: AppColors.primary)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: const BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                        hintStyle: const TextStyle(
-                          inherit: true,
-                          fontSize: 14.0,
-                          fontFamily: "WorkSansLight",
-                          color: Color.fromRGBO(0, 0, 0, 0.25),
-                        ),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      sending(mess.text, context);
-                      if (mess.text.isNotEmpty) {
-                        setState(() {
-                          messageBody.add(mess.text);
-                          mess.clear();
-                        });
-                      }
-                    },
-                    child: Container(
-                      height: 60,
-                      width: 60,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.only(left: 15),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(60), color: AppColors.primary),
-                      child: const Icon(
-                        Icons.send,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            // Input bar
+            _buildInputBar(dil),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(int dil) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 80,
+            width: 80,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(IconlyLight.chat, color: AppColors.primary, size: 36),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            Constants.ru_ttt_empty[dil],
+            style: const TextStyle(color: Colors.grey, fontSize: 15, fontFamily: 'Semi'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBubble(String text) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+        margin: const EdgeInsets.only(top: 8, bottom: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(18),
+            topRight: Radius.circular(18),
+            bottomLeft: Radius.circular(18),
+            bottomRight: Radius.circular(4),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.25),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInputBar(int dil) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 24),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Color(0x0F000000), blurRadius: 12, offset: Offset(0, -3)),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF6F7FA),
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: TextField(
+                controller: mess,
+                style: const TextStyle(color: Colors.black87, fontSize: 15),
+                textCapitalization: TextCapitalization.sentences,
+                maxLines: null,
+                decoration: InputDecoration(
+                  hintText: Constants.ru_ttt_hint[dil],
+                  hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          GestureDetector(
+            onTap: _sendMessage,
+            child: Container(
+              height: 48,
+              width: 48,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(color: Color(0x33000000), blurRadius: 6, offset: Offset(0, 2)),
+                ],
+              ),
+              child: const Icon(IconlyBold.send, color: Colors.white, size: 20),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bamboo/my_pages/restaurant_map_widget.dart';
 import 'package:bamboo/my_pages/arzan.dart';
 import 'package:bamboo/my_pages/banner.dart';
 import 'package:bamboo/my_pages/bash%20sahypa/search.dart';
@@ -10,9 +11,7 @@ import 'package:bamboo/user_reviews_page/review_card.dart';
 import 'package:bamboo/values/colors.dart';
 // ignore: library_prefixes
 import 'package:bamboo/values/constants.dart' as Constants;
-import 'package:banner_image/banner_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
@@ -67,225 +66,324 @@ class _Page1State extends State<Page1> {
           const MainCat(),
           (Constants.discount_products.isNotEmpty) ? MainVisibles(type: 0, items: Constants.discount_products) : Container(),
           (Constants.new_products.isNotEmpty) ? MainVisibles(type: 1, items: Constants.new_products) : Container(),
-          const SizedBox(
-            height: 30,
-          ),
           const BannerScreen2(),
+          const RestaurantMapWidget(),
           reviewListDesign(prov),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10)
         ],
       ),
     );
   }
 
-  Container searchWidget(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 10, right: 10, top: 25, bottom: 25),
-      color: Colors.white,
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const Search()));
-        },
-        child: Container(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
-          decoration: BoxDecoration(
-            color: AppColors.light_silver,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Icon(
-                IconlyLight.search,
-                color: Colors.grey,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                Constants.ru_search[Provider.of<Which_page>(context).dil],
-                style: const TextStyle(color: AppColors.silver, fontFamily: 'Semi'),
-              ),
-            ],
-          ),
+  Widget searchWidget(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Search()));
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
+        decoration: BoxDecoration(
+          color: AppColors.light_silver,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Icon(
+              IconlyLight.search,
+              color: Colors.grey,
+            ),
+            const SizedBox(width: 10),
+            Text(
+              Constants.ru_search[Provider.of<Which_page>(context).dil],
+              style: const TextStyle(color: AppColors.silver, fontFamily: 'Semi'),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget reviewListDesign(Which_page prov) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(left: 15),
-          child: Text(
-            Constants.review_user[prov.dil],
-            style: const TextStyle(fontSize: 18, fontFamily: "Semi", color: Colors.black),
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.rate_review_rounded,
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        Constants.review_user[prov.dil],
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontFamily: "GilroyBold",
+                          color: Colors.black,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        Constants.customer_reviews_title[prov.dil],
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: "Monto",
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        FutureBuilder<List<ReviewModel>>(
+          const SizedBox(height: 16),
+
+          // Reviews List
+          FutureBuilder<List<ReviewModel>>(
             future: getReviews(),
             builder: (context, snapshot) {
-              if (ConnectionState.waiting == snapshot.connectionState) {
-                return const Center(
-                  child: CircularProgressIndicator(),
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(
+                  height: 300,
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(
+                    color: AppColors.primary,
+                  ),
                 );
-              } else if (snapshot.hasData) {
-                return BannerImage(
-                  aspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height) / 0.3,
-                  itemLength: snapshot.data!.length,
-                  selectedIndicatorColor: AppColors.appBar_back,
-                  borderRadius: BorderRadius.circular(8),
-                  autoPlay: true,
-                  onTap: (int index) {},
-                  children: List.generate(
-                    snapshot.data!.length,
-                    (index) => ReviewCard(
-                      image: snapshot.data![index].image!,
-                      date: snapshot.data![index].date!,
-                      title: prov.dil == 0
-                          ? snapshot.data![index].titleRU!
-                          : prov.dil == 2
-                              ? snapshot.data![index].titleEN!
-                              : snapshot.data![index].titleTM!,
-                    ),
+              } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                return SizedBox(
+                  height: 320,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final review = snapshot.data![index];
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        child: ReviewCard(
+                          image: review.image!,
+                          date: review.date!,
+                          title: prov.dil == 0
+                              ? review.titleRU!
+                              : prov.dil == 2
+                                  ? review.titleEN!
+                                  : review.titleTM!,
+                        ),
+                      );
+                    },
                   ),
                 );
               }
-              return const Center(child: Text('No data'));
-            })
-      ],
+              return Container(
+                height: 200,
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.rate_review_outlined, size: 48, color: Colors.grey[400]),
+                    const SizedBox(height: 12),
+                    Text(
+                      Constants.no_reviews_yet[prov.dil],
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontFamily: 'Semi',
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
   Future<void> _dialogBuilder(BuildContext context) {
-    return showDialog<void>(
+    return showModalBottomSheet<void>(
       context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
       builder: (BuildContext context) {
-        return AlertDialog(
-          actions: <Widget>[
-            SizedBox(
-              width: 500,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+        final currentDil = Provider.of<Which_page>(context).dil;
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28),
+            ),
+          ),
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Drag handle
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Title row
+              Row(
                 children: [
                   Container(
-                    height: 50,
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        textStyle: const TextStyle(fontFamily: 'Semi', color: AppColors.primary, fontSize: 16),
-                      ),
-                      child: Text(
-                        Constants.ru_selectLan[Provider.of<Which_page>(context).dil],
-                        style: const TextStyle(fontFamily: 'Semi', color: AppColors.primary, fontSize: 16),
-                      ),
-                      onPressed: () {},
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.translate_rounded,
+                      color: AppColors.primary,
+                      size: 22,
                     ),
                   ),
-                  SizedBox(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 50,
-                          width: 50,
-                          margin: const EdgeInsets.only(left: 10),
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.white),
-                          child: SvgPicture.asset(
-                            'assets/images/language_selected.svg',
-                            color: Provider.of<Which_page>(context).dil == 1 ? AppColors.primary : AppColors.silver,
-                            allowDrawingOutsideViewBox: true,
-                          ),
-                        ),
-                        TextButton(
-                          child: const Text(
-                            'Türkmen dili',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          onPressed: () {
-                            Provider.of<Which_page>(context, listen: false).setTm();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
+                  const SizedBox(width: 14),
+                  Text(
+                    Constants.ru_selectLan[currentDil],
+                    style: const TextStyle(
+                      fontFamily: 'GilroyBold',
+                      fontSize: 20,
+                      color: Color(0xFF1A1A1A),
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  SizedBox(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 50,
-                          width: 50,
-                          margin: const EdgeInsets.only(left: 10),
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.white),
-                          child: SvgPicture.asset(
-                            'assets/images/language_selected.svg',
-                            color: Provider.of<Which_page>(context).dil == 0 ? AppColors.primary : AppColors.silver,
-                            allowDrawingOutsideViewBox: true,
-                          ),
-                        ),
-                        TextButton(
-                          child: const Text(
-                            'Русский',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          onPressed: () {
-                            Provider.of<Which_page>(context, listen: false).setRu();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  SizedBox(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 50,
-                          width: 50,
-                          margin: const EdgeInsets.only(left: 10),
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.white),
-                          child: SvgPicture.asset(
-                            'assets/images/language_selected.svg',
-                            color: Provider.of<Which_page>(context).dil == 2 ? AppColors.primary : AppColors.silver,
-                            allowDrawingOutsideViewBox: true,
-                          ),
-                        ),
-                        TextButton(
-                          child: const Text(
-                            'English',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          onPressed: () {
-                            Provider.of<Which_page>(context, listen: false).setEn();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              // Language options
+              _buildLanguageOption(
+                context: context,
+                flag: '🇹🇲',
+                label: 'Türkmen dili',
+                isSelected: currentDil == 1,
+                onTap: () {
+                  Provider.of<Which_page>(context, listen: false).setTm();
+                  Navigator.of(context).pop();
+                },
+              ),
+              const SizedBox(height: 10),
+              _buildLanguageOption(
+                context: context,
+                flag: '🇷🇺',
+                label: 'Русский',
+                isSelected: currentDil == 0,
+                onTap: () {
+                  Provider.of<Which_page>(context, listen: false).setRu();
+                  Navigator.of(context).pop();
+                },
+              ),
+              const SizedBox(height: 10),
+              _buildLanguageOption(
+                context: context,
+                flag: '🇬🇧',
+                label: 'English',
+                isSelected: currentDil == 2,
+                onTap: () {
+                  Provider.of<Which_page>(context, listen: false).setEn();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
         );
       },
+    );
+  }
+
+  Widget _buildLanguageOption({
+    required BuildContext context,
+    required String flag,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.primary.withOpacity(0.08)
+                : const Color(0xFFF8F8F8),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? AppColors.primary : const Color(0xFFEEEEEE),
+              width: 1.5,
+            ),
+          ),
+          child: Row(
+            children: [
+              // Flag emoji
+              Text(
+                flag,
+                style: const TextStyle(fontSize: 28),
+              ),
+              const SizedBox(width: 14),
+              // Language name
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: isSelected ? 'GilroyBold' : 'GilroyMedium',
+                    fontSize: 16,
+                    color: isSelected
+                        ? AppColors.primary
+                        : const Color(0xFF2D2D2D),
+                  ),
+                ),
+              ),
+              // Selection indicator
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 26,
+                height: 26,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isSelected ? AppColors.primary : Colors.transparent,
+                  border: Border.all(
+                    color: isSelected ? AppColors.primary : const Color(0xFFCCCCCC),
+                    width: 2,
+                  ),
+                ),
+                child: isSelected
+                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 16)
+                    : null,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

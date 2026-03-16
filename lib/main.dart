@@ -19,6 +19,7 @@ import 'package:bamboo/providers/page1settings.dart';
 import 'package:bamboo/providers/provider_items.dart';
 import 'package:bamboo/providers/user_info.dart';
 import 'package:bamboo/splash.dart';
+import 'package:bamboo/user_reviews_page/notifications_page.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
 import 'package:bamboo/values/firebase_messaging_service.dart';
@@ -209,9 +210,9 @@ class _MyAppState extends State<MyApp> {
         Get.to(() => WebViewPage(url: urlToLaunch!));
       });
     } else {
-      debugPrint('No valid URL found. Navigating to Home');
+      debugPrint('No valid URL found. Navigating to Notifications');
       Future.delayed(const Duration(milliseconds: 500), () {
-        Get.to(() => const MyHomePage());
+        Get.toNamed('/notifications');
       });
     }
   }
@@ -234,6 +235,7 @@ class _MyAppState extends State<MyApp> {
       '/options_item': (context) => const OptionsItem(image: ''),
       '/verify': (context) => const Verify(phoneNumber: ""),
       '/page4': (context) => const Page4(),
+      '/notifications': (context) => const NotificationsPage(),
     };
   }
 
@@ -277,6 +279,13 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   final _pageController = PageController(initialPage: 0);
   late TabController _tabController;
+  final GlobalKey<NavigatorState> _tabNavKey1 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_1');
+  final GlobalKey<NavigatorState> _tabNavKey2 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_2');
+  final GlobalKey<NavigatorState> _tabNavKey3 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_3');
+  final GlobalKey<NavigatorState> _tabNavKey4 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_4');
+  final GlobalKey<NavigatorState> _tabNavKey5 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_5');
+  late List<Widget> _bottomBarPages;
+  bool _pagesInitialized = false;
 
   @override
   void dispose() {
@@ -294,6 +303,38 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         setState(() {});
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_pagesInitialized) {
+      _pagesInitialized = true;
+      _bottomBarPages = [
+        _buildNavigatorPage(key: _tabNavKey1, initialPage: const Page1()),
+        _buildNavigatorPage(key: _tabNavKey2, initialPage: const Categories()),
+        _buildNavigatorPage(key: _tabNavKey3, initialPage: const Page3()),
+        _buildNavigatorPage(key: _tabNavKey4, initialPage: const MyFavourites()),
+        _buildNavigatorPage(key: _tabNavKey5, initialPage: const Page5()),
+      ];
+    }
+  }
+
+  NavigatorState? _currentTabNavigator() {
+    switch (selectedIndex) {
+      case 0:
+        return _tabNavKey1.currentState;
+      case 1:
+        return _tabNavKey2.currentState;
+      case 2:
+        return _tabNavKey3.currentState;
+      case 3:
+        return _tabNavKey4.currentState;
+      case 4:
+        return _tabNavKey5.currentState;
+      default:
+        return _tabNavKey1.currentState;
+    }
   }
 
   Widget _buildNavigatorPage({
@@ -425,34 +466,11 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final bottomBarPages = <Widget>[
-      _buildNavigatorPage(
-        key: Provider.of<BottomProv>(context).yourKey1,
-        initialPage: const Page1(),
-      ),
-      _buildNavigatorPage(
-        key: Provider.of<BottomProv>(context).yourKey2,
-        initialPage: const Categories(),
-      ),
-      _buildNavigatorPage(
-        key: Provider.of<BottomProv>(context).yourKey3,
-        initialPage: const Page3(),
-      ),
-      _buildNavigatorPage(
-        key: Provider.of<BottomProv>(context).yourKey4,
-        initialPage: const MyFavourites(),
-      ),
-      _buildNavigatorPage(
-        key: Provider.of<BottomProv>(context).yourKey5,
-        initialPage: const Page5(),
-      ),
-    ];
-
     selectedIndex = Provider.of<BottomProv>(context).page;
 
     return WillPopScope(
       onWillPop: () async {
-        final currentNavigator = Provider.of<BottomProv>(context, listen: false).getCurrentNavigator();
+        final currentNavigator = _currentTabNavigator();
         if (currentNavigator?.canPop() ?? false) {
           currentNavigator?.pop();
           return false;
@@ -493,65 +511,93 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       },
       child: Scaffold(
         appBar: const PreferredSize(preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
-        body: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 30),
-              color: const Color(0xfff1fff9),
-              child: TabBar(
-                labelPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                indicator: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xff2cf420).withOpacity(0.3),
-                      spreadRadius: 2,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              SliverPersistentHeader(
+                floating: true,
+                pinned: false,
+                delegate: _SliverAppBarDelegate(
+                  TabBar(
+                    labelPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                    indicator: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xff2cf420).withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                      border: Border.all(color: const Color(0xff2cf420), width: 2),
                     ),
-                  ],
-                  border: Border.all(color: const Color(0xff2cf420), width: 2),
-                ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: const Color(0xff2cf420),
-                unselectedLabelColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                indicatorPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                controller: _tabController,
-                labelStyle: const TextStyle(fontSize: 18, fontFamily: gilroyBold),
-                unselectedLabelStyle: const TextStyle(fontSize: 18, fontFamily: gilroyMedium),
-                onTap: (value) {
-                  setState(() {
-                    which_page = value;
-                  });
-                },
-                tabs: [
-                  Tab(text: Constants.tabBarName1[Provider.of<Which_page>(context).dil]),
-                  Tab(text: Constants.tabBarName2[Provider.of<Which_page>(context).dil]),
-                  Tab(text: Constants.tabBarName3[Provider.of<Which_page>(context).dil]),
-                ],
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  PageView(
-                    controller: _pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: bottomBarPages,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelColor: const Color(0xff2cf420),
+                    unselectedLabelColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                    indicatorPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                    controller: _tabController,
+                    labelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyBold),
+                    unselectedLabelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyMedium),
+                    onTap: (value) {
+                      setState(() {
+                        which_page = value;
+                      });
+                    },
+                    tabs: [
+                      Tab(text: Constants.tabBarName1[Provider.of<Which_page>(context).dil]),
+                      Tab(text: Constants.tabBarName2[Provider.of<Which_page>(context).dil]),
+                      Tab(text: Constants.tabBarName3[Provider.of<Which_page>(context).dil]),
+                    ],
                   ),
-                  const Page2Content(),
-                  const Page3Content(),
-                ],
+                ),
               ),
-            ),
-          ],
+            ];
+          },
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: _bottomBarPages,
+              ),
+              const Page2Content(),
+              const Page3Content(),
+            ],
+          ),
         ),
         bottomNavigationBar: _tabController.index == 0 ? _buildBottomNavigationBar(context) : const SizedBox.shrink(),
       ),
     );
+  }
+}
+
+// TabBar için SliverPersistentHeaderDelegate
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
+
+  final TabBar _tabBar;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height + 16;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height + 16;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: const Color(0xfff1fff9),
+      padding: const EdgeInsets.only(top: 12, bottom: 4),
+      child: _tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }
 
@@ -573,6 +619,7 @@ class _Page2ContentState extends State<Page2Content> {
   }
 
   Future<void> fetchData() async {
+    if (!mounted) return;
     setState(() {
       isLoading = true;
     });
@@ -582,13 +629,13 @@ class _Page2ContentState extends State<Page2Content> {
         Uri.parse('https://bambukresto.com.tm:4443/api/v1/pages/2'),
       );
 
+      if (!mounted) return;
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         final data = jsonResponse['data'];
 
         int languageCode = Provider.of<Which_page>(context, listen: false).dil;
         String bodyKey = 'body_tm';
-        print(languageCode);
         if (languageCode == 1) {
           bodyKey = 'body_ru';
         } else if (languageCode == 2) {
@@ -608,6 +655,7 @@ class _Page2ContentState extends State<Page2Content> {
         });
       }
     } catch (error) {
+      if (!mounted) return;
       setState(() {
         bodyText = 'Error: $error';
         isLoading = false;
@@ -666,6 +714,7 @@ class _Page3ContentState extends State<Page3Content> {
   }
 
   Future<void> fetchData() async {
+    if (!mounted) return;
     setState(() {
       isLoading = true;
     });
@@ -675,13 +724,13 @@ class _Page3ContentState extends State<Page3Content> {
         Uri.parse('https://bambukresto.com.tm:4443/api/v1/pages/3'),
       );
 
+      if (!mounted) return;
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         final data = jsonResponse['data'];
 
         int languageCode = Provider.of<Which_page>(context, listen: false).dil;
         String bodyKey = 'body_tm';
-        print(languageCode);
         if (languageCode == 1) {
           bodyKey = 'body_ru';
         } else if (languageCode == 2) {
@@ -701,6 +750,7 @@ class _Page3ContentState extends State<Page3Content> {
         });
       }
     } catch (error) {
+      if (!mounted) return;
       setState(() {
         bodyText = 'Error: $error';
         isLoading = false;

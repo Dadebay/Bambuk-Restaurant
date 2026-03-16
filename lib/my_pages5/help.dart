@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 // ignore: library_prefixes
 import 'package:bamboo/values/constants.dart' as Constants;
@@ -47,54 +47,18 @@ class _HelpState extends State<Help> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        // ignore: sort_child_properties_last
-        child: SafeArea(
-          child: Container(
-            height: 60,
-            padding: const EdgeInsets.all(5),
-            decoration: const BoxDecoration(color: AppColors.appBar_back),
-            child: Stack(
-              children: [
-                Center(
-                  child: Text(
-                    Constants.ru_help[Provider.of<Which_page>(context).dil],
-                    // ignore: prefer_const_constructors
-                    style: TextStyle(color: Colors.black, fontSize: 20, fontFamily: 'Semi'),
-                  ),
-                ),
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          height: 50,
-                          width: 50,
-                          margin: const EdgeInsets.only(left: 5, right: 10),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: AppColors.light_silver,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: SvgPicture.asset(
-                            'assets/images/back.svg',
-                            color: Colors.black,
-                            allowDrawingOutsideViewBox: true,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(IconlyLight.arrow_left_circle, color: Colors.black),
         ),
-        preferredSize: const Size.fromHeight(100),
+        title: Text(
+          Constants.ru_help[Provider.of<Which_page>(context).dil],
+          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+        ),
       ),
       body: Container(
         color: Colors.white,
@@ -166,44 +130,56 @@ class __tileState extends State<_tile> {
           });
         },
         child: Container(
-            padding: const EdgeInsets.only(left: 6, right: 6, top: 10, bottom: 10),
-            margin: const EdgeInsets.only(top: 10, bottom: 10),
+            padding: const EdgeInsets.only(left: 12, right: 12, top: 14, bottom: 14),
+            margin: const EdgeInsets.only(top: 8, bottom: 8),
             decoration: BoxDecoration(
               color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.25),
-                  spreadRadius: 3,
-                  blurRadius: 4,
-                  offset: const Offset(0, 3), // changes position of shadow
+                  color: Colors.grey.withOpacity(0.15),
+                  spreadRadius: 2,
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: Column(children: [
-              Text(
-                prov.dil == 1
-                    ? widget.name_tm
-                    : prov.dil == 0
-                        ? widget.name_ru
-                        : widget.name_en,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.black, fontFamily: "Semi", fontSize: 22),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      prov.dil == 1
+                          ? widget.name_tm
+                          : prov.dil == 0
+                              ? widget.name_ru
+                              : widget.name_en,
+                      maxLines: 2,
+                      style: const TextStyle(color: Colors.black, fontFamily: "GilroySemiBold", fontSize: 16),
+                    ),
+                  ),
+                  Icon(
+                    stat ? IconlyLight.arrow_up_circle : IconlyLight.arrow_down_circle,
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
+                ],
               ),
-              const Divider(),
-              Visibility(
-                maintainSize: false,
-                maintainAnimation: true,
-                maintainState: true,
-                visible: stat,
-                child: Html(
+              if (stat) ...[
+                const Divider(),
+                Html(
                   data: (prov.dil == 1)
                       ? widget.body_tm
                       : prov.dil == 0
                           ? widget.body_ru
                           : widget.body_en,
+                  style: {
+                    'body': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
+                    'p': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
+                    'li': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
+                  },
                 ),
-              ),
+              ],
             ])));
   }
 }
