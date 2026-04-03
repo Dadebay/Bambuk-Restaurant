@@ -789,7 +789,7 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                   value: _animation.value,
                   color: Colors.white,
                   backgroundColor: Colors.white.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(3),
+                  // borderRadius: BorderRadius.circular(3),
                 ),
               ),
       ),

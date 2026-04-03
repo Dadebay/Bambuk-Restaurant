@@ -58,7 +58,7 @@ class _Page1AllState extends State<Page1All> {
         child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              mainAxisExtent: 270, // here set custom Height You Want
+              childAspectRatio: 0.62,
             ),
             shrinkWrap: true,
             padding: EdgeInsets.zero,
@@ -67,6 +67,7 @@ class _Page1AllState extends State<Page1All> {
             itemCount: widget.items.length,
             itemBuilder: (context, index) {
               return CartItems(
+                  imageHeight: 150,
                   widget.items[index].id,
                   widget.items[index].name_tm,
                   widget.items[index].name_ru,

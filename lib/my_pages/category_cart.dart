@@ -50,7 +50,7 @@ class _CategoryCartState extends State<CategoryCart> {
     final box = _cardKey.currentContext?.findRenderObject() as RenderBox?;
     if (box == null) return 0;
     final viewport = RenderAbstractViewport.of(box);
-    final vh = MediaQuery.sizeOf(context).height;
+    final vh = MediaQuery.of(context).size.height;
     final revealOffset = viewport.getOffsetToReveal(box, 0.5).offset;
     final rel = (ctrl.offset - revealOffset) / vh;
     return rel.clamp(-0.5, 0.5) * 2;

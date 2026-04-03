@@ -167,123 +167,63 @@ class _CategoryCard extends StatelessWidget {
         width: 150,
         margin: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 15,
-              offset: const Offset(0, 5),
-              spreadRadius: 0,
+              color: Colors.black.withOpacity(0.10),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
-            fit: StackFit.expand,
+          borderRadius: BorderRadius.circular(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Kategori Resmi - Arka Plan
-              CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: category.image,
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[200],
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation(AppColors.primary),
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.grey[200],
-                  child: Image.asset(
-                    logoImage,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-
-              // Gradient Overlay - Alt kısımda koyu
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.7),
-                        Colors.black.withOpacity(0.85),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              // Üst köşede hafif overlay
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.9),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(12),
-                    ),
-                  ),
-                  child: const Icon(
-                    IconlyLight.arrow_right_2,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ),
-              ),
-
-              // Kategori Adı - Alt kısımda
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        categoryName,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontFamily: 'GilroyBold',
-                          height: 1.2,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black45,
-                              offset: Offset(0, 1),
-                              blurRadius: 3,
-                            ),
-                          ],
-                        ),
+              // ── Üst: resim alanı ──────────────────────────────
+              SizedBox(
+                width: 150,
+                height: 158, // 220 - 62 = metin için yer
+                child: CachedNetworkImage(
+                  fit: BoxFit.fill,
+                  imageUrl: category.image,
+                  memCacheWidth: 300,
+                  memCacheHeight: 316,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[200],
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation(AppColors.primary),
                       ),
-                      const SizedBox(height: 4),
-                      Container(
-                        width: 30,
-                        height: 2.5,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ],
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[200],
+                    child: Image.asset(logoImage, fit: BoxFit.fill),
+                  ),
+                ),
+              ),
+
+              // ── Alt: beyaz şerit — kategori adı ──────────────
+              Expanded(
+                child: Container(
+                  color: Colors.white,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                  child: Text(
+                    categoryName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 13,
+                      fontFamily: 'GilroyBold',
+                      height: 1.3,
+                    ),
                   ),
                 ),
               ),

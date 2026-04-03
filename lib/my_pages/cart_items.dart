@@ -29,9 +29,25 @@ class CartItems extends StatefulWidget {
   String category;
   var values;
   final double imageHeight;
-  CartItems(this.id, this.name_tm, this.name_ru, this.name_en, this.description_tm, this.description_ru, this.description_en, this.image, this.price, this.count, this.rating, this.discount,
-      this.discount_price, this.category, this.values,
-      {super.key, this.imageHeight = 268});
+  CartItems(
+    this.id,
+    this.name_tm,
+    this.name_ru,
+    this.name_en,
+    this.description_tm,
+    this.description_ru,
+    this.description_en,
+    this.image,
+    this.price,
+    this.count,
+    this.rating,
+    this.discount,
+    this.discount_price,
+    this.category,
+    this.values, {
+    super.key,
+    this.imageHeight = 170,
+  });
 
   @override
   _CartItemsState createState() => _CartItemsState();
@@ -72,127 +88,118 @@ class _CartItemsState extends State<CartItems> {
     return GestureDetector(
       onTap: _navigateToDetail,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        width: 190,
-        height: widget.imageHeight,
+        margin: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
-            BoxShadow(color: Colors.grey.shade300, spreadRadius: 1, blurRadius: 14, offset: const Offset(0, 4)),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
           ],
-          borderRadius: BorderRadius.circular(20),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
-            fit: StackFit.expand,
+          borderRadius: BorderRadius.circular(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // ── Ürün resmi (tam arka plan) ─────────────────────────────
-              CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: widget.image,
-                errorWidget: (context, url, error) => Image.asset(
-                  logoImage,
-                  fit: BoxFit.cover,
-                ),
-              ),
-
-              // ── Alt koyu gradient gölge ────────────────────────────────
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: 155,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [Colors.black.withOpacity(0.88), Colors.transparent],
-                    ),
-                  ),
-                ),
-              ),
-
-              // ── Ürün adı (gradient üstünde) ────────────────────────────
-              Positioned(
-                left: 10,
-                right: 10,
-                bottom: 66,
-                child: Text(
-                  name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Semi',
-                    fontSize: 13,
-                    shadows: [Shadow(blurRadius: 6, color: Colors.black54)],
-                  ),
-                ),
-              ),
-
-              // ── Sepete ekle butonu (en altta overlay) ──────────────────
-              Positioned(
-                left: 8,
-                right: 8,
-                bottom: 10,
-                child: _addCartButton(context),
-              ),
-
-              // ── Üst satır: indirim badge + favori butonu ───────────────
-              Positioned(
-                top: 8,
-                left: 8,
-                right: 8,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              // ── Image area ─────────────────────────────────────────
+              AspectRatio(
+                aspectRatio: 1.0,
+                child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    if (widget.discount != 0)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(12),
+                    CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: widget.image,
+                      errorWidget: (_, __, ___) => Image.asset(logoImage, fit: BoxFit.cover),
+                    ),
+
+                    // Top-right: favourite button
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (Provider.of<Favourite>(context, listen: false).items[widget.id]?.count == null) {
+                            Provider.of<Favourite>(context, listen: false).addItem(
+                              widget.id,
+                              widget.name_tm,
+                              widget.name_ru,
+                              widget.name_en,
+                              widget.description_tm,
+                              widget.description_ru,
+                              widget.description_en,
+                              widget.image,
+                              widget.price,
+                              widget.count,
+                              widget.rating,
+                              widget.discount,
+                              widget.discount_price,
+                              widget.category,
+                              widget.values,
+                            );
+                          } else {
+                            Provider.of<Favourite>(context, listen: false).removeItem(widget.id);
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                          child: (Provider.of<Favourite>(context).items[widget.id]?.count == null)
+                              ? const Icon(IconlyLight.heart, color: Colors.grey, size: 20)
+                              : const Icon(IconlyBold.heart, color: Color(0xFFDA2C20), size: 20),
                         ),
-                        child: Text(
-                          '-${widget.discount}%',
-                          style: const TextStyle(color: Colors.white, fontFamily: 'Semi', fontSize: 11),
-                        ),
-                      ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        if (Provider.of<Favourite>(context, listen: false).items[widget.id]?.count == null) {
-                          Provider.of<Favourite>(context, listen: false).addItem(
-                            widget.id,
-                            widget.name_tm,
-                            widget.name_ru,
-                            widget.name_en,
-                            widget.description_tm,
-                            widget.description_ru,
-                            widget.description_en,
-                            widget.image,
-                            widget.price,
-                            widget.count,
-                            widget.rating,
-                            widget.discount,
-                            widget.discount_price,
-                            widget.category,
-                            widget.values,
-                          );
-                        } else {
-                          Provider.of<Favourite>(context, listen: false).removeItem(widget.id);
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(7),
-                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                        child: (Provider.of<Favourite>(context).items[widget.id]?.count == null)
-                            ? const Icon(IconlyLight.heart, color: AppColors.primary, size: 18)
-                            : const Icon(IconlyBold.heart, color: Color.fromARGB(255, 218, 44, 32), size: 18),
                       ),
                     ),
+
+                    // Top-left: discount badge
+                    if (widget.discount != 0)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            '-${widget.discount}%',
+                            style: const TextStyle(color: Colors.white, fontFamily: 'Semi', fontSize: 11),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
+              // ── Info area ──────────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Product name
+                    Text(
+                      name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Semi',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    // Cart button with price
+                    _addCartButton(context),
                   ],
                 ),
               ),
@@ -205,6 +212,8 @@ class _CartItemsState extends State<CartItems> {
 
   Widget _addCartButton(BuildContext context) {
     final bool inCart = Provider.of<ProvItem>(context).items[widget.id]?.count != null;
+    final String priceText = widget.discount != 0 ? '${widget.discount_price.toStringAsFixed(1)} TMT' : '${widget.price.toStringAsFixed(1)} TMT';
+
     return GestureDetector(
       onTap: () {
         if (Provider.of<ProvItem>(context, listen: false).items[widget.id]?.count == null) {
@@ -234,52 +243,27 @@ class _CartItemsState extends State<CartItems> {
       child: Container(
         height: 44,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: inCart ? Colors.white : AppColors.primary,
-          boxShadow: [
-            BoxShadow(
-              color: inCart ? Colors.transparent : AppColors.primary.withOpacity(0.45),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(12),
+          color: inCart ? AppColors.primary.withOpacity(0.18) : AppColors.primary.withOpacity(0.18),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              inCart ? CupertinoIcons.cart_fill : CupertinoIcons.cart,
-              color: inCart ? AppColors.primary : Colors.white,
-              size: 18,
+              inCart ? CupertinoIcons.cart_fill_badge_minus : CupertinoIcons.cart,
+              color: inCart ? Colors.red.shade400 : Colors.black87,
+              size: 20,
             ),
-            const SizedBox(width: 6),
-            if (widget.discount != 0) ...[
-              Text(
-                '${widget.price}',
-                style: TextStyle(
-                  color: inCart ? Colors.grey : Colors.white.withOpacity(0.7),
-                  fontSize: 11,
-                  decoration: TextDecoration.lineThrough,
-                ),
+            const SizedBox(width: 8),
+            Text(
+              inCart ? '✓  $priceText' : priceText,
+              style: TextStyle(
+                color: inCart ? Colors.red.shade400 : Colors.black87,
+                fontFamily: 'Semi',
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
               ),
-              const SizedBox(width: 4),
-              Text(
-                '${widget.discount_price} T',
-                style: TextStyle(
-                  color: inCart ? AppColors.primary : Colors.white,
-                  fontFamily: 'Semi',
-                  fontSize: 13,
-                ),
-              ),
-            ] else
-              Text(
-                '${widget.price} TMT',
-                style: TextStyle(
-                  color: inCart ? AppColors.primary : Colors.white,
-                  fontFamily: 'Semi',
-                  fontSize: 14,
-                ),
-              ),
+            ),
           ],
         ),
       ),

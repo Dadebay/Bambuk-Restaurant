@@ -5,7 +5,6 @@ import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
@@ -219,8 +218,12 @@ class _SubCatState extends State<SubCat> {
           ),
           (loading == false)
               ? Expanded(
-                  child: MasonryGridView.count(
-                    crossAxisCount: 2,
+                  child: GridView.builder(
+                    padding: const EdgeInsets.only(left: 8),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.62,
+                    ),
                     shrinkWrap: true,
                     physics: const ScrollPhysics(),
                     itemCount: product.length,
@@ -244,7 +247,7 @@ class _SubCatState extends State<SubCat> {
                           product[index].discount_price,
                           product[index].category,
                           product[index].values,
-                          imageHeight: index % 2 == 0 ? 280.0 : 250.0);
+                          imageHeight: 160.0);
                     },
                   ),
                 )
