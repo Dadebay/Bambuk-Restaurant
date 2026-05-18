@@ -1,6 +1,6 @@
 import 'package:bamboo/DB/db.dart';
 import 'package:bamboo/my_pages5/comments.dart';
-import 'package:bamboo/my_pages5/help.dart';
+import 'package:bamboo/my_pages5/chat_page.dart';
 import 'package:bamboo/my_pages5/my_address.dart';
 import 'package:bamboo/my_pages5/my_news.dart';
 import 'package:bamboo/my_pages5/user_info.dart';
@@ -11,13 +11,17 @@ import 'package:bamboo/providers/page1settings.dart';
 import 'package:bamboo/user_reviews_page/notifications_page.dart';
 import 'package:bamboo/values/colors.dart';
 import 'package:bamboo/values/constants.dart' as constants;
+import 'package:bamboo/values/models.dart';
 import 'package:bamboo/widgets.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:http/http.dart' as http;
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'dart:convert';
 
 import 'my_orders/main_orders.dart';
 
@@ -29,6 +33,54 @@ class Page5 extends StatefulWidget {
 }
 
 class _Page5State extends State<Page5> {
+  List<help> _helpContent = [];
+  bool _isLoadingHelp = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHelpContent();
+  }
+
+  Future<void> _loadHelpContent() async {
+    setState(() {
+      _isLoadingHelp = true;
+    });
+
+    try {
+      final response = await http.get(Uri.https(constants.api, '/api/v1/pages'));
+      final data = json.decode(utf8.decode(response.bodyBytes))['data'] as List<dynamic>;
+      final items = <help>[];
+
+      for (final item in data) {
+        items.add(help(
+          id: item['id'],
+          name_tm: item['name_tm'] ?? '',
+          name_ru: item['name_ru'] ?? '',
+          name_en: item['name_en'] ?? '',
+          body_tm: item['pages'] == null ? '' : item['pages'][0]['body_tm'] ?? '',
+          body_ru: item['pages'] == null ? '' : item['pages'][0]['body_ru'] ?? '',
+          body_en: item['pages'] == null ? '' : item['pages'][0]['body_en'] ?? '',
+        ));
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _helpContent = items.take(2).toList();
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _helpContent = [];
+      });
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isLoadingHelp = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final pageProvider = Provider.of<Which_page>(context);
@@ -67,8 +119,10 @@ class _Page5State extends State<Page5> {
         _buildTile('4', constants.ru_orders[pageProvider.dil], HugeIcons.strokeRoundedShoppingBag01),
         _buildTile('15', constants.ru_address[pageProvider.dil], IconlyLight.location),
         _buildTile('5', constants.ru_language[pageProvider.dil], HugeIcons.strokeRoundedLanguageCircle),
-        _buildTile('6', constants.ru_help[pageProvider.dil], HugeIcons.strokeRoundedHelpCircle),
-        _buildTile('17', constants.ru_ttt[pageProvider.dil], IconlyLight.document),
+        _buildHelpSection(pageProvider),
+        if (bottomProv.reg) _buildTile('19', constants.ru_ttt[pageProvider.dil], IconlyLight.chat),
+
+        // _buildTile('17', constants.ru_ttt[pageProvider.dil], IconlyLight.document),
         _buildTile('18', constants.ru_notifications[pageProvider.dil], IconlyLight.notification),
         if (bottomProv.reg) _buildLogoutTile(context, pageProvider, bottomProv),
         _buildAboutSection(pageProvider),
@@ -132,6 +186,42 @@ class _Page5State extends State<Page5> {
     );
   }
 
+  Widget _buildHelpSection(Which_page pageProvider) {
+    if (_isLoadingHelp) {
+      return Container(
+        height: 56,
+        margin: const EdgeInsets.only(bottom: 6),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.01),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ]),
+        child: const Center(
+          child: SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(strokeWidth: 2.2),
+          ),
+        ),
+      );
+    }
+
+    if (_helpContent.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      children: _helpContent
+          .map((item) => _ProfileHelpTile(
+                item: item,
+                languageCode: pageProvider.dil,
+              ))
+          .toList(),
+    );
+  }
+
   void _logout(BuildContext context, BottomProv bottomProv) {
     DatabaseHelper.deleteUserAll();
     setState(() {
@@ -156,7 +246,7 @@ class _Tile extends StatefulWidget {
   final String name;
   final dynamic icon;
 
-  const _Tile({super.key, required this.id, required this.name, required this.icon});
+  const _Tile({required this.id, required this.name, required this.icon});
 
   @override
   __TileState createState() => __TileState();
@@ -188,9 +278,6 @@ class __TileState extends State<_Tile> {
       case "5":
         _showLanguageDialog(context);
         break;
-      case "6":
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Help()));
-        break;
       case "8":
         Navigator.push(context, MaterialPageRoute(builder: (context) => const MyNews()));
         break;
@@ -199,6 +286,9 @@ class __TileState extends State<_Tile> {
         break;
       case "18":
         Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsPage()));
+        break;
+      case "19":
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatPage()));
         break;
     }
   }
@@ -349,6 +439,105 @@ class __TileState extends State<_Tile> {
               ),
             ),
             if (isSelected) const Icon(IconlyBold.tick_square, color: AppColors.primary, size: 22),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileHelpTile extends StatefulWidget {
+  final help item;
+  final int languageCode;
+
+  const _ProfileHelpTile({required this.item, required this.languageCode});
+
+  @override
+  State<_ProfileHelpTile> createState() => _ProfileHelpTileState();
+}
+
+class _ProfileHelpTileState extends State<_ProfileHelpTile> {
+  bool _expanded = false;
+
+  String _sanitize(String html) {
+    var value = html;
+    value = value.replaceAll('<h2 style="text-align: center;">', '');
+    value = value.replaceAll('<h2', '<p');
+    value = value.replaceAll('<h1', '<p');
+    value = value.replaceAll('<h3', '<p');
+    value = value.replaceAll('<h4', '<p');
+    value = value.replaceAll('<h5', '<p');
+    value = value.replaceAll('<strong>', '');
+    return value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final name = widget.languageCode == 1
+        ? widget.item.name_tm
+        : widget.languageCode == 0
+            ? widget.item.name_ru
+            : widget.item.name_en;
+    final body = widget.languageCode == 1
+        ? _sanitize(widget.item.body_tm)
+        : widget.languageCode == 0
+            ? _sanitize(widget.item.body_ru)
+            : _sanitize(widget.item.body_en);
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _expanded = !_expanded;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        margin: const EdgeInsets.only(bottom: 6),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.01),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ]),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, right: 12),
+                  child: Icon(
+                    IconlyLight.info_circle,
+                    color: AppColors.primary,
+                    size: 25,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    name,
+                    style: const TextStyle(color: Colors.black, fontSize: 15, fontFamily: 'Semi'),
+                  ),
+                ),
+                Icon(
+                  _expanded ? IconlyLight.arrow_down_circle : IconlyLight.arrow_right_circle,
+                  color: Colors.grey.shade400,
+                  size: 20,
+                ),
+              ],
+            ),
+            if (_expanded) ...[
+              const SizedBox(height: 10),
+              const Divider(height: 1),
+              const SizedBox(height: 10),
+              Html(
+                data: body,
+                style: {
+                  'body': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
+                  'p': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
+                  'li': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
+                },
+              ),
+            ],
           ],
         ),
       ),

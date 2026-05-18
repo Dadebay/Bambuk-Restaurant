@@ -511,62 +511,65 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       },
       child: Scaffold(
         appBar: const PreferredSize(preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
-        body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return [
-              SliverPersistentHeader(
-                floating: true,
-                pinned: false,
-                delegate: _SliverAppBarDelegate(
-                  TabBar(
-                    labelPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                    indicator: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xff2cf420).withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
+        body: SafeArea(
+          bottom: false,
+          child: NestedScrollView(
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return [
+                SliverPersistentHeader(
+                  floating: false,
+                  pinned: true,
+                  delegate: _SliverAppBarDelegate(
+                    TabBar(
+                      labelPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                      indicator: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xff2cf420).withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                        border: Border.all(color: const Color(0xff2cf420), width: 2),
+                      ),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelColor: const Color(0xff2cf420),
+                      unselectedLabelColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                      indicatorPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                      controller: _tabController,
+                      labelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyBold),
+                      unselectedLabelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyMedium),
+                      onTap: (value) {
+                        setState(() {
+                          which_page = value;
+                        });
+                      },
+                      tabs: [
+                        Tab(text: Constants.tabBarName1[Provider.of<Which_page>(context).dil]),
+                        Tab(text: Constants.tabBarName2[Provider.of<Which_page>(context).dil]),
+                        Tab(text: Constants.tabBarName3[Provider.of<Which_page>(context).dil]),
                       ],
-                      border: Border.all(color: const Color(0xff2cf420), width: 2),
                     ),
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelColor: const Color(0xff2cf420),
-                    unselectedLabelColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                    indicatorPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                    controller: _tabController,
-                    labelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyBold),
-                    unselectedLabelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyMedium),
-                    onTap: (value) {
-                      setState(() {
-                        which_page = value;
-                      });
-                    },
-                    tabs: [
-                      Tab(text: Constants.tabBarName1[Provider.of<Which_page>(context).dil]),
-                      Tab(text: Constants.tabBarName2[Provider.of<Which_page>(context).dil]),
-                      Tab(text: Constants.tabBarName3[Provider.of<Which_page>(context).dil]),
-                    ],
                   ),
                 ),
-              ),
-            ];
-          },
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              PageView(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: _bottomBarPages,
-              ),
-              const Page2Content(),
-              const Page3Content(),
-            ],
+              ];
+            },
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                PageView(
+                  controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: _bottomBarPages,
+                ),
+                const Page2Content(),
+                const Page3Content(),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: _tabController.index == 0 ? _buildBottomNavigationBar(context) : const SizedBox.shrink(),

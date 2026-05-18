@@ -117,7 +117,6 @@ class _CommentsState extends State<Comments> {
       body: SafeArea(
         child: Column(
           children: [
-            // Info banner
             Container(
               margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

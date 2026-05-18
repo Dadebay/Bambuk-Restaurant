@@ -360,9 +360,9 @@ List<String> ru_profil = [
   'Profile',
 ];
 List<String> ru_ttt = [
-  'Отзывы и предложения',
-  'Bellikler we teklipler ',
-  'Comments and suggestions',
+  'Отзывы и предложения чат',
+  'Bellikler we teklipler çaty',
+  'Comments and suggestions chat',
 ];
 List<String> ru_ttt_empty = [
   'Пока нет комментариев',
@@ -540,6 +540,24 @@ List<String> ru_notifications = [
   'Уведомления',
   'Bildirişler',
   'Notifications',
+];
+
+List<String> ru_chat = [
+  'Чат с админом',
+  'Admin bilen chat',
+  'Chat with admin',
+];
+
+List<String> ru_chat_empty = [
+  'Сообщений пока нет',
+  'Häzirlikçe habar ýok',
+  'No messages yet',
+];
+
+List<String> ru_chat_customer_id_error = [
+  'Пользователь не найден. Войдите заново.',
+  'Ulanyjy tapylmady. Täzeden giriň.',
+  'User not found. Please log in again.',
 ];
 
 List<String> ru_no_notifications = [
