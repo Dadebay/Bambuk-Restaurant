@@ -31,7 +31,7 @@ class _Page1State extends State<Page1> {
     var prov = Provider.of<Which_page>(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       appBar: const PreferredSize(preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
       body: ListView(
         children: <Widget>[
@@ -333,9 +333,7 @@ class _Page1State extends State<Page1> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: isSelected
-                ? AppColors.primary.withOpacity(0.08)
-                : const Color(0xFFF8F8F8),
+            color: isSelected ? AppColors.primary.withOpacity(0.08) : const Color(0xFFF8F8F8),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isSelected ? AppColors.primary : const Color(0xFFEEEEEE),
@@ -357,9 +355,7 @@ class _Page1State extends State<Page1> {
                   style: TextStyle(
                     fontFamily: isSelected ? 'GilroyBold' : 'GilroyMedium',
                     fontSize: 16,
-                    color: isSelected
-                        ? AppColors.primary
-                        : const Color(0xFF2D2D2D),
+                    color: isSelected ? AppColors.primary : const Color(0xFF2D2D2D),
                   ),
                 ),
               ),
@@ -376,9 +372,7 @@ class _Page1State extends State<Page1> {
                     width: 2,
                   ),
                 ),
-                child: isSelected
-                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 16)
-                    : null,
+                child: isSelected ? const Icon(Icons.check_rounded, color: Colors.white, size: 16) : null,
               ),
             ],
           ),

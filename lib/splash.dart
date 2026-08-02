@@ -96,6 +96,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
       Constants.name2 = userData[0]['surname'];
       Constants.name = Constants.name1 + Constants.name2;
       Constants.email = userData[0]['email'];
+      if (!mounted) return;
       Provider.of<BottomProv>(context, listen: false).set_reg(true);
     }
 
@@ -111,6 +112,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   Future<void> _fetchDeliverySettings() async {
     try {
       final response = await _get('/api/v1/locations');
+      if (!mounted) return;
       if (response != null && response['data'] != null && response['data'].isNotEmpty) {
         final location = response['data'][0];
         Provider.of<Which_page>(context, listen: false).setDosMin(double.parse(location['min_order_fee']));
@@ -238,6 +240,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
 
   Future<void> _loadCartItems() async {
     final cartItems = await DatabaseHelper.getItems();
+    if (!mounted) return;
     Provider.of<ProvItem>(context, listen: false).clearItem();
     for (var item in cartItems) {
       Provider.of<ProvItem>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
@@ -248,6 +251,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   Future<void> _loadAddresses() async {
     try {
       final addresses = await DatabaseHelper.getAddress();
+      if (!mounted) return;
       Provider.of<Favourite>(context, listen: false).clearAddress();
       for (var address in addresses) {
         Provider.of<Favourite>(context, listen: false).addAddress(address['name'], address['address_txt']);
@@ -257,6 +261,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
 
   Future<void> _loadFavoriteItems() async {
     final favoriteItems = await DatabaseHelper.getFavor();
+    if (!mounted) return;
     Provider.of<Favourite>(context, listen: false);
     for (var item in favoriteItems) {
       Provider.of<Favourite>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
@@ -266,6 +271,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
 
   Future<void> _loadLanguageSettings() async {
     final languageData = await DatabaseHelper.getDiller();
+    if (!mounted) return;
     if (languageData.isNotEmpty) {
       final language = languageData[0]['dil'];
       if (language == 0) {
@@ -284,14 +290,18 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   Future<dynamic> _get(String url) async {
     try {
       final response = await _dio.get('https://${Constants.api}$url');
-      setState(() {
-        _connection = true;
-      });
+      if (mounted) {
+        setState(() {
+          _connection = true;
+        });
+      }
       return response.data;
     } catch (e) {
-      setState(() {
-        _connection = false;
-      });
+      if (mounted) {
+        setState(() {
+          _connection = false;
+        });
+      }
       return null;
     }
   }

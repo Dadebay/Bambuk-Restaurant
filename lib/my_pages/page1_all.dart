@@ -31,7 +31,7 @@ class _Page1AllState extends State<Page1All> {
     }
     var prov = Provider.of<Which_page>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,

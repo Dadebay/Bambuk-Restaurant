@@ -244,21 +244,21 @@ class _CartItemsState extends State<CartItems> {
         height: 44,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: inCart ? AppColors.primary.withOpacity(0.18) : AppColors.primary.withOpacity(0.18),
+          color: inCart ? Colors.red.shade400 : Color.fromARGB(255, 28, 192, 19),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               inCart ? CupertinoIcons.cart_fill_badge_minus : CupertinoIcons.cart,
-              color: inCart ? Colors.red.shade400 : Colors.black87,
+              color: Colors.white,
               size: 20,
             ),
             const SizedBox(width: 8),
             Text(
               inCart ? '✓  $priceText' : priceText,
-              style: TextStyle(
-                color: inCart ? Colors.red.shade400 : Colors.black87,
+              style: const TextStyle(
+                color: Colors.white,
                 fontFamily: 'Semi',
                 fontSize: 15,
                 fontWeight: FontWeight.w700,

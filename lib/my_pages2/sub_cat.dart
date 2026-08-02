@@ -94,7 +94,7 @@ class _SubCatState extends State<SubCat> {
   Widget build(BuildContext context) {
     var provDil = Provider.of<Which_page>(context).dil;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(100),
         child: SafeArea(

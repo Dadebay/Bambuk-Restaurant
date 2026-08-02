@@ -123,7 +123,7 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                         ),
                         children: [
                           TileLayer(
-                            urlTemplate: 'http://216.250.9.138:5050/tile/{z}/{x}/{y}.png',
+                            urlTemplate: 'https://map.ayterek.com/tile/{z}/{x}/{y}.png',
                             userAgentPackageName: 'com.softpage.bamboo',
                             maxZoom: 22,
                             minZoom: 3,

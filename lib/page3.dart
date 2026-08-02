@@ -27,10 +27,10 @@ class _Page3State extends State<Page3> {
     constants.dil = pageProvider.dil != 0; //Dil seçimini constants'a aktar
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -89,11 +89,11 @@ class _Page3State extends State<Page3> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/empty.png', width: 180),
+            Image.asset('assets/images/empty.png', width: 240),
             const SizedBox(height: 20),
             Text(
               constants.ru_empty[pageProvider.dil],
-              style: const TextStyle(fontFamily: gilroyMedium, fontSize: 16, color: Colors.black54),
+              style: const TextStyle(fontFamily: gilroyMedium, fontSize: 20, color: Colors.black54),
             ),
           ],
         ),

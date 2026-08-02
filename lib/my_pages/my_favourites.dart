@@ -24,10 +24,10 @@ class _MyFavouritesState extends State<MyFavourites> {
     pindex = -2;
     var prov = Provider.of<Favourite>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         leading: const SizedBox.shrink(),
         title: logo(),
         centerTitle: true,

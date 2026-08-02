@@ -27,10 +27,30 @@ class _ActivState extends State<Activ> {
     loading = false;
     Map<String, String> header = {'Authorization': 'Bearer ${Constants.token}'};
     var response3 = await http.get(Uri.https(Constants.api, '/api/v1/users/me/orders/'), headers: header);
-    print("_______-_______-_______-_______-_______-_______-_______-_______-_______-_______-_______-_______-");
-    print(response3.body);
-    print(response3.statusCode);
-    var mitem = json.decode(utf8.decode(response3.bodyBytes))['data'];
+
+    dynamic mitem;
+    try {
+      final decoded = json.decode(utf8.decode(response3.bodyBytes));
+      mitem = decoded is Map ? decoded['data'] : null;
+    } catch (_) {
+      // Server returned a non-JSON body (e.g. an HTML login page when the
+      // token is missing or expired). Treat it as an empty order list
+      // instead of crashing on the JSON parser.
+      mitem = null;
+    }
+
+    if (mitem is! List) {
+      Constants.dis_activ.clear();
+      product.clear();
+      loading = true;
+      if (mounted) {
+        setState(() {
+          k = 1;
+        });
+      }
+      return 0;
+    }
+
     Constants.dis_activ.clear();
     product.clear();
     if (mitem.length == 0) loading = true;
@@ -43,9 +63,11 @@ class _ActivState extends State<Activ> {
             id: mitem[i]['id'], date: mitem[i]['created_at'], status_id: mitem[i]['status']['id'], status: mitem[i]['status']['name_tm'], status_ru: mitem[i]['status']['name_ru'], order_no: mitem[i]['track_code'], my_products: mitem[i]['products'], total_price: mitem[i]['total_price'].toString()));
       }
     }
-    setState(() {
-      k = 1;
-    });
+    if (mounted) {
+      setState(() {
+        k = 1;
+      });
+    }
     return 0;
   }
 

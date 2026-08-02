@@ -21,7 +21,7 @@ class CommentBannerPage extends StatelessWidget {
     final content = provDil != 0 ? commentBanner.contentTm : commentBanner.contentRu;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: CustomScrollView(
         slivers: [
           // Modern AppBar with image

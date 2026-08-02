@@ -17,7 +17,7 @@ class _Page2State extends State<Page2> {
   Widget build(BuildContext context) {
     final prov = Provider.of<Which_page>(context).dil;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,

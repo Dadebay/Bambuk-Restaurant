@@ -336,7 +336,7 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
     final pageProvider = Provider.of<Which_page>(context);
     final dil = pageProvider.dil;
     return Scaffold(
-      backgroundColor: _bgColor,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,

@@ -458,7 +458,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
 
   Widget _buildProfilePage(Which_page prov, BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           _buildBackground(),
@@ -618,7 +618,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
 
   Widget _buildLoginPage(Which_page prov, BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           _buildBackground(),
@@ -766,7 +766,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
 
   Widget _buildRegistrationPage(BuildContext context, Which_page prov) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           _buildBackground(),

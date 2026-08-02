@@ -249,14 +249,33 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(
-          textScaleFactor: 1.0,
-        ),
-        child: child!,
+      builder: (context, child) => Stack(
+        children: [
+          // Tüm sayfalarda ortak bambu arka planı
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_bamboo.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          // Ürünlerin daha iyi görünmesi için arka planı yumuşatan opaklık katmanı
+          Positioned.fill(
+            child: Container(
+              color: Colors.white.withOpacity(0.80),
+            ),
+          ),
+          MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaleFactor: 1.0,
+            ),
+            child: child!,
+          ),
+        ],
       ),
       theme: ThemeData(
         primarySwatch: Colors.green,
+        // Scaffold'lar şeffaf olsun ki ortak bambu arka planı görünsün
+        scaffoldBackgroundColor: Colors.transparent,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: '/splash',
@@ -361,7 +380,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white.withOpacity(0.85),
+      elevation: 0,
       iconSize: 22,
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
@@ -592,7 +612,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: const Color(0xfff1fff9),
+      color: Colors.transparent,
       padding: const EdgeInsets.only(top: 12, bottom: 4),
       child: _tabBar,
     );

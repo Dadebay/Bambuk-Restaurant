@@ -152,9 +152,9 @@ List<String> ru_use_bonus = [
   'Use bonus',
 ];
 List<String> review_user = [
-  'Отзывы клиентов',
-  'Muşderileriň seslenmeleri',
-  'User reviews',
+  'Отзывы гостей',
+  'Myhmanlaryň seslenmeleri',
+  'Guest reviews',
 ];
 List<String> ru_category = [
   'Категории',
@@ -599,9 +599,9 @@ List<String> view_details = [
 
 // Reviews
 List<String> customer_reviews_title = [
-  'Отзывы наших клиентов',
-  'Müşderilerimizin pikirleri',
-  'Our customers\' opinions',
+  'Отзывы наших гостей',
+  'Myhmanlarymyzyň pikirleri',
+  'Our guests\' opinions',
 ];
 
 List<String> no_reviews_yet = [

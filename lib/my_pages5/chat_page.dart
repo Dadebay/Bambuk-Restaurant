@@ -164,7 +164,7 @@ class _ChatPageState extends State<ChatPage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: const Color(0xFFF0F4F8),
+      backgroundColor: Colors.transparent,
       appBar: _buildAppBar(dil),
       body: Column(
         children: [
@@ -204,10 +204,20 @@ class _ChatPageState extends State<ChatPage> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.12),
+                    color: Colors.white,
                     shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 6,
+                      ),
+                    ],
                   ),
-                  child: const Icon(IconlyBold.chat, color: AppColors.primary, size: 20),
+                  clipBehavior: Clip.antiAlias,
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Image.asset(constants.logoImage, fit: BoxFit.contain),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -365,7 +375,7 @@ class _ChatPageState extends State<ChatPage> {
                 Expanded(
                   child: Text(
                     constants.ru_ttt_subtitle[dil],
-                    maxLines: 3,
+                    maxLines: 5,
                     style: TextStyle(color: AppColors.primary.withOpacity(0.85), fontSize: 13),
                   ),
                 ),
@@ -475,11 +485,19 @@ class _ChatPageState extends State<ChatPage> {
               height: 30,
               margin: const EdgeInsets.only(right: 6, bottom: 4),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: Colors.white,
                 shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 4,
+                  ),
+                ],
               ),
-              child: const Center(
-                child: Text('🍀', style: TextStyle(fontSize: 14)),
+              clipBehavior: Clip.antiAlias,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Image.asset(constants.logoImage, fit: BoxFit.contain),
               ),
             ),
           ],

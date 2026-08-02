@@ -111,9 +111,7 @@ class _RestaurantMapFullPageState extends State<RestaurantMapFullPage> {
     // Android LocationManager API'ını direkt çağırır, Flutter plugin'lerine bağlı değil
     try {
       print('📍 [KONUM DEBUG] Native Android channel deneniyor...');
-      final Map<dynamic, dynamic>? data = await _nativeChannel
-          .invokeMethod<Map<dynamic, dynamic>>('getLocation')
-          .timeout(const Duration(seconds: 30));
+      final Map<dynamic, dynamic>? data = await _nativeChannel.invokeMethod<Map<dynamic, dynamic>>('getLocation').timeout(const Duration(seconds: 30));
       if (data != null) {
         final lat = (data['latitude'] as num).toDouble();
         final lon = (data['longitude'] as num).toDouble();
@@ -545,7 +543,7 @@ class _RestaurantMapFullPageState extends State<RestaurantMapFullPage> {
         ),
         children: [
           TileLayer(
-            urlTemplate: 'http://216.250.9.138:5050/tile/{z}/{x}/{y}.png',
+            urlTemplate: 'https://map.ayterek.com/tile/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.softpage.bamboo',
             maxZoom: 22,
             minZoom: 3,

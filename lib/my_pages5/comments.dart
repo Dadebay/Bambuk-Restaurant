@@ -95,7 +95,7 @@ class _CommentsState extends State<Comments> {
     final dil = Provider.of<Which_page>(context).dil;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: const Color(0xFFF6F7FA),
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -131,7 +131,7 @@ class _CommentsState extends State<Comments> {
                   Expanded(
                     child: Text(
                       Constants.ru_ttt_subtitle[dil],
-                      maxLines: 3,
+                      maxLines: 5,
                       style: TextStyle(color: AppColors.primary.withOpacity(0.85), fontSize: 13),
                     ),
                   ),

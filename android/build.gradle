@@ -1,6 +1,9 @@
 buildscript {
     repositories {
         google()
+        // Google-hosted Maven Central mirror (avoids intermittent TLS handshake
+        // failures reaching repo.maven.apache.org on filtered networks)
+        maven { url "https://maven-central.storage-download.googleapis.com/maven2/" }
         mavenCentral()
     }
     dependencies {
@@ -11,6 +14,9 @@ buildscript {
 allprojects {
     repositories {
         google()
+        // Google-hosted Maven Central mirror (avoids intermittent TLS handshake
+        // failures reaching repo.maven.apache.org on filtered networks)
+        maven { url "https://maven-central.storage-download.googleapis.com/maven2/" }
         mavenCentral()
     }
 }

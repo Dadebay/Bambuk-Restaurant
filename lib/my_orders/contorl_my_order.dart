@@ -59,7 +59,7 @@ class _ContorlMyOrderState extends State<ContorlMyOrder> {
     final isCancelled = status == 5;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FA),
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
