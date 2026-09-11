@@ -81,6 +81,7 @@ class _Page3State extends State<Page3> {
             item.discount_price,
             item.category,
             item.values,
+            quantityStep: item.quantity_step,
           );
         },
       );

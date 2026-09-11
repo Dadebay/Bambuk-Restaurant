@@ -13,11 +13,12 @@ class DatabaseHelper {
         description_en TEXT,
         image TEXT,
         price REAL,
-        count INTEGER,
+        count REAL,
         rating REAL,
         discount INTEGER,
         discount_price REAL,
-        category TEXT
+        category TEXT,
+        quantity_step REAL
       )
       """);
     await database.execute("""CREATE TABLE favourites(
@@ -31,11 +32,12 @@ class DatabaseHelper {
         description_en TEXT,
         image TEXT,
         price REAL,
-        count INTEGER,
+        count REAL,
         rating REAL,
         discount INTEGER,
         discount_price REAL,
-        category TEXT
+        category TEXT,
+        quantity_step REAL
       )
       """);
     await database.execute("""CREATE TABLE category(
@@ -80,9 +82,18 @@ class DatabaseHelper {
   static Future<sql.Database> db() async {
     return sql.openDatabase(
       'nabindhal.db',
-      version: 1,
+      version: 2,
       onCreate: (sql.Database database, int version) async {
         await createTables(database);
+      },
+      onUpgrade: (sql.Database database, int oldVersion, int newVersion) async {
+        if (oldVersion < 2) {
+          for (final table in ['items', 'favourites']) {
+            try {
+              await database.execute("ALTER TABLE $table ADD COLUMN quantity_step REAL");
+            } catch (err) {}
+          }
+        }
       },
     );
   }
@@ -129,7 +140,8 @@ class DatabaseHelper {
 
 // 863285198
   // Create new item
-  static Future<int> createItem(int productId, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, int count, double rating, int discount, double discountPrice, String category) async {
+  static Future<int> createItem(int productId, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, double count, double rating, int discount, double discountPrice, String category,
+      [double quantityStep = 1.0]) async {
     final db = await DatabaseHelper.db();
     final data = {
       'productId': productId,
@@ -145,14 +157,15 @@ class DatabaseHelper {
       'rating': rating,
       'discount': discount,
       'discount_price': discountPrice,
-      'category': category
+      'category': category,
+      'quantity_step': quantityStep
     };
     final id = await db.insert('items', data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;
   }
 
   // Update an item by id
-  static Future<int> updateItem(int id, int count) async {
+  static Future<int> updateItem(int id, double count) async {
     final db = await DatabaseHelper.db();
 
     final data = {'count': count};
@@ -171,7 +184,8 @@ class DatabaseHelper {
   }
 
   //add favourites
-  static Future<int> createFavor(int productId, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, int count, double rating, int discount, double discountPrice, String category) async {
+  static Future<int> createFavor(int productId, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, double count, double rating, int discount, double discountPrice, String category,
+      [double quantityStep = 1.0]) async {
     final db = await DatabaseHelper.db();
     final data = {
       'productId': productId,
@@ -187,7 +201,8 @@ class DatabaseHelper {
       'rating': rating,
       'discount': discount,
       'discount_price': discountPrice,
-      'category': category
+      'category': category,
+      'quantity_step': quantityStep
     };
     final id = await db.insert('favourites', data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;

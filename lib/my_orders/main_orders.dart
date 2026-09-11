@@ -42,8 +42,8 @@ class _MainOrdersState extends State<MainOrders> {
           style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
         ),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: const Color(0xFFEEEEEE)),
+          preferredSize: const Size.fromHeight(2),
+          child: Container(height: 2, decoration: NeonStyle.bottomLine),
         ),
       ),
       body: Column(
@@ -88,17 +88,18 @@ class _MainOrdersState extends State<MainOrders> {
           duration: const Duration(milliseconds: 200),
           margin: const EdgeInsets.all(3),
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: selected ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: selected ? [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 6, offset: const Offset(0, 2))] : [],
-          ),
+          decoration: selected
+              ? NeonStyle.selected(radius: 10)
+              : BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(10),
+                ),
           child: Text(
             label,
             style: TextStyle(
               fontFamily: selected ? 'Semi' : 'GilroyRegular',
               fontSize: 14,
-              color: selected ? AppColors.primary : Colors.grey.shade500,
+              color: selected ? AppColors.neon : Colors.grey.shade500,
             ),
           ),
         ),

@@ -40,6 +40,7 @@ class _Page2ItemState extends State<Page2Item> {
             image: Constants.product[i].image,
             price: Constants.product[i].price,
             count: Constants.product[i].count,
+            quantity_step: Constants.product[i].quantity_step,
             rating: Constants.product[i].rating,
             discount: Constants.product[i].discount,
             discount_price: Constants.product[i].discount_price,
@@ -62,7 +63,8 @@ class _Page2ItemState extends State<Page2Item> {
             description_en: mitem[i]['description_en'] ?? '',
             image: mitem[i]['image'],
             price: double.parse(mitem[i]['price']),
-            count: mitem[i]['count'],
+            count: toDouble(mitem[i]['count']),
+            quantity_step: stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
             rating: double.parse(mitem[i]['rating']),
             discount: mitem[i]['discount'],
             discount_price: double.parse(mitem[i]['discounted_price'] ?? "0.00"),
@@ -123,6 +125,7 @@ class _Page2ItemState extends State<Page2Item> {
               product[index].discount_price,
               product[index].category,
               product[index].values,
+              quantity_step: product[index].quantity_step,
               isGrid: true);
         },
       );
@@ -155,6 +158,7 @@ class _Page2ItemState extends State<Page2Item> {
               product[index].discount_price,
               product[index].category,
               product[index].values,
+              quantity_step: product[index].quantity_step,
               scrollController: _scrollController);
         });
   }

@@ -20,6 +20,7 @@ import 'package:bamboo/providers/provider_items.dart';
 import 'package:bamboo/providers/user_info.dart';
 import 'package:bamboo/splash.dart';
 import 'package:bamboo/user_reviews_page/notifications_page.dart';
+import 'package:bamboo/values/colors.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
 import 'package:bamboo/values/firebase_messaging_service.dart';
@@ -212,6 +213,8 @@ class _MyAppState extends State<MyApp> {
     } else {
       debugPrint('No valid URL found. Navigating to Notifications');
       Future.delayed(const Duration(milliseconds: 500), () {
+        // Eyyam bildirimler sahypasynda bolsak, gaytadan acmayarys.
+        if (Get.currentRoute == '/notifications') return;
         Get.toNamed('/notifications');
       });
     }
@@ -293,6 +296,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+  /// Yokarky TabBar-yn beyikligi. Flutter-in ozunde 46px minimum bar,
+  /// sonun ucin her Tab-a gonuden-goni berilyar.
+  static const double tabBarHeight = 34;
+
   int selectedIndex = 0;
   int which_page = 1;
 
@@ -488,6 +495,18 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     selectedIndex = Provider.of<BottomProv>(context).page;
 
+    // BottomProv.setPage(...) islendik yerden cagyrylsa-da (meselem sargyt
+    // tassyklanandan son), PageView-in ozi hem sol sahypa gecmeli.
+    // PageView-in fizikasy NeverScrollable, sonun ucin dine _pageController
+    // ony hereketlendirip bilyar.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_pageController.hasClients) return;
+      final int current = _pageController.page?.round() ?? _pageController.initialPage;
+      if (current != selectedIndex) {
+        _pageController.jumpToPage(selectedIndex);
+      }
+    });
+
     return WillPopScope(
       onWillPop: () async {
         final currentNavigator = _currentTabNavigator();
@@ -533,94 +552,60 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         appBar: const PreferredSize(preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
         body: SafeArea(
           bottom: false,
-          child: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-              return [
-                SliverPersistentHeader(
-                  floating: false,
-                  pinned: true,
-                  delegate: _SliverAppBarDelegate(
-                    TabBar(
-                      labelPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                      indicator: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xff2cf420).withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                        border: Border.all(color: const Color(0xff2cf420), width: 2),
-                      ),
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      labelColor: const Color(0xff2cf420),
-                      unselectedLabelColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                      indicatorPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                      controller: _tabController,
-                      labelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyBold),
-                      unselectedLabelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyMedium),
-                      onTap: (value) {
-                        setState(() {
-                          which_page = value;
-                        });
-                      },
-                      tabs: [
-                        Tab(text: Constants.tabBarName1[Provider.of<Which_page>(context).dil]),
-                        Tab(text: Constants.tabBarName2[Provider.of<Which_page>(context).dil]),
-                        Tab(text: Constants.tabBarName3[Provider.of<Which_page>(context).dil]),
-                      ],
+          // NestedScrollView ulanylmaýar: header hiç ýygrylmaýardy (minExtent == maxExtent),
+          // emma onuň Scrollable-y tutuş gövdäni tutup, içerki sahypanyň AppBar-yndan
+          // süýşürilende sanawy süýşürýärdi we mazmun header-iň aşagyndan başlaýardy.
+          child: Column(
+            children: [
+              // Hemişe ýerinde duran, süýşürilmeýän TabBar
+              Container(
+                color: Colors.transparent,
+                padding: const EdgeInsets.only(top: 10),
+                child: TabBar(
+                  // Dik padding yok - beyiklik dine Tab.height bilen kesgitlenyar.
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 10),
+                  indicator: NeonStyle.selected(),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelColor: AppColors.neon,
+                  unselectedLabelColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                  indicatorPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  controller: _tabController,
+                  labelStyle: const TextStyle(fontSize: 15, fontFamily: gilroyBold),
+                  unselectedLabelStyle: const TextStyle(fontSize: 15, fontFamily: gilroyMedium),
+                  onTap: (value) {
+                    setState(() {
+                      which_page = value;
+                    });
+                  },
+                  tabs: [
+                    // Tab.height bolmasa Flutter 46px minimum goyyar.
+                    Tab(height: tabBarHeight, text: Constants.tabBarName1[Provider.of<Which_page>(context).dil]),
+                    Tab(height: tabBarHeight, text: Constants.tabBarName2[Provider.of<Which_page>(context).dil]),
+                    Tab(height: tabBarHeight, text: Constants.tabBarName3[Provider.of<Which_page>(context).dil]),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    PageView(
+                      controller: _pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: _bottomBarPages,
                     ),
-                  ),
+                    const Page2Content(),
+                    const Page3Content(),
+                  ],
                 ),
-              ];
-            },
-            body: TabBarView(
-              controller: _tabController,
-              children: [
-                PageView(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: _bottomBarPages,
-                ),
-                const Page2Content(),
-                const Page3Content(),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         bottomNavigationBar: _tabController.index == 0 ? _buildBottomNavigationBar(context) : const SizedBox.shrink(),
       ),
     );
-  }
-}
-
-// TabBar için SliverPersistentHeaderDelegate
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height + 16;
-  @override
-  double get maxExtent => _tabBar.preferredSize.height + 16;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      color: Colors.transparent,
-      padding: const EdgeInsets.only(top: 12, bottom: 4),
-      child: _tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
   }
 }
 

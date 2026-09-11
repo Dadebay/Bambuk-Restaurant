@@ -1,3 +1,4 @@
+import 'package:bamboo/values/models.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,12 +23,13 @@ class CartItems extends StatefulWidget {
   String description_en;
   String image;
   double price;
-  int count;
+  double count;
   double rating;
   int discount;
   double discount_price;
   String category;
   var values;
+  double quantity_step;
   final double imageHeight;
   CartItems(
     this.id,
@@ -47,6 +49,7 @@ class CartItems extends StatefulWidget {
     this.values, {
     super.key,
     this.imageHeight = 170,
+    this.quantity_step = 1.0,
   });
 
   @override
@@ -65,6 +68,7 @@ class _CartItemsState extends State<CartItems> {
     Constants.op_image = widget.image;
     Constants.op_price = widget.price;
     Constants.op_count = widget.count;
+    Constants.op_quantity_step = widget.quantity_step;
     Constants.op_rating = widget.rating;
     Constants.op_discount = widget.discount;
     Constants.op_discount_price = widget.discount_price;
@@ -217,7 +221,7 @@ class _CartItemsState extends State<CartItems> {
     return GestureDetector(
       onTap: () {
         if (Provider.of<ProvItem>(context, listen: false).items[widget.id]?.count == null) {
-          widget.count++;
+          widget.count = roundQty(widget.count + widget.quantity_step);
           Provider.of<ProvItem>(context, listen: false).addItem(
             widget.id,
             widget.name_tm,
@@ -234,6 +238,7 @@ class _CartItemsState extends State<CartItems> {
             widget.discount_price,
             widget.category,
             widget.values,
+            widget.quantity_step,
           );
         } else {
           widget.count = 0;

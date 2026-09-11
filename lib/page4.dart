@@ -4,9 +4,11 @@ import 'package:bamboo/my_pages4/verify.dart';
 import 'package:bamboo/providers/bottom_prov.dart';
 import 'package:bamboo/providers/page1provider.dart';
 import 'package:bamboo/values/colors.dart';
+import 'package:bamboo/values/api_logger.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -40,6 +42,9 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  /// +993 prefiksinden sonraky rugsat berilyan sany mukdary.
+  static const int phoneDigitCount = 8;
+
   bool sign = Constants.which_sign;
   TextEditingController loginName = TextEditingController(text: Constants.phone);
   TextEditingController regName = TextEditingController();
@@ -53,13 +58,41 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
   TextEditingController regMoney = TextEditingController(text: '${Constants.bonusMoney} TMT');
   bool loading = false;
 
+  /// Telefon belgisi doly (8 san) dalse duydurys gorkezyar.
+  bool _isPhoneValid(String phone) => phone.length == phoneDigitCount;
+
+  void _showPhoneWarning() {
+    final int dil = Provider.of<Which_page>(context, listen: false).dil;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(Constants.ru_phone_invalid[dil]),
+    ));
+  }
+
   Future sending(String name) async {
     var headers = {
       "phone": name,
     };
 
     var url = Uri.https(Constants.api, '/api/v1/login');
-    var response = await http.post(url, body: headers);
+    ApiLog.request(tag: 'LOGIN / OTP SORAG', method: 'POST', url: url, body: headers);
+
+    http.Response response;
+    try {
+      response = await http.post(url, body: headers);
+    } catch (e, st) {
+      ApiLog.error(tag: 'LOGIN / OTP SORAG', error: e, stackTrace: st);
+      if (!mounted) return;
+      setState(() {
+        loading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(Constants.ru_failed_to_load[Provider.of<Which_page>(context, listen: false).dil]),
+      ));
+      return;
+    }
+    ApiLog.response(tag: 'LOGIN / OTP SORAG', response: response);
+
+    if (!mounted) return;
     if (response.statusCode == 200) {
       setState(() {
         loading = false;
@@ -100,7 +133,14 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
   String gmail = '';
   String mail = '';
   Future reg_sending(String name, String surname, String email, String phone) async {
-    if ((name.isNotEmpty) && (phone.length > 7)) {
+    if (!_isPhoneValid(phone)) {
+      setState(() {
+        loading = false;
+      });
+      _showPhoneWarning();
+      return;
+    }
+    if (name.isNotEmpty) {
       var headers = {
         "name": name,
         "surname": surname,
@@ -109,7 +149,25 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
       };
       var url = Uri.https(Constants.api, '/api/v1/register');
       Constants.phone = phone;
-      var response = await http.post(url, body: headers);
+      ApiLog.request(tag: 'REGISTER', method: 'POST', url: url, body: headers);
+
+      http.Response response;
+      try {
+        response = await http.post(url, body: headers);
+      } catch (e, st) {
+        ApiLog.error(tag: 'REGISTER', error: e, stackTrace: st);
+        if (!mounted) return;
+        setState(() {
+          loading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(Constants.ru_failed_to_load[Provider.of<Which_page>(context, listen: false).dil]),
+        ));
+        return;
+      }
+      ApiLog.response(tag: 'REGISTER', response: response);
+
+      if (!mounted) return;
       if (response.statusCode == 200) {
         setState(() {
           loading = false;
@@ -227,13 +285,23 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
         controller: controller,
         style: TextStyle(
           color: Color(0xFF2D2D2D),
-          fontSize: 15,
-          fontFamily: 'GilroyMedium',
+          fontSize: 17,
+          fontFamily: 'GilroySemiBold',
+          letterSpacing: 1.5,
         ),
-        keyboardType: TextInputType.number,
+        keyboardType: TextInputType.phone,
+        textInputAction: TextInputAction.done,
+        // Turkmenistan belgileri +993-den son 8 sany bolyar.
+        maxLength: phoneDigitCount,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(phoneDigitCount),
+        ],
         decoration: InputDecoration(
+          // Asakdaky "0/8" hasaplayjyny gizleyaris.
+          counterText: '',
           prefixIcon: Container(
-            width: 90,
+            width: 104,
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(left: 16),
             child: Row(
@@ -245,23 +313,27 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                   '+993',
                   style: TextStyle(
                     color: AppColors.primary,
-                    fontSize: 15,
+                    fontSize: 17,
                     fontFamily: 'GilroySemiBold',
                   ),
+                ),
+                SizedBox(width: 12),
+                // Prefiks bilen belgini ayryan inceden cyzyk
+                Container(
+                  width: 1,
+                  height: 24,
+                  color: Color(0xFFE8E8E8),
                 ),
               ],
             ),
           ),
-          labelText: label,
-          labelStyle: TextStyle(
-            color: Color(0xFF9E9E9E),
-            fontSize: 14,
+          // Maska yerinde dursun diyip labelText derek hintText ulanylyar.
+          hintText: label,
+          hintStyle: TextStyle(
+            color: Color(0xFFBDBDBD),
+            fontSize: 17,
             fontFamily: 'GilroyMedium',
-          ),
-          floatingLabelStyle: TextStyle(
-            color: AppColors.primary,
-            fontSize: 14,
-            fontFamily: 'GilroySemiBold',
+            letterSpacing: 1.5,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
@@ -683,9 +755,12 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                       text: Constants.ru_login[prov.dil],
                       isLoading: loading,
                       onTap: () {
-                        if (!loading) {
-                          sending(loginName.text);
+                        if (loading) return;
+                        if (!_isPhoneValid(loginName.text)) {
+                          _showPhoneWarning();
+                          return;
                         }
+                        sending(loginName.text);
                         setState(() {
                           loading = true;
                         });
@@ -852,9 +927,12 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                     text: Constants.ru_sign[prov.dil],
                     isLoading: loading,
                     onTap: () {
-                      if (!loading) {
-                        reg_sending(regName.text, regSurname.text, 'test@gmail.como', regPhone.text);
+                      if (loading) return;
+                      if (!_isPhoneValid(regPhone.text)) {
+                        _showPhoneWarning();
+                        return;
                       }
+                      reg_sending(regName.text, regSurname.text, 'test@gmail.como', regPhone.text);
                       setState(() {
                         loading = true;
                       });

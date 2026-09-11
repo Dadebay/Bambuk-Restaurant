@@ -225,6 +225,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                 image: product['image'],
                 price: double.parse(product['price'].toString()),
                 count: 0,
+                quantity_step: stepOf(toDouble(product['quantity_step'], fallback: 1.0)),
                 rating: double.parse(product['rating'].toString()),
                 discount: product['discount'],
                 discount_price: (product['discounted_price'] != null) ? double.parse(product['discounted_price'].toString()) : 0.00,
@@ -244,7 +245,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     Provider.of<ProvItem>(context, listen: false).clearItem();
     for (var item in cartItems) {
       Provider.of<ProvItem>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
-          item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
+          item['description_en'], item['image'], toDouble(item['price']), toDouble(item['count']), toDouble(item['rating']), item['discount'], toDouble(item['discount_price']), item['category'], item['values'], stepOf(toDouble(item['quantity_step'], fallback: 1.0)));
     }
   }
 
@@ -265,7 +266,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     Provider.of<Favourite>(context, listen: false);
     for (var item in favoriteItems) {
       Provider.of<Favourite>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
-          item['description_en'], item['image'], item['price'], item['count'], item['rating'], item['discount'], item['discount_price'], item['category'], item['values']);
+          item['description_en'], item['image'], toDouble(item['price']), toDouble(item['count']), toDouble(item['rating']), item['discount'], toDouble(item['discount_price']), item['category'], item['values'], stepOf(toDouble(item['quantity_step'], fallback: 1.0)));
     }
   }
 

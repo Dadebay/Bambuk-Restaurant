@@ -1,3 +1,4 @@
+import 'package:bamboo/values/models.dart';
 import 'package:bamboo/options_item.dart';
 import 'package:bamboo/providers/provider_items.dart';
 import 'package:bamboo/values/colors.dart';
@@ -20,12 +21,13 @@ class KarzinaCard extends StatefulWidget {
   final String descriptionEn;
   final String image;
   final double price;
-  final int count;
+  final double count;
   final double rating;
   final int discount;
   final double discountPrice;
   final String category;
   final dynamic values;
+  final double quantityStep;
 
   KarzinaCard(
     this.id,
@@ -44,6 +46,7 @@ class KarzinaCard extends StatefulWidget {
     this.category,
     this.values, {
     super.key,
+    this.quantityStep = 1.0,
   });
 
   @override
@@ -51,7 +54,7 @@ class KarzinaCard extends StatefulWidget {
 }
 
 class _KarzinaCardState extends State<KarzinaCard> {
-  int _count = 0;
+  double _count = 0;
 
   @override
   void initState() {
@@ -90,6 +93,7 @@ class _KarzinaCardState extends State<KarzinaCard> {
     constants.op_image = widget.image;
     constants.op_price = widget.price;
     constants.op_count = widget.count;
+    constants.op_quantity_step = widget.quantityStep;
     constants.op_rating = widget.rating;
     constants.op_discount = widget.discount;
     constants.op_discount_price = widget.discountPrice;
@@ -100,15 +104,15 @@ class _KarzinaCardState extends State<KarzinaCard> {
 
   void _decreaseCount(BuildContext context) {
     if (_count > 0) {
-      setState(() => _count--);
+      setState(() => _count = roundQty(_count - widget.quantityStep));
       Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, _count);
     }
   }
 
   void _increaseCount(BuildContext context) {
-    setState(() => _count++);
+    setState(() => _count = roundQty(_count + widget.quantityStep));
     Provider.of<ProvItem>(context, listen: false).addItem(widget.id, widget.nameTm, widget.nameRu, widget.nameEn, widget.descriptionTm, widget.descriptionRu, widget.descriptionEn, widget.image,
-        widget.price, _count, widget.rating, widget.discount, widget.discountPrice, widget.category, widget.values);
+        widget.price, _count, widget.rating, widget.discount, widget.discountPrice, widget.category, widget.values, widget.quantityStep);
   }
 
   @override
@@ -278,7 +282,7 @@ class _KarzinaCardState extends State<KarzinaCard> {
                     SizedBox(
                       width: 30,
                       child: Text(
-                        '$itemCount',
+                        formatQuantity(itemCount),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontFamily: gilroyBold,

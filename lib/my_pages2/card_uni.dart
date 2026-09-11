@@ -21,15 +21,16 @@ class CardUni extends StatefulWidget {
   String description_en;
   String image;
   double price;
-  int count;
+  double count;
   double rating;
   int discount;
   double discount_price;
   String category;
   var values;
+  double quantity_step;
   CardUni(this.id, this.name_tm, this.name_ru, this.name_en, this.description_tm, this.description_ru, this.description_en, this.image, this.price, this.count, this.rating, this.discount,
       this.discount_price, this.category, this.values,
-      {super.key});
+      {this.quantity_step = 1.0, super.key});
 
   @override
   _CardUniState createState() => _CardUniState();
@@ -54,6 +55,7 @@ class _CardUniState extends State<CardUni> {
           Constants.op_image = widget.image;
           Constants.op_price = widget.price;
           Constants.op_count = widget.count;
+          Constants.op_quantity_step = widget.quantity_step;
           Constants.op_rating = widget.rating;
           Constants.op_discount = widget.discount;
           Constants.op_discount_price = widget.discount_price;
@@ -143,9 +145,9 @@ class _CardUniState extends State<CardUni> {
                     onTap: () {
                       if (Provider.of<ProvItem>(context, listen: false).items[widget.id]?.count == null) {
                         Provider.of<ProvItem>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru,
-                            widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values);
+                            widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values, widget.quantity_step);
                       } else {
-                        Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, 0);
+                        Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, widget.quantity_step);
                       }
                     },
                     child: Container(
@@ -202,7 +204,7 @@ class _CardUniState extends State<CardUni> {
                     onTap: (() {
                       if (Provider.of<Favourite>(context, listen: false).items[widget.id]?.count == null) {
                         Provider.of<Favourite>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru,
-                            widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values);
+                            widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values, widget.quantity_step);
                       } else {
                         Provider.of<Favourite>(context, listen: false).removeItem(widget.id);
                       }

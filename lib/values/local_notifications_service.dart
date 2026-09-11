@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:bamboo/user_reviews_page/notifications_page.dart';
 import 'package:bamboo/webview_app.dart';
 
 class LocalNotificationsService {
@@ -40,11 +41,19 @@ class LocalNotificationsService {
     print('═══════════════════════════════════════════════════════════════');
     print('');
 
-    if (payload != null && payload.isNotEmpty) {
-      if (payload.startsWith('http://') || payload.startsWith('https://')) {
-        Get.to(() => WebViewPage(url: payload));
-      }
+    // Payload bir URL ise webview acylyar, yogsam profildaki bildirimler sahypasyna gecyaris.
+    if (payload != null && (payload.startsWith('http://') || payload.startsWith('https://'))) {
+      Get.to(() => WebViewPage(url: payload));
+    } else {
+      _openNotificationsPage();
     }
+  }
+
+  /// Bildirimlere basylanda profildaki "Bildirimler" sahypasyny acyar.
+  void _openNotificationsPage() {
+    // Eyyam sol sahypada bolsak, gaytadan acmayarys.
+    if (Get.currentRoute == '/notifications') return;
+    Get.to(() => const NotificationsPage(), routeName: '/notifications');
   }
 
   Future<void> showNotification({

@@ -157,7 +157,8 @@ class _MainVisiblesState extends State<MainVisibles> {
                     widget.items[index].discount,
                     widget.items[index].discount_price,
                     widget.items[index].category,
-                    widget.items[index].values),
+                    widget.items[index].values,
+                    quantity_step: widget.items[index].quantity_step),
               );
             },
           ),

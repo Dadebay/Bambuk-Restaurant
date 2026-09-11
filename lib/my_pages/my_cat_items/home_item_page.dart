@@ -28,7 +28,8 @@ class _HomeItemPageState extends State<HomeItemPage> {
           description_en: m[i]['description_en'] ?? '',
           image: m[i]['image'],
           price: double.parse(m[i]['price']),
-          count: m[i]['count'],
+          count: toDouble(m[i]['count']),
+            quantity_step: stepOf(toDouble(m[i]['quantity_step'], fallback: 1.0)),
           rating: double.parse(m[i]['rating']),
           discount: m[i]['discount'],
           discount_price: (m[i]['discounted_price'] != null) ? double.parse(m[i]['discounted_price']) : 0.00,
@@ -72,7 +73,8 @@ class _HomeItemPageState extends State<HomeItemPage> {
               product[index].discount,
               product[index].discount_price,
               product[index].category,
-              product[index].values);
+              product[index].values,
+              quantity_step: product[index].quantity_step);
         },
       ),
     );

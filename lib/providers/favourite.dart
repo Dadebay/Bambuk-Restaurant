@@ -30,8 +30,8 @@ class Favourite with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
-  void addSplash(int id, String nameTm, String nameRu, String nameEn, var descriptionTm, var descriptionRu, var descriptionEn, String image, double price, int count, double rating, int discount,
-      double discountPrice, String category, var values) {
+  void addSplash(int id, String nameTm, String nameRu, String nameEn, var descriptionTm, var descriptionRu, var descriptionEn, String image, double price, double count, double rating, int discount,
+      double discountPrice, String category, var values, [double quantityStep = 1.0]) {
     if (_items.containsKey(id)) {
     } else {
       _myid.add(id);
@@ -51,6 +51,7 @@ class Favourite with ChangeNotifier, DiagnosticableTreeMixin {
             rating: rating,
             discount: discount,
             discount_price: discountPrice,
+            quantity_step: quantityStep,
             category: category,
             values: values),
       );
@@ -58,10 +59,10 @@ class Favourite with ChangeNotifier, DiagnosticableTreeMixin {
     }
   }
 
-  void addItem(int id, String nameTm, String nameRu, String nameEn, var descriptionTm, var descriptionRu, var descriptionEn, String image, double price, int count, double rating, int discount,
-      double discountPrice, String category, var values) {
+  void addItem(int id, String nameTm, String nameRu, String nameEn, var descriptionTm, var descriptionRu, var descriptionEn, String image, double price, double count, double rating, int discount,
+      double discountPrice, String category, var values, [double quantityStep = 1.0]) {
     _myid.add(id);
-    DatabaseHelper.createFavor(id, nameTm, nameRu, nameEn, descriptionTm, descriptionRu, descriptionEn, image, price, count, rating, discount, discountPrice, category);
+    DatabaseHelper.createFavor(id, nameTm, nameRu, nameEn, descriptionTm, descriptionRu, descriptionEn, image, price, count, rating, discount, discountPrice, category, quantityStep);
     _items.putIfAbsent(
       id,
       () => products(
@@ -78,6 +79,7 @@ class Favourite with ChangeNotifier, DiagnosticableTreeMixin {
           rating: rating,
           discount: discount,
           discount_price: discountPrice,
+          quantity_step: quantityStep,
           category: category,
           values: values),
     );

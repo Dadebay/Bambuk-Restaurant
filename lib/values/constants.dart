@@ -61,7 +61,8 @@ String op_description_ru = "";
 String op_description_en = "";
 String op_image = "";
 double op_price = 0.00;
-int op_count = 0;
+double op_count = 0;
+double op_quantity_step = 1.0;
 double op_rating = 0.00;
 int op_discount = 0;
 double op_discount_price = 0.00;
@@ -299,6 +300,53 @@ List<String> ru_did_signin = [
   'Are you registered',
 ];
 
+// ─── OTP / tassyklaýyş sahypasy ───
+List<String> ru_otp_title = [
+  'Код подтверждения',
+  'Tassyklaýyş kody',
+  'Verification code',
+];
+List<String> ru_otp_subtitle = [
+  'Код отправлен по SMS на номер',
+  'Kod SMS arkaly şu belgä iberildi',
+  'The code was sent by SMS to',
+];
+List<String> ru_otp_confirm = [
+  'Подтвердить',
+  'Tassykla',
+  'Confirm',
+];
+List<String> ru_otp_wrong = [
+  'Неверный код, попробуйте ещё раз',
+  'Kod nädogry, gaýtadan synanyşyň',
+  'Wrong code, please try again',
+];
+List<String> ru_otp_resend = [
+  'Отправить код повторно',
+  'Kody gaýtadan iber',
+  'Resend the code',
+];
+List<String> ru_otp_resend_in = [
+  'Повторная отправка через',
+  'Gaýtadan ibermek',
+  'Resend available in',
+];
+List<String> ru_otp_resent = [
+  'Код отправлен повторно',
+  'Kod gaýtadan iberildi',
+  'The code has been sent again',
+];
+List<String> ru_otp_no_code = [
+  'Не получили код?',
+  'Kod gelmedimi?',
+  'Did not get the code?',
+];
+
+List<String> ru_phone_invalid = [
+  'Введите 8 цифр номера телефона',
+  'Telefon belgiňiziň 8 sanyny giriziň',
+  'Enter the 8 digits of your phone number',
+];
 List<String> ru_telefon = [
   'Ваш номер телефона',
   'Telefon belgiňiz',
@@ -395,6 +443,24 @@ List<String> ru_programma = [
   'Mobil goşundy barada',
   'About app',
 ];
+// ─── Wagt saýlaýjy ───
+List<String> ru_pick_time = [
+  'Выберите время',
+  'Wagt saýlaň',
+  'Select time',
+];
+List<String> ru_asap = [
+  'Как можно скорее',
+  'Mümkin boldugyça çalt',
+  'As soon as possible',
+];
+/// Hepdäniň günleriniň gysga atlary: [rus, türkmen, iňlis]
+List<List<String>> weekdayShort = [
+  ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+  ['Duş', 'Siş', 'Çar', 'Pen', 'Ann', 'Şen', 'Ýek'],
+  ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+];
+
 List<String> ru_timeDos = [
   'Время доставки',
   'Sargydy eltmeli wagty',
@@ -528,6 +594,28 @@ List<String> ru_sargamak = [
   'Доставка',
   'Sargamak',
   'Order',
+];
+
+// ─── Salgy saýlaýjy ───
+List<String> ru_region = [
+  'Район доставки',
+  'Eltip berme sebiti',
+  'Delivery area',
+];
+List<String> ru_pick_region = [
+  'Выберите район',
+  'Sebit saýlaň',
+  'Select area',
+];
+List<String> ru_min_order = [
+  'Мин. заказ',
+  'Iň az sargyt',
+  'Min. order',
+];
+List<String> ru_saved_address = [
+  'Сохранённые адреса',
+  'Ýatda saklanan salgylar',
+  'Saved addresses',
 ];
 
 List<String> ru_selectBank = [

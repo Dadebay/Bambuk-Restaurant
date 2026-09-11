@@ -68,12 +68,13 @@ class Which_page with ChangeNotifier, DiagnosticableTreeMixin {
       String description_en,
       String image,
       double price,
-      int count,
+      double count,
       double rating,
       int discount,
       double discount_price,
       String category,
-      var values) {
+      var values,
+      [double quantity_step = 1.0]) {
     if (_items.containsKey(id)) {
     } else {
       _price = _price + (count * price);
@@ -101,6 +102,7 @@ class Which_page with ChangeNotifier, DiagnosticableTreeMixin {
             discount: discount,
             discount_price: discount_price,
             category: category,
+            quantity_step: quantity_step,
             values: values),
       );
       notifyListeners();
@@ -117,18 +119,22 @@ class Which_page with ChangeNotifier, DiagnosticableTreeMixin {
       String description_en,
       String image,
       double price,
-      int count,
+      double count,
       double rating,
       int discount,
       double discount_price,
       String category,
-      var values) {
-    _price = _price + price;
+      var values,
+      [double quantity_step = 1.0]) {
+    // Eger haryt sebetde bar bolsa, onun oz adimini ulanyarys.
+    final double step = stepOf(_items.containsKey(id) ? _items[id]!.quantity_step : quantity_step);
+
+    _price = _price + (price * step);
     if (discount == 0) {
-      _total_price = _total_price + price;
+      _total_price = _total_price + (price * step);
     } else {
-      _dis = _dis + (price - discount_price);
-      _total_price = _total_price + discount_price;
+      _dis = _dis + ((price - discount_price) * step);
+      _total_price = _total_price + (discount_price * step);
     }
     if (_items.containsKey(id)) {
       _items.update(
@@ -143,14 +149,15 @@ class Which_page with ChangeNotifier, DiagnosticableTreeMixin {
             description_en: existingCartItem.description_en,
             image: existingCartItem.image,
             price: existingCartItem.price,
-            count: existingCartItem.count + 1,
+            count: roundQty(existingCartItem.count + step),
             rating: existingCartItem.rating,
             discount: existingCartItem.discount,
             discount_price: existingCartItem.discount_price,
             category: existingCartItem.category,
+            quantity_step: existingCartItem.quantity_step,
             values: existingCartItem.values),
       );
-      DatabaseHelper.updateItem(id, _items[id]!.count + 1);
+      DatabaseHelper.updateItem(id, _items[id]!.count);
     } else {
       _myid.add(id);
       _items.putIfAbsent(
@@ -165,11 +172,12 @@ class Which_page with ChangeNotifier, DiagnosticableTreeMixin {
             description_en: description_en,
             image: image,
             price: price,
-            count: 1,
+            count: step,
             rating: rating,
             discount: discount,
             discount_price: discount_price,
             category: category,
+            quantity_step: step,
             values: values),
       );
       DatabaseHelper.createItem(
@@ -182,28 +190,31 @@ class Which_page with ChangeNotifier, DiagnosticableTreeMixin {
           description_en,
           image,
           price,
-          1,
+          step,
           rating,
           discount,
           discount_price,
-          category);
+          category,
+          step);
     }
     notifyListeners();
   }
 
   void removeItem(
     int id,
-    int count,
+    double count,
   ) {
     if (_items.containsKey(id)) {
-      if (_items[id]!.count != 1) {
+      final double step = stepOf(_items[id]!.quantity_step);
+      // Bir adimdan kop bolsa - adim boyunca azaldyarys, yogsam sebetden ayyrylyar.
+      if (_items[id]!.count - step > 0.0001) {
         // _total_price=_total_price - _items[id]!.price;
-        _price = _price - _items[id]!.price;
+        _price = _price - (_items[id]!.price * step);
         if (_items[id]!.discount == 0) {
-          _total_price = _total_price - _items[id]!.price;
+          _total_price = _total_price - (_items[id]!.price * step);
         } else {
-          _dis = _dis - (_items[id]!.price - _items[id]!.discount_price);
-          _total_price = _total_price - _items[id]!.discount_price;
+          _dis = _dis - ((_items[id]!.price - _items[id]!.discount_price) * step);
+          _total_price = _total_price - (_items[id]!.discount_price * step);
         }
         _items.update(
           id,
@@ -217,14 +228,15 @@ class Which_page with ChangeNotifier, DiagnosticableTreeMixin {
               description_en: existingCartItem.description_en,
               image: existingCartItem.image,
               price: existingCartItem.price,
-              count: existingCartItem.count - 1,
+              count: roundQty(existingCartItem.count - step),
               rating: existingCartItem.rating,
               discount: existingCartItem.discount,
               discount_price: existingCartItem.discount_price,
               category: existingCartItem.category,
+              quantity_step: existingCartItem.quantity_step,
               values: existingCartItem.values),
         );
-        DatabaseHelper.updateItem(id, _items[id]!.count - 1);
+        DatabaseHelper.updateItem(id, _items[id]!.count);
       } else {
         _price = _price - _items[id]!.price * _items[id]!.count;
         if (_items[id]!.discount == 0) {

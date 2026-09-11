@@ -1,3 +1,4 @@
+import 'package:bamboo/values/models.dart';
 import 'package:bamboo/options_item.dart';
 import 'package:bamboo/providers/provider_items.dart';
 import 'package:bamboo/values/colors.dart';
@@ -20,15 +21,16 @@ class CartItemsLinear extends StatefulWidget {
   String description_en;
   String image;
   double price;
-  int count;
+  double count;
   double rating;
   int discount;
   double discount_price;
   String category;
   var values;
+  double quantity_step;
   CartItemsLinear(this.id, this.name_tm, this.name_ru, this.name_en, this.description_tm, this.description_ru, this.description_en, this.image, this.price, this.count, this.rating, this.discount,
       this.discount_price, this.category, this.values,
-      {super.key});
+      {this.quantity_step = 1.0, super.key});
 
   @override
   _CartItemsLinearState createState() => _CartItemsLinearState();
@@ -52,6 +54,7 @@ class _CartItemsLinearState extends State<CartItemsLinear> {
           Constants.op_image = widget.image;
           Constants.op_price = widget.price;
           Constants.op_count = widget.count;
+          Constants.op_quantity_step = widget.quantity_step;
           Constants.op_rating = widget.rating;
           Constants.op_discount = widget.discount;
           Constants.op_discount_price = widget.discount_price;
@@ -164,9 +167,9 @@ class _CartItemsLinearState extends State<CartItemsLinear> {
               GestureDetector(
                 onTap: () {
                   if (Provider.of<ProvItem>(context, listen: false).items[widget.id]?.count == null) {
-                    widget.count++;
+                    widget.count = roundQty(widget.count + widget.quantity_step);
                     Provider.of<ProvItem>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru,
-                        widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values);
+                        widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values, widget.quantity_step);
                   } else {
                     widget.count = 0;
                     Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, widget.count);

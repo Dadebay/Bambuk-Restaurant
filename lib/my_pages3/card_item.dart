@@ -1,3 +1,4 @@
+import 'package:bamboo/values/models.dart';
 import 'package:bamboo/options_item.dart';
 import 'package:bamboo/providers/favourite.dart';
 import 'package:bamboo/values/colors.dart';
@@ -21,18 +22,19 @@ class CardItem extends StatefulWidget {
   String description_en;
   String image;
   double price;
-  int count;
+  double count;
   double rating;
   int discount;
   double discount_price;
   String category;
   var values;
+  double quantity_step;
 
   final ScrollController? scrollController;
   final bool isGrid;
   CardItem(this.id, this.name_tm, this.name_ru, this.name_en, this.description_tm, this.description_ru, this.description_en, this.image, this.price, this.count, this.rating, this.discount,
       this.discount_price, this.category, this.values,
-      {super.key, this.scrollController, this.isGrid = false});
+      {super.key, this.scrollController, this.isGrid = false, this.quantity_step = 1.0});
 
   @override
   _CardItemState createState() => _CardItemState();
@@ -68,6 +70,7 @@ class _CardItemState extends State<CardItem> {
     Constants.op_image = widget.image;
     Constants.op_price = widget.price;
     Constants.op_count = widget.count;
+    Constants.op_quantity_step = widget.quantity_step;
     Constants.op_rating = widget.rating;
     Constants.op_discount = widget.discount;
     Constants.op_discount_price = widget.discount_price;
@@ -84,7 +87,7 @@ class _CardItemState extends State<CardItem> {
         : dil == 1
             ? widget.name_tm
             : widget.name_en;
-    final int cartCount = Provider.of<ProvItem>(context).items[widget.id]?.count ?? 0;
+    final double cartCount = Provider.of<ProvItem>(context).items[widget.id]?.count ?? 0;
     final bool isFav = Provider.of<Favourite>(context).items[widget.id]?.count != null;
 
     if (widget.isGrid) {
@@ -172,7 +175,7 @@ class _CardItemState extends State<CardItem> {
                           isFav
                               ? Provider.of<Favourite>(context, listen: false).removeItem(widget.id)
                               : Provider.of<Favourite>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru,
-                                  widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values);
+                                  widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values, widget.quantity_step);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(8),
@@ -260,7 +263,7 @@ class _CardItemState extends State<CardItem> {
                     _CartCounter(
                       count: cartCount,
                       onAdd: () {
-                        widget.count++;
+                        widget.count = roundQty(widget.count + widget.quantity_step);
                         Provider.of<ProvItem>(context, listen: false).addItem(
                           widget.id,
                           widget.name_tm,
@@ -277,12 +280,13 @@ class _CardItemState extends State<CardItem> {
                           widget.discount_price,
                           widget.category,
                           widget.values,
+                          widget.quantity_step,
                         );
                         setState(() {});
                       },
                       onRemove: () {
-                        widget.count--;
-                        Provider.of<Which_page>(context, listen: false).removeItem(widget.id, widget.count);
+                        widget.count = roundQty(widget.count - widget.quantity_step);
+                        Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, widget.count);
                         setState(() {});
                       },
                     ),
@@ -296,7 +300,7 @@ class _CardItemState extends State<CardItem> {
     );
   }
 
-  Widget _buildGridCard(BuildContext context, String name, int cartCount, bool isFav) {
+  Widget _buildGridCard(BuildContext context, String name, double cartCount, bool isFav) {
     return GestureDetector(
       onTap: _navigateToDetail,
       child: Container(
@@ -348,7 +352,7 @@ class _CardItemState extends State<CardItem> {
                           isFav
                               ? Provider.of<Favourite>(context, listen: false).removeItem(widget.id)
                               : Provider.of<Favourite>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru,
-                                  widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values);
+                                  widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values, widget.quantity_step);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(5),
@@ -386,7 +390,7 @@ class _CardItemState extends State<CardItem> {
                     _CartCounter(
                       count: cartCount,
                       onAdd: () {
-                        widget.count++;
+                        widget.count = roundQty(widget.count + widget.quantity_step);
                         Provider.of<ProvItem>(context, listen: false).addItem(
                           widget.id,
                           widget.name_tm,
@@ -403,12 +407,13 @@ class _CardItemState extends State<CardItem> {
                           widget.discount_price,
                           widget.category,
                           widget.values,
+                          widget.quantity_step,
                         );
                         setState(() {});
                       },
                       onRemove: () {
-                        widget.count--;
-                        Provider.of<Which_page>(context, listen: false).removeItem(widget.id, widget.count);
+                        widget.count = roundQty(widget.count - widget.quantity_step);
+                        Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, widget.count);
                         setState(() {});
                       },
                     ),
@@ -425,7 +430,7 @@ class _CardItemState extends State<CardItem> {
 
 // ── Compact +/- counter ───────────────────────────────────────────────────────
 class _CartCounter extends StatelessWidget {
-  final int count;
+  final double count;
   final VoidCallback onAdd;
   final VoidCallback onRemove;
 
@@ -446,7 +451,7 @@ class _CartCounter extends StatelessWidget {
           SizedBox(
             width: 30,
             child: Text(
-              '$count',
+              formatQuantity(count),
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: AppColors.primary,

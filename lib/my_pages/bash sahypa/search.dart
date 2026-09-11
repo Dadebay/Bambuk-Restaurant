@@ -54,7 +54,8 @@ class _SearchState extends State<Search> {
           description_en: mitem[i]['description_en'] ?? '',
           image: mitem[i]['image'],
           price: double.parse(mitem[i]['price']),
-          count: mitem[i]['count'],
+          count: toDouble(mitem[i]['count']),
+            quantity_step: stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
           rating: double.parse(mitem[i]['rating']),
           discount: mitem[i]['discount'],
           discount_price: double.parse(mitem[i]['discounted_price'] == null ? "0.00" : mitem[i]['discounted_price'].toString()),
@@ -178,7 +179,8 @@ class _SearchState extends State<Search> {
                     product[index].discount,
                     product[index].discount_price,
                     product[index].category,
-                    product[index].values);
+                    product[index].values,
+                    quantity_step: product[index].quantity_step);
               }),
     );
   }

@@ -109,7 +109,8 @@ class _MyFavouritesState extends State<MyFavourites> {
                         prov.items[prov.myid[index]]!.discount,
                         prov.items[prov.myid[index]]!.discount_price,
                         prov.items[prov.myid[index]]!.category,
-                        prov.items[prov.myid[index]]!.values);
+                        prov.items[prov.myid[index]]!.values,
+                        quantity_step: prov.items[prov.myid[index]]!.quantity_step);
                   }),
             ),
     );

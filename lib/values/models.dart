@@ -63,6 +63,29 @@ class CommentBanner {
   CommentBanner({required this.id, required this.nameTm, required this.nameRu, required this.contentTm, required this.contentRu, required this.imageTm, required this.imageRu});
 }
 
+/// JSON / SQLite-den gelen dinamik degeri guvenli sekilde double-a cevirir.
+double toDouble(dynamic value, {double fallback = 0.0}) {
+  if (value == null) return fallback;
+  if (value is num) return value.toDouble();
+  return double.tryParse(value.toString()) ?? fallback;
+}
+
+/// Adim bahasyny howpsuz alyarys: null, 0 ya-da minus bolsa 1.0 gaytarylyar.
+double stepOf(double? value) {
+  if (value == null || value <= 0) return 1.0;
+  return value;
+}
+
+/// Yuzuji nokat yalnysyny (0.30000000000000004) arassalayar.
+double roundQty(double value) => (value * 1000).round() / 1000;
+
+/// Mukdary gorkezmek ucin: 1.0 -> "1", 0.5 -> "0.5", 1.5 -> "1.5"
+String formatQuantity(double value) {
+  final rounded = (value * 1000).round() / 1000;
+  if (rounded == rounded.roundToDouble()) return rounded.toInt().toString();
+  return rounded.toString();
+}
+
 class products {
   int id;
   String name_tm;
@@ -73,11 +96,14 @@ class products {
   var description_en;
   String image;
   double price;
-  int count;
+  double count;
   double rating;
   int discount;
   double discount_price;
   String category;
+
+  /// Backend-den gelyan "quantity_step" (meselem 1 ya-da 0.5).
+  double quantity_step;
   var values;
   products(
       {required this.id,
@@ -94,6 +120,7 @@ class products {
       required this.discount,
       required this.discount_price,
       required this.category,
+      this.quantity_step = 1.0,
       required this.values});
   factory products.fromLocal(Map<String, dynamic> json) {
     return products(
@@ -105,12 +132,13 @@ class products {
       description_ru: json['description_ru'],
       description_en: json['description_en'],
       image: json['image'],
-      price: json['price'],
-      count: json['count'],
-      rating: json['rating'],
+      price: toDouble(json['price']),
+      count: toDouble(json['count']),
+      rating: toDouble(json['rating']),
       discount: json['discount'],
-      discount_price: json['discount_price'],
+      discount_price: toDouble(json['discount_price']),
       category: json['category'],
+      quantity_step: stepOf(toDouble(json['quantity_step'], fallback: 1.0)),
       values: json['values'],
     );
   }

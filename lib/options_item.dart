@@ -42,6 +42,7 @@ class _OptionsItemState extends State<OptionsItem> {
         image: Constants.op_image,
         price: Constants.op_price,
         count: Constants.op_count,
+        quantity_step: Constants.op_quantity_step,
         rating: Constants.op_rating,
         discount: Constants.op_discount,
         discount_price: Constants.op_discount_price,
@@ -459,6 +460,7 @@ class _OptionsItemState extends State<OptionsItem> {
                                       Constants.op_image = product[index].image;
                                       Constants.op_price = product[index].price;
                                       Constants.op_count = product[index].count;
+                                      Constants.op_quantity_step = product[index].quantity_step;
                                       Constants.op_rating = product[index].rating;
                                       Constants.op_discount = product[index].discount;
                                       Constants.op_discount_price = product[index].discount_price;
@@ -527,7 +529,7 @@ class _OptionsItemState extends State<OptionsItem> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             GestureDetector(
-              onTap: () => Provider.of<ProvItem>(context, listen: false).removeItem(Constants.op_id, 5),
+              onTap: () => Provider.of<ProvItem>(context, listen: false).removeItem(Constants.op_id, Constants.op_quantity_step),
               child: Container(
                 margin: const EdgeInsets.all(10),
                 width: 42,
@@ -537,7 +539,7 @@ class _OptionsItemState extends State<OptionsItem> {
               ),
             ),
             Text(
-              Provider.of<ProvItem>(context).items[Constants.op_id]!.count.toString(),
+              formatQuantity(Provider.of<ProvItem>(context).items[Constants.op_id]!.count),
               style: const TextStyle(color: Colors.black, fontSize: 22, fontFamily: 'GilroyBold'),
             ),
             GestureDetector(
@@ -551,12 +553,13 @@ class _OptionsItemState extends State<OptionsItem> {
                 Constants.op_description_en,
                 Constants.op_image,
                 Constants.op_price,
-                1,
+                Constants.op_quantity_step,
                 Constants.op_rating,
                 Constants.op_discount,
                 Constants.op_discount_price,
                 Constants.op_category,
                 Constants.op_values,
+                Constants.op_quantity_step,
               ),
               child: Container(
                 margin: const EdgeInsets.all(10),
@@ -583,12 +586,13 @@ class _OptionsItemState extends State<OptionsItem> {
         Constants.op_description_en,
         Constants.op_image,
         Constants.op_price,
-        1,
+        Constants.op_quantity_step,
         Constants.op_rating,
         Constants.op_discount,
         Constants.op_discount_price,
         Constants.op_category,
         Constants.op_values,
+        Constants.op_quantity_step,
       ),
       child: Container(
         height: 62,
