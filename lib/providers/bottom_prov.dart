@@ -11,6 +11,21 @@ class BottomProv with ChangeNotifier {
   int _page = 0;
   int get page => _page;
 
+  // FCM/local bildirime basylanda Profil sahypasyna (bottom-nav index 4)
+  // gecirmek üçin ulanylýar. Token her çagyrylanda artýar, şeýdip
+  // _MyHomePageState eýýäm Profil-de bolsa-da (page üýtgemedik bolsa-da)
+  // ýokarky TabController-i "Ресторан" tab-yna gaýtaryp bilýär.
+  int _profileRequestToken = 0;
+  int get profileRequestToken => _profileRequestToken;
+
+  static const int profileTabIndex = 4;
+
+  void goToProfile() {
+    _profileRequestToken++;
+    _page = profileTabIndex;
+    notifyListeners();
+  }
+
   bool _ver = false;
   bool get ver => _ver;
   bool _reg = false;

@@ -146,7 +146,9 @@ class _BannerScreen2State extends State<BannerScreen2> {
                     );
                   },
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.85,
+                    // Planşetde 0.85 ekran inliligi ~870dp bolýar - kart
+                    // tutuş ekrany eýeleýär. Şonuň üçin çäk goýulýar.
+                    width: MediaQuery.of(context).size.shortestSide >= 600 ? 400 : MediaQuery.of(context).size.width * 0.85,
                     margin: const EdgeInsets.symmetric(horizontal: 6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),

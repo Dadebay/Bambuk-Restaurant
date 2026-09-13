@@ -20,6 +20,9 @@ class SubCat extends StatefulWidget {
 }
 
 class _SubCatState extends State<SubCat> {
+  /// Planşet: gysga gyra 600dp-den uly bolsa.
+  bool _isTablet(BuildContext context) => MediaQuery.of(context).size.shortestSide >= 600;
+
   List<products> product = [];
   int _selected = 0;
   List<category_home2> children = [];
@@ -221,9 +224,13 @@ class _SubCatState extends State<SubCat> {
               ? Expanded(
                   child: GridView.builder(
                     padding: const EdgeInsets.only(left: 8),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.62,
+                    // Planşetde bir hatarda 3 haryt: 2 sany bolsa kartlar
+                    // aşa uly bolýar. Gabyň gatnaşygy hem üýtgeýär - surat
+                    // inlilik boýunça kwadrat, aşagyndaky ýazgy bolsa
+                    // hemişe ~130dp, şonuň üçin giň kartda gatnaşyk uludyr.
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: _isTablet(context) ? 3 : 2,
+                      childAspectRatio: _isTablet(context) ? 0.76 : 0.62,
                     ),
                     shrinkWrap: true,
                     physics: const ScrollPhysics(),

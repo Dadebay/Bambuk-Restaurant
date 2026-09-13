@@ -21,6 +21,9 @@ class OptionsItem extends StatefulWidget {
 }
 
 class _OptionsItemState extends State<OptionsItem> {
+  /// Planşet: gysga gyra 600dp-den uly bolsa.
+  bool _isTablet(BuildContext context) => MediaQuery.of(context).size.shortestSide >= 600;
+
   bool descrip = true;
   bool vis_size = true;
   bool vis_color = true;
@@ -164,16 +167,20 @@ class _OptionsItemState extends State<OptionsItem> {
             padding: EdgeInsets.zero,
             children: [
               // ── Hero image ──────────────────────────────────────────────
+              // Planşetde surat gaby has giň (1024dp) bolýar, `cover` bolsa
+              // suratyň ýokarsyny we aşagyny kesip taşlaýar. Şonuň üçin uly
+              // ekranda surat `contain` bilen doly görkezilýär.
               SizedBox(
-                height: size.height * 0.48,
+                height: _isTablet(context) ? size.height * 0.42 : size.height * 0.48,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
+                    if (_isTablet(context)) Container(color: Colors.grey.shade100),
                     CachedNetworkImage(
-                      fit: BoxFit.cover,
+                      fit: _isTablet(context) ? BoxFit.contain : BoxFit.cover,
                       imageUrl: widget.image,
                       placeholder: (_, __) => Container(color: Colors.grey.shade200),
-                      errorWidget: (_, __, ___) => Image.asset(logoImage, fit: BoxFit.cover),
+                      errorWidget: (_, __, ___) => Image.asset(logoImage, fit: BoxFit.contain),
                     ),
                     // bottom fade so content card blends into image
                     Positioned(

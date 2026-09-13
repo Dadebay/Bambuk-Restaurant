@@ -1,3 +1,4 @@
+import 'package:bamboo/values/call_helper.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -15,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 class Page1 extends StatefulWidget {
   const Page1({super.key});
@@ -54,7 +54,7 @@ class _Page1State extends State<Page1> {
                 ),
               )),
               IconButton(
-                  onPressed: () => UrlLauncher.launch("tel://+99363334994"),
+                  onPressed: () => callRestaurant(context),
                   icon: const Icon(
                     IconlyBold.call,
                     color: AppColors.primary,
@@ -181,7 +181,8 @@ class _Page1State extends State<Page1> {
                     itemBuilder: (context, index) {
                       final review = snapshot.data![index];
                       return SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.75,
+                        // Planşetde kart aşa giň bolmaz ýaly çäk.
+                        width: MediaQuery.of(context).size.shortestSide >= 600 ? 360 : MediaQuery.of(context).size.width * 0.75,
                         child: ReviewCard(
                           image: review.image!,
                           date: review.date!,

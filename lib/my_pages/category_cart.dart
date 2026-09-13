@@ -27,6 +27,10 @@ class CategoryCart extends StatefulWidget {
 
 class _CategoryCartState extends State<CategoryCart> {
   final _cardKey = GlobalKey();
+  bool _pressed = false;
+
+  /// Planşet: gysga gyra 600dp-den uly bolsa.
+  bool get _isTablet => MediaQuery.of(context).size.shortestSide >= 600;
 
   @override
   void initState() {
@@ -72,7 +76,16 @@ class _CategoryCartState extends State<CategoryCart> {
         Constants.myCatName = name;
         Navigator.push(context, MaterialPageRoute(builder: (_) => const SubCat()));
       },
-      child: widget.isGrid ? _buildGridCard(context, name) : _buildListCard(context, name),
+      // Basylanda kart azajyk kiçelýär - degilendigi duýulýar.
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.97 : 1,
+        duration: const Duration(milliseconds: 130),
+        curve: Curves.easeOut,
+        child: widget.isGrid ? _buildGridCard(context, name) : _buildListCard(context, name),
+      ),
     );
   }
 
@@ -163,65 +176,114 @@ class _CategoryCartState extends State<CategoryCart> {
   }
 
   Widget _buildGridCard(BuildContext context, String name) {
+    // Planşetde kart ulurak, şonuň üçin gyralar hem has tegelek bolmaly -
+    // kiçijik radius uly kartda "kesilen" ýaly görünýär.
+    final double radius = _isTablet ? 22 : 14;
+    final double stripH = _isTablet ? 64 : 58;
+    final double fontSize = _isTablet ? 15 : 13;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final totalH = constraints.maxHeight.isFinite ? constraints.maxHeight : 190.0;
         final totalW = constraints.maxWidth.isFinite ? constraints.maxWidth : 200.0;
-        final imageH = totalH - 58;
-        final cacheW = (totalW * 2).toInt(); // retina için x2
+        final imageH = totalH - stripH;
+        final cacheW = (totalW * 2).toInt(); // retina üçin x2
         final cacheH = (imageH * 2).toInt();
+
         return Container(
           key: _cardKey,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(radius),
+            // Iki gatly kölege: ýakyn we ýiti + uzak we ýumşak. Bir gatly
+            // kölegeden tapawutlylykda kart tekiz ýerde duran ýaly görünýär.
             boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.10),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
+              BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 4, offset: const Offset(0, 1)),
+              BoxShadow(color: Colors.black.withOpacity(0.07), blurRadius: 18, offset: const Offset(0, 8)),
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(radius),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // ── Üst: resim alanı ────────────────────────────
+                // ── Ýokarky bölek: surat ────────────────────────
                 SizedBox(
                   width: totalW,
                   height: imageH,
-                  child: CachedNetworkImage(
-                    fit: BoxFit.fill,
-                    imageUrl: widget.image,
-                    memCacheWidth: cacheW,
-                    memCacheHeight: cacheH,
-                    placeholder: (_, __) => Container(color: Colors.grey.shade100),
-                    errorWidget: (_, __, ___) => Container(
-                      color: Colors.grey.shade200,
-                      child: Image.asset(logoImage, fit: BoxFit.fill),
-                    ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CachedNetworkImage(
+                        // `fill` suraty gerýärdi - telefonda we planşetde kartyň
+                        // gatnaşygy başga bolany üçin nahar süýnüp görünýärdi.
+                        // `cover` gerýän däl-de, gyrasyndan kesýär.
+                        fit: BoxFit.cover,
+                        imageUrl: widget.image,
+                        memCacheWidth: cacheW,
+                        memCacheHeight: cacheH,
+                        placeholder: (_, __) => Container(color: Colors.grey.shade100),
+                        errorWidget: (_, __, ___) => Container(
+                          color: Colors.grey.shade200,
+                          child: Center(child: Image.asset(logoImage, fit: BoxFit.contain)),
+                        ),
+                      ),
+                      // Suratyň aşak gyrasy ak zolaga ýumşak geçýär.
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: 28,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [Colors.black.withOpacity(0.16), Colors.transparent],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
-                // ── Alt: beyaz şerit — kategori adı ─────────────
+                // ── Aşaky bölek: kategoriýanyň ady ──────────────
                 Expanded(
                   child: Container(
                     color: Colors.white,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                    child: Text(
-                      name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.black87,
-                        fontFamily: 'GilroyBold',
-                        fontSize: 13,
-                        height: 1.3,
-                      ),
+                    padding: EdgeInsets.symmetric(horizontal: _isTablet ? 12 : 8, vertical: 6),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            name,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontFamily: 'GilroyBold',
+                              fontSize: fontSize,
+                              height: 1.25,
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        // Kartyň basylýandygyny aňladýan kiçijik ok.
+                        Container(
+                          width: _isTablet ? 26 : 22,
+                          height: _isTablet ? 26 : 22,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: _isTablet ? 12 : 10,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

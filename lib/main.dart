@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -25,7 +26,6 @@ import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
 import 'package:bamboo/values/firebase_messaging_service.dart';
 import 'package:bamboo/values/local_notifications_service.dart';
-import 'package:bamboo/webview_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -45,12 +45,6 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  final localNotificationsService = LocalNotificationsService.instance();
-  await localNotificationsService.init();
-
-  final firebaseMessagingService = FirebaseMessagingService.instance();
-  await firebaseMessagingService.init(localNotificationsService: localNotificationsService);
-  await FirebaseMessaging.instance.subscribeToTopic('ttf_channel');
   runApp(
     MultiProvider(
       providers: [
@@ -64,6 +58,31 @@ Future<void> main() async {
       child: const MyApp(),
     ),
   );
+
+  // Bildiris gurnamalary interfeys acylandan SON, arka planda edilyar.
+  // Ozal bular `runApp`-dan on garasylyardy: FCM cagyrysynyn biri
+  // jogap bermese (mysal ucin simulyatorda `subscribeToTopic`),
+  // programma hic acylman gara ekran bolup galyardy.
+  unawaited(_initNotifications());
+}
+
+/// Bildiris hyzmatlary. Bu yerdaki hic bir yalnyslyk programma acylmagyna
+/// paidal etmeli dal - sonun ucin hemmesi try/catch we wagt cakli bilen.
+Future<void> _initNotifications() async {
+  try {
+    final localNotificationsService = LocalNotificationsService.instance();
+    await localNotificationsService.init();
+
+    final firebaseMessagingService = FirebaseMessagingService.instance();
+    await firebaseMessagingService.init(localNotificationsService: localNotificationsService);
+
+    await FirebaseMessaging.instance.subscribeToTopic('ttf_channel').timeout(const Duration(seconds: 10));
+    debugPrint('✅ Bildiris hyzmaty taýýar');
+  } on TimeoutException {
+    debugPrint('⏱️ Bildiris hyzmaty wagtynda jogap bermedi - dowam edilýär');
+  } catch (e) {
+    debugPrint('⚠️ Bildiris hyzmaty başlamady: $e');
+  }
 }
 
 @pragma('vm:entry-point')
@@ -175,49 +194,22 @@ class _MyAppState extends State<MyApp> {
   void _handleMessage(RemoteMessage? message) {
     if (message == null) return;
 
-    // Extract URL from data payload based on platform
-    String? urlToLaunch;
-
-    // Platform-specific link extraction
-    if (Platform.isAndroid) {
-      urlToLaunch = message.data['android_link'];
-    } else if (Platform.isIOS) {
-      urlToLaunch = message.data['ios_link'];
-    }
-
-    // Fallback to generic 'url' field if platform-specific link not found
-    if (urlToLaunch == null || urlToLaunch.isEmpty) {
-      urlToLaunch = message.data['url'];
-    }
-
-    // Fallback to body if it's a URL
-    if ((urlToLaunch == null || urlToLaunch.isEmpty) &&
-        message.notification?.body != null &&
-        (message.notification!.body!.startsWith('http://') || message.notification!.body!.startsWith('https://'))) {
-      urlToLaunch = message.notification!.body;
-    }
-
     print('');
-    print('🔗 HANDLING MESSAGE 🔗');
+    print('🔔 HANDLING MESSAGE - PROFIL SAHYPASYNA GEÇILÝÄR 🔔');
     print('═══════════════════════════════════════════════════════════════');
-    print('URL: $urlToLaunch');
+    print('Message data: ${message.data}');
     print('═══════════════════════════════════════════════════════════════');
     print('');
 
-    if (urlToLaunch != null && urlToLaunch.isNotEmpty) {
-      debugPrint('Navigating to WebViewPage with: $urlToLaunch');
-      // Biraz bekle ve sonra navigate et (GetX context hazır olması için)
-      Future.delayed(const Duration(milliseconds: 500), () {
-        Get.to(() => WebViewPage(url: urlToLaunch!));
-      });
-    } else {
-      debugPrint('No valid URL found. Navigating to Notifications');
-      Future.delayed(const Duration(milliseconds: 500), () {
-        // Eyyam bildirimler sahypasynda bolsak, gaytadan acmayarys.
-        if (Get.currentRoute == '/notifications') return;
-        Get.toNamed('/notifications');
-      });
-    }
+    // Bildirime basylanda (aplikasiýa açyk, arka planda ýa-da ýapyk bolsun)
+    // hemişe Profil sahypasyna geçilýär. Biraz bekleýäris, sebäbi ýapyk
+    // aplikasiýa ýagdaýynda Splash entek MyHomePage-i gurmadyk bolup biler.
+    // BottomProv aplikasiýanyň ömri boýunça ýaşaýan singleton bolany üçin,
+    // MyHomePage entek gurulmadyk hem bolsa, "page" bahasy ýazylyp galýar
+    // we MyHomePage gurlanda ony okap dogry sahypany görkezýär.
+    Future.delayed(const Duration(milliseconds: 500), () {
+      Provider.of<BottomProv>(context, listen: false).goToProfile();
+    });
   }
 
   // İlk frame render edildikten sonra initial message'ı handle et
@@ -312,6 +304,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   final GlobalKey<NavigatorState> _tabNavKey5 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_5');
   late List<Widget> _bottomBarPages;
   bool _pagesInitialized = false;
+  int _handledProfileRequestToken = 0;
 
   @override
   void dispose() {
@@ -329,6 +322,10 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         setState(() {});
       }
     });
+    // Aşakda BottomProv.goToProfile() çagyrylanda diňe täze token'lary
+    // işlemek üçin başlangyç bahany saklaýarys (aplikasiýa täze açylanda
+    // ýokarky tab-y gereksiz ýere "Ресторан"-a atlatmazlyk üçin).
+    _handledProfileRequestToken = Provider.of<BottomProv>(context, listen: false).profileRequestToken;
   }
 
   @override
@@ -493,17 +490,29 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    selectedIndex = Provider.of<BottomProv>(context).page;
+    final bottomProv = Provider.of<BottomProv>(context);
+    selectedIndex = bottomProv.page;
 
     // BottomProv.setPage(...) islendik yerden cagyrylsa-da (meselem sargyt
     // tassyklanandan son), PageView-in ozi hem sol sahypa gecmeli.
     // PageView-in fizikasy NeverScrollable, sonun ucin dine _pageController
     // ony hereketlendirip bilyar.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_pageController.hasClients) return;
-      final int current = _pageController.page?.round() ?? _pageController.initialPage;
-      if (current != selectedIndex) {
-        _pageController.jumpToPage(selectedIndex);
+      if (!mounted) return;
+      if (_pageController.hasClients) {
+        final int current = _pageController.page?.round() ?? _pageController.initialPage;
+        if (current != selectedIndex) {
+          _pageController.jumpToPage(selectedIndex);
+        }
+      }
+      // Bildirime basylyp BottomProv.goToProfile() cagyrylsa, "Ресторан"
+      // tab-ynda dal bolsak-da, ony yzyna gaytarmaly (Profil diňe şol
+      // tab-yn icindaki PageView-de bar).
+      if (bottomProv.profileRequestToken != _handledProfileRequestToken) {
+        _handledProfileRequestToken = bottomProv.profileRequestToken;
+        if (_tabController.index != 0) {
+          _tabController.animateTo(0);
+        }
       }
     });
 

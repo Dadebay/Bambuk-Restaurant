@@ -1,3 +1,4 @@
+import 'package:bamboo/values/call_helper.dart';
 import 'package:bamboo/my_pages/cart_items.dart';
 import 'package:bamboo/providers/favourite.dart';
 import 'package:bamboo/providers/page1provider.dart';
@@ -8,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 class MyFavourites extends StatefulWidget {
   const MyFavourites({super.key});
@@ -33,7 +33,7 @@ class _MyFavouritesState extends State<MyFavourites> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () => UrlLauncher.launch("tel://+99363334994"),
+              onPressed: () => callRestaurant(context),
               icon: const Icon(
                 IconlyBold.call,
                 color: AppColors.primary,
@@ -81,13 +81,27 @@ class _MyFavouritesState extends State<MyFavourites> {
                 ],
               ),
             )
-          : Container(
-              color: Colors.white,
+          : Padding(
+              // Ak fon aýryldy: Scaffold dury (transparent), aşakdaky
+              // bambuk suraty görünmeli - ak gutujyk ony ýapýardy.
               padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-              child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisExtent: 315,
+              child: LayoutBuilder(builder: (context, box) {
+                // Kartyň suraty kwadrat (AspectRatio 1.0), şonuň üçin kartyň
+                // boýy onuň inliligine bagly. Planşetde 2 sütünde öýjük
+                // 497dp bolup, 315dp-lik beýiklige sygman daşyna çykýardy.
+                final bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+                final int cross = isTablet ? 3 : 2;
+                final double spacing = isTablet ? 14 : 0;
+                final double cellW = (box.maxWidth - spacing * (cross - 1)) / cross;
+                // ýazgy zolagy: gyralar + bir setir at + aralyk + düwme
+                final double extent = isTablet ? cellW + 92 : 315;
+
+                return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: cross,
+                    crossAxisSpacing: spacing,
+                    mainAxisSpacing: spacing,
+                    mainAxisExtent: extent,
                   ),
                   shrinkWrap: true,
                   physics: const ScrollPhysics(),
@@ -111,7 +125,8 @@ class _MyFavouritesState extends State<MyFavourites> {
                         prov.items[prov.myid[index]]!.category,
                         prov.items[prov.myid[index]]!.values,
                         quantity_step: prov.items[prov.myid[index]]!.quantity_step);
-                  }),
+                  });
+              }),
             ),
     );
   }

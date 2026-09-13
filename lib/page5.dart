@@ -1,3 +1,4 @@
+import 'package:bamboo/values/call_helper.dart';
 import 'package:bamboo/DB/db.dart';
 import 'package:bamboo/my_pages5/comments.dart';
 import 'package:bamboo/my_pages5/chat_page.dart';
@@ -20,7 +21,6 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:http/http.dart' as http;
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'dart:convert';
 
 import 'my_orders/main_orders.dart';
@@ -97,7 +97,7 @@ class _Page5State extends State<Page5> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () => url_launcher.launchUrl(Uri.parse("tel://+99363334994")),
+            onPressed: () => callRestaurant(context),
             icon: const Icon(
               IconlyBold.call,
               color: AppColors.primary,

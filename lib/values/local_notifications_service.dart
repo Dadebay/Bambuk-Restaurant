@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:bamboo/providers/bottom_prov.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:bamboo/user_reviews_page/notifications_page.dart';
-import 'package:bamboo/webview_app.dart';
+import 'package:provider/provider.dart';
 
 class LocalNotificationsService {
   LocalNotificationsService._();
@@ -35,25 +35,17 @@ class LocalNotificationsService {
     final String? payload = notificationResponse.payload;
 
     print('');
-    print('🔔 NOTIFICATION TAPPED 🔔');
+    print('🔔 NOTIFICATION TAPPED - PROFIL SAHYPASYNA GEÇILÝÄR 🔔');
     print('═══════════════════════════════════════════════════════════════');
     print('Payload: $payload');
     print('═══════════════════════════════════════════════════════════════');
     print('');
 
-    // Payload bir URL ise webview acylyar, yogsam profildaki bildirimler sahypasyna gecyaris.
-    if (payload != null && (payload.startsWith('http://') || payload.startsWith('https://'))) {
-      Get.to(() => WebViewPage(url: payload));
-    } else {
-      _openNotificationsPage();
-    }
-  }
-
-  /// Bildirimlere basylanda profildaki "Bildirimler" sahypasyny acyar.
-  void _openNotificationsPage() {
-    // Eyyam sol sahypada bolsak, gaytadan acmayarys.
-    if (Get.currentRoute == '/notifications') return;
-    Get.to(() => const NotificationsPage(), routeName: '/notifications');
+    // Bildirime basylanda (aplikasiýa öňdurumynda goşmaça görkezilen ýerli
+    // bildirim bolsa-da) hemişe Profil sahypasyna geçilýär.
+    final context = Get.context;
+    if (context == null) return;
+    Provider.of<BottomProv>(context, listen: false).goToProfile();
   }
 
   Future<void> showNotification({

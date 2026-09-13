@@ -78,7 +78,8 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
 
     http.Response response;
     try {
-      response = await http.post(url, body: headers);
+      // Wagt cakli: server jogap bermese-de ekran hemise aylanyp durmaly dal.
+      response = await http.post(url, body: headers).timeout(const Duration(seconds: 25));
     } catch (e, st) {
       ApiLog.error(tag: 'LOGIN / OTP SORAG', error: e, stackTrace: st);
       if (!mounted) return;
@@ -760,10 +761,13 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                           _showPhoneWarning();
                           return;
                         }
-                        sending(loginName.text);
+                        // Ilki loading, sonra isleg: `sending` icinde ilkinji
+                        // `await`-e cenli sinhron isleyar - tersine bolsa iki
+                        // gezek basylanda iki isleg gidip biler.
                         setState(() {
                           loading = true;
                         });
+                        sending(loginName.text);
                       },
                     ),
                     SizedBox(height: 28),

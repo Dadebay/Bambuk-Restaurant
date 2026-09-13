@@ -57,6 +57,9 @@ class CartItems extends StatefulWidget {
 }
 
 class _CartItemsState extends State<CartItems> {
+  /// Planşet: gysga gyra 600dp-den uly bolsa.
+  bool get _isTablet => MediaQuery.of(context).size.shortestSide >= 600;
+
   void _navigateToDetail() {
     Constants.op_id = widget.id;
     Constants.op_name_tm = widget.name_tm;
@@ -188,20 +191,22 @@ class _CartItemsState extends State<CartItems> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Product name
+                    // Product name - planşetde bir setir, has uly harp.
+                    // Ady backend-den "Kod:0101" bilen bile gelýär, iki setirde
+                    // kart nädogry uzalýardy.
                     Text(
                       name,
-                      maxLines: 2,
+                      maxLines: _isTablet ? 1 : 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.black,
                         fontFamily: 'Semi',
-                        fontSize: 13,
+                        fontSize: _isTablet ? 15 : 13,
                         fontWeight: FontWeight.w700,
                         height: 1.3,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: _isTablet ? 8 : 10),
                     // Cart button with price
                     _addCartButton(context),
                   ],

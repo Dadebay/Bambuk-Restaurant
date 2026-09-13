@@ -130,8 +130,16 @@ class _MainVisiblesState extends State<MainVisibles> {
             ],
           ),
         ),
-        Container(
-          height: 290,
+        Builder(builder: (context) {
+        // Halanýanlar sahypasyndaky kart bilen deň ölçeg: kartyň suraty
+        // kwadrat, şonuň üçin boýy = ini + ýazgy zolagy (~92dp: gyralar +
+        // bir setir at + aralyk + 44dp düwme). Öňki 250x375 kartda at
+        // sygman kesilýärdi we aşakda boş ak ýer galýardy.
+        final bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+        final double cardW = isTablet ? 300 : 180;
+
+        return Container(
+          height: isTablet ? cardW + 92 : 290,
           alignment: Alignment.centerLeft,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -141,7 +149,7 @@ class _MainVisiblesState extends State<MainVisibles> {
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               return SizedBox(
-                width: 180,
+                width: cardW,
                 child: CartItems(
                     widget.items[index].id,
                     widget.items[index].name_tm,
@@ -162,7 +170,8 @@ class _MainVisiblesState extends State<MainVisibles> {
               );
             },
           ),
-        ),
+        );
+        }),
       ],
     );
   }

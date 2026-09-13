@@ -30,7 +30,9 @@ class _MainCatState extends State<MainCat> {
           topPartName(prov, context),
           const SizedBox(height: 12),
           SizedBox(
-            height: 220,
+            // Planşetde hatar we kartlar ulurak - kiçijik kartlar uly
+            // ekranda ýitip gidýär.
+            height: MediaQuery.of(context).size.shortestSide >= 600 ? 300 : 220,
             child: ListView.builder(
                 padding: const EdgeInsets.only(left: 14, bottom: 15),
                 itemCount: Constants.category.length,
@@ -153,6 +155,11 @@ class _CategoryCard extends StatelessWidget {
             ? category.name_ru
             : category.name_en;
 
+    final bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+    final double cardW = isTablet ? 220 : 150;
+    final double imageH = isTablet ? 220 : 158;
+    final double radius = isTablet ? 20 : 14;
+
     return GestureDetector(
       onTap: () async {
         Constants.children = category.children;
@@ -164,33 +171,31 @@ class _CategoryCard extends StatelessWidget {
         );
       },
       child: Container(
-        width: 150,
-        margin: const EdgeInsets.symmetric(horizontal: 8),
+        width: cardW,
+        margin: EdgeInsets.symmetric(horizontal: isTablet ? 10 : 8),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(radius),
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.10),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
+            BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 4, offset: const Offset(0, 1)),
+            BoxShadow(color: Colors.black.withOpacity(0.07), blurRadius: 18, offset: const Offset(0, 8)),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(radius),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // ── Üst: resim alanı ──────────────────────────────
               SizedBox(
-                width: 150,
-                height: 158, // 220 - 62 = metin için yer
+                width: cardW,
+                height: imageH, // hatar boýy - ýazgy zolagy
                 child: CachedNetworkImage(
-                  fit: BoxFit.fill,
+                  // `fill` suraty gerýärdi; `cover` gyrasyndan kesýär.
+                  fit: BoxFit.cover,
                   imageUrl: category.image,
-                  memCacheWidth: 300,
-                  memCacheHeight: 316,
+                  memCacheWidth: (cardW * 2).toInt(),
+                  memCacheHeight: (imageH * 2).toInt(),
                   placeholder: (context, url) => Container(
                     color: Colors.grey[200],
                     child: const Center(
@@ -218,11 +223,12 @@ class _CategoryCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.black87,
-                      fontSize: 13,
+                      fontSize: isTablet ? 15 : 13,
                       fontFamily: 'GilroyBold',
                       height: 1.3,
+                      letterSpacing: -0.2,
                     ),
                   ),
                 ),

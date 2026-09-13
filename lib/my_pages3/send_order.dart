@@ -235,6 +235,7 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      constraints: _sheetConstraints,
       builder: (BuildContext ctx) {
         final dil = Provider.of<Which_page>(ctx, listen: false).dil;
         return Container(
@@ -511,6 +512,11 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
     );
   }
 
+  // ─────────────── Ölçege görä ýerleşdiriş ───────────────
+
+  /// Aşaky penjireler planşetde tutuş ekrana ýaýrap gitmez ýaly çäklendirilýär.
+  static const BoxConstraints _sheetConstraints = BoxConstraints(maxWidth: 560);
+
   @override
   Widget build(BuildContext context) {
     final pageProvider = Provider.of<Which_page>(context);
@@ -531,27 +537,81 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
           style: const TextStyle(fontFamily: gilroyBold, fontSize: 18, color: Colors.black),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-        children: [
-          _buildTimeCard(context, dil),
-          const SizedBox(height: 10),
-          _buildOrderTypeCard(dil, context),
-          const SizedBox(height: 10),
-          _buildPaymentCard(dil),
-          if (_ii == 1) const SizedBox(height: 10),
-          if (_ii == 1) _buildBonusCard(dil),
-          if (_ii == 3) const SizedBox(height: 10),
-          if (_ii == 3) _buildBankCard(dil),
-          if (_typeOrder == 2) const SizedBox(height: 10),
-          if (_typeOrder == 2) _buildAddressCard(dil, context),
-          const SizedBox(height: 10),
-          _buildNoteCard(dil),
-          const SizedBox(height: 16),
-          _buildPriceInfo(context, dil),
-          const SizedBox(height: 16),
-          _buildSendButton(context, pageProvider),
-        ],
+      body: LayoutBuilder(
+        builder: (context, box) {
+          final double width = box.maxWidth;
+          // Iki sütün: planşetiň keseligine görnüşi ýaly giň ekranlarda
+          // saýlawlar çepde, hasap bilen tassyklama düwmesi sagda durýar.
+          final bool twoColumns = width >= 900;
+          final double pad = width >= 600 ? 24 : 16;
+
+          // Çep sütün: sargyt barada saýlawlar
+          final List<Widget> choices = [
+            _buildTimeCard(context, dil),
+            const SizedBox(height: 10),
+            _buildOrderTypeCard(dil, context),
+            const SizedBox(height: 10),
+            _buildPaymentCard(dil),
+            if (_ii == 1) const SizedBox(height: 10),
+            if (_ii == 1) _buildBonusCard(dil),
+            if (_ii == 3) const SizedBox(height: 10),
+            if (_ii == 3) _buildBankCard(dil),
+            if (_typeOrder == 2) const SizedBox(height: 10),
+            if (_typeOrder == 2) _buildAddressCard(dil, context),
+          ];
+
+          // Sag sütün: bellik, hasap we tassyklama
+          final List<Widget> summary = [
+            _buildNoteCard(dil),
+            const SizedBox(height: 16),
+            _buildPriceInfo(context, dil),
+            const SizedBox(height: 16),
+            _buildSendButton(context, pageProvider),
+          ];
+
+          if (twoColumns) {
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1100),
+                child: ListView(
+                  padding: EdgeInsets.fromLTRB(pad, pad, pad, 100),
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: choices),
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          flex: 4,
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: summary),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          // Dar we orta ekranlar: bir sütün, ýöne planşetde kartlar
+          // tutuş ekrana çekilmän, ortada çäklendirilen inlilikde durýar.
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: ListView(
+                padding: EdgeInsets.fromLTRB(pad, pad, pad, 100),
+                children: [
+                  ...choices,
+                  const SizedBox(height: 10),
+                  ...summary,
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -578,6 +638,7 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      constraints: _sheetConstraints,
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx, setSheet) {
@@ -1096,6 +1157,7 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      constraints: _sheetConstraints,
       builder: (ctx) {
         return Container(
           constraints: BoxConstraints(maxHeight: MediaQuery.of(ctx).size.height * 0.7),

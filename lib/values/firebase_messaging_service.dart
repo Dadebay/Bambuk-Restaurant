@@ -13,6 +13,33 @@ class FirebaseMessagingService {
 
   factory FirebaseMessagingService.instance() => _instance;
 
+  /// FCM token: iOS-da APNS token gelmese `getToken()` yalnyslyk zynyar.
+  /// Simulyatorda APNS hic hacan gelmeyar - sonun ucin bu yagdaý sessiz
+  /// gecirilyar, yogsam `main()` bolunip, ekran gara bolup galyar.
+  Future<void> _printFcmToken() async {
+    try {
+      if (Platform.isIOS) {
+        final String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+        if (apnsToken == null) {
+          debugPrint('APNS token yok (simulyator bolmagy mumkin) - FCM token soralanok.');
+          return;
+        }
+      }
+      final String? token = await FirebaseMessaging.instance.getToken();
+      print('');
+      print('═══════════════════════════════════════════════════════════════');
+      print('🔥 FIREBASE FCM TOKEN 🔥');
+      print('═══════════════════════════════════════════════════════════════');
+      print('Platform: ${Platform.isAndroid ? "ANDROID" : Platform.isIOS ? "iOS" : "Unknown"}');
+      print('Token: $token');
+      print('═══════════════════════════════════════════════════════════════');
+      print('');
+      debugPrint('FCM Token: $token');
+    } catch (e) {
+      debugPrint('FCM token alynmady: $e');
+    }
+  }
+
   Future<void> init({
     required LocalNotificationsService localNotificationsService,
   }) async {
@@ -52,17 +79,7 @@ class FirebaseMessagingService {
       sound: true,
     );
 
-    await FirebaseMessaging.instance.getToken().then((token) {
-      print('');
-      print('═══════════════════════════════════════════════════════════════');
-      print('🔥 FIREBASE FCM TOKEN 🔥');
-      print('═══════════════════════════════════════════════════════════════');
-      print('Platform: ${Platform.isAndroid ? "ANDROID" : Platform.isIOS ? "iOS" : "Unknown"}');
-      print('Token: $token');
-      print('═══════════════════════════════════════════════════════════════');
-      print('');
-      debugPrint('FCM Token: $token');
-    });
+    await _printFcmToken();
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print('');
