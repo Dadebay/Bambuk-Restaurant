@@ -1,18 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 class Counter with ChangeNotifier, DiagnosticableTreeMixin {
   int _count = 0;
 
   int get count => _count;
-  String phone="";
+  String phone = "";
 
   void increment() {
-    _count=1;
+    _count = 1;
     notifyListeners();
   }
+
   void decrement() {
-    _count=1;
+    _count = 1;
     notifyListeners();
   }
 
@@ -22,4 +22,4 @@ class Counter with ChangeNotifier, DiagnosticableTreeMixin {
     super.debugFillProperties(properties);
     properties.add(IntProperty('count', count));
   }
-  }
+}

@@ -345,9 +345,9 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
             const SizedBox(height: 6),
-            Text(
+            const Text(
               '💬',
-              style: const TextStyle(fontSize: 28),
+              style: TextStyle(fontSize: 28),
             ),
           ],
         ),
@@ -370,7 +370,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
             child: Row(
               children: [
-                Icon(IconlyLight.info_circle, color: AppColors.primary, size: 20),
+                const Icon(IconlyLight.info_circle, color: AppColors.primary, size: 20),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(

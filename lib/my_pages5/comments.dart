@@ -126,7 +126,7 @@ class _CommentsState extends State<Comments> {
               ),
               child: Row(
                 children: [
-                  Icon(IconlyLight.info_circle, color: AppColors.primary, size: 20),
+                  const Icon(IconlyLight.info_circle, color: AppColors.primary, size: 20),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(

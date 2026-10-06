@@ -189,8 +189,8 @@ class _ActionButton extends StatelessWidget {
       child: Container(
         height: 48,
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(16),
             bottomRight: Radius.circular(16),
           ),

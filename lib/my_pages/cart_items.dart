@@ -254,7 +254,7 @@ class _CartItemsState extends State<CartItems> {
         height: 44,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: inCart ? Colors.red.shade400 : Color.fromARGB(255, 28, 192, 19),
+          color: inCart ? Colors.red.shade400 : const Color.fromARGB(255, 28, 192, 19),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

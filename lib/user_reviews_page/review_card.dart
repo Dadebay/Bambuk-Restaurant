@@ -114,7 +114,7 @@ class ReviewCard extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
-                        Icon(
+                        const Icon(
                           Icons.arrow_forward_ios_rounded,
                           size: 14,
                           color: AppColors.primary,

@@ -88,7 +88,7 @@ class _UserInfState extends State<UserInf> {
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white.withOpacity(0.5), width: 2),
               ),
-              child: Icon(IconlyBold.profile, color: Colors.white, size: 40)),
+              child: const Icon(IconlyBold.profile, color: Colors.white, size: 40)),
           const SizedBox(height: 12),
           if (fullName.isNotEmpty)
             Text(

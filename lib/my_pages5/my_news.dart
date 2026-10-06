@@ -12,7 +12,7 @@ import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:http/http.dart' as http;
 
 class MyNews extends StatefulWidget {
-  const MyNews({Key? key}) : super(key: key);
+  const MyNews({super.key});
 
   @override
   _MyNewsState createState() => _MyNewsState();
@@ -30,23 +30,17 @@ class _MyNewsState extends State<MyNews> {
           id: mitem[i]['id'],
           name_tm: (mitem[i]['title_tm'] != null) ? mitem[i]['title_tm'] : '',
           name_ru: (mitem[i]['title_ru'] != null) ? mitem[i]['title_ru'] : '',
-          body_tm: (mitem[i]['body_tm'] != null)
-              ? mitem[i]['body_tm'].toString().replaceAll('<h3>', '')
-              : '',
+          body_tm: (mitem[i]['body_tm'] != null) ? mitem[i]['body_tm'].toString().replaceAll('<h3>', '') : '',
           body_ru: (mitem[i]['body_ru'] != null) ? mitem[i]['body_ru'] : '',
-          date: (mitem[i]['date_start'] != null)
-              ? mitem[i]['date_start'].toString().substring(0, 10)
-              : '',
-          view:
-              (mitem[i]['viewed'] != null) ? mitem[i]['viewed'].toString() : '',
-          image: (mitem[i]['image'] != null)
-              ? 'http://tikin.com.tm/storage/${mitem[i]['image'].toString()}'
-              : ''));
+          date: (mitem[i]['date_start'] != null) ? mitem[i]['date_start'].toString().substring(0, 10) : '',
+          view: (mitem[i]['viewed'] != null) ? mitem[i]['viewed'].toString() : '',
+          image: (mitem[i]['image'] != null) ? 'http://tikin.com.tm/storage/${mitem[i]['image'].toString()}' : ''));
     }
     setState(() {});
     return 0;
   }
 
+  @override
   void initState() {
     super.initState();
     getTime();
@@ -72,7 +66,7 @@ class _MyNewsState extends State<MyNews> {
         body: Container(
           child: ListView.builder(
               shrinkWrap: true,
-              physics: ScrollPhysics(),
+              physics: const ScrollPhysics(),
               itemCount: product.length,
               itemBuilder: (BuildContext context, int index) {
                 return CardNews(product, index);

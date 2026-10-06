@@ -11,7 +11,7 @@ import '../values/colors.dart';
 class CardNews extends StatefulWidget {
   List<new_post> product;
   int index;
-  CardNews(this.product, this.index);
+  CardNews(this.product, this.index, {super.key});
 
   @override
   _CardNewsState createState() => _CardNewsState();
@@ -22,13 +22,9 @@ class _CardNewsState extends State<CardNews> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    NewsOption(widget.product, widget.index)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NewsOption(widget.product, widget.index)));
       },
-      child: Container(
+      child: SizedBox(
           height: 120,
           child: Stack(
             children: [
@@ -36,10 +32,10 @@ class _CardNewsState extends State<CardNews> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   height: 2,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColors.light_silver,
                   ),
-                  child: Divider(
+                  child: const Divider(
                     height: 2,
                     color: AppColors.light_silver,
                   ),
@@ -57,8 +53,7 @@ class _CardNewsState extends State<CardNews> {
                         height: 80,
                         fit: BoxFit.cover,
                         imageUrl: widget.product[widget.index].image,
-                        errorWidget: (context, url, error) =>
-                            const Icon(IconlyLight.image, color: Colors.grey),
+                        errorWidget: (context, url, error) => const Icon(IconlyLight.image, color: Colors.grey),
                       ),
                     ),
                   ),
@@ -71,12 +66,10 @@ class _CardNewsState extends State<CardNews> {
                           children: [
                             Container(
                               alignment: Alignment.centerLeft,
-                              margin: EdgeInsets.only(left: 10, right: 10),
+                              margin: const EdgeInsets.only(left: 10, right: 10),
                               // ignore: prefer_const_constructors
                               child: Text(
-                                (Provider.of<Which_page>(context).dil != 0)
-                                    ? widget.product[widget.index].name_tm
-                                    : widget.product[widget.index].name_ru,
+                                (Provider.of<Which_page>(context).dil != 0) ? widget.product[widget.index].name_tm : widget.product[widget.index].name_ru,
                                 maxLines: 2,
                                 style: const TextStyle(
                                   color: Colors.black,
@@ -96,12 +89,10 @@ class _CardNewsState extends State<CardNews> {
                                 ),
                                 Container(
                                   alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.only(left: 5, right: 10),
+                                  margin: const EdgeInsets.only(left: 5, right: 10),
                                   // ignore: prefer_const_constructors
                                   child: Text(
-                                    (Provider.of<Which_page>(context).dil != 0)
-                                        ? widget.product[widget.index].date
-                                        : widget.product[widget.index].date,
+                                    (Provider.of<Which_page>(context).dil != 0) ? widget.product[widget.index].date : widget.product[widget.index].date,
                                     maxLines: 2,
                                     style: const TextStyle(
                                       color: Colors.black,
@@ -113,12 +104,10 @@ class _CardNewsState extends State<CardNews> {
                             ),
                             Container(
                               alignment: Alignment.centerLeft,
-                              margin: EdgeInsets.only(left: 10, right: 10),
+                              margin: const EdgeInsets.only(left: 10, right: 10),
                               // ignore: prefer_const_constructors
                               child: Text(
-                                (Provider.of<Which_page>(context).dil != 0)
-                                    ? 'Giňişleýin'
-                                    : 'Читать далее',
+                                (Provider.of<Which_page>(context).dil != 0) ? 'Giňişleýin' : 'Читать далее',
                                 maxLines: 2,
                                 style: const TextStyle(
                                   color: Colors.blue,

@@ -24,6 +24,7 @@ import 'package:bamboo/user_reviews_page/notifications_page.dart';
 import 'package:bamboo/values/colors.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
+import 'package:bamboo/values/notification_navigation.dart';
 import 'package:bamboo/values/firebase_messaging_service.dart';
 import 'package:bamboo/values/local_notifications_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -157,9 +158,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  RemoteMessage? _initialMessage;
-  bool _initialMessageHandled = false;
-
   @override
   void initState() {
     super.initState();
@@ -169,16 +167,15 @@ class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   void _setupInteractedMessage() {
-    // Terminated state - uygulama kapalıyken bildirime tıklanmış
+    // Terminated state - uygulama kapalıyken bildirime tıklanmış.
+    // Future asenkron gelir; MyApp bir daha build olmayacağı için mesajı
+    // build'e bırakmayıp doğrudan burada işliyoruz.
     FirebaseMessaging.instance.getInitialMessage().then((message) {
-      if (message != null) {
+      if (message != null && mounted) {
         print('');
         print('🚀 INITIAL MESSAGE (TERMINATED STATE) 🚀');
         print('═══════════════════════════════════════════════════════════════');
-        print('Message will be handled after app initialization');
-        print('═══════════════════════════════════════════════════════════════');
-        print('');
-        _initialMessage = message;
+        _handleMessage(message);
       }
     });
 
@@ -201,26 +198,10 @@ class _MyAppState extends State<MyApp> {
     print('═══════════════════════════════════════════════════════════════');
     print('');
 
-    // Bildirime basylanda (aplikasiýa açyk, arka planda ýa-da ýapyk bolsun)
-    // hemişe Profil sahypasyna geçilýär. Biraz bekleýäris, sebäbi ýapyk
-    // aplikasiýa ýagdaýynda Splash entek MyHomePage-i gurmadyk bolup biler.
-    // BottomProv aplikasiýanyň ömri boýunça ýaşaýan singleton bolany üçin,
-    // MyHomePage entek gurulmadyk hem bolsa, "page" bahasy ýazylyp galýar
-    // we MyHomePage gurlanda ony okap dogry sahypany görkezýär.
-    Future.delayed(const Duration(milliseconds: 500), () {
-      Provider.of<BottomProv>(context, listen: false).goToProfile();
-    });
-  }
-
-  // İlk frame render edildikten sonra initial message'ı handle et
-  void _handleInitialMessageAfterBuild() {
-    if (_initialMessage != null && !_initialMessageHandled) {
-      _initialMessageHandled = true;
-      print('');
-      print('✅ HANDLING INITIAL MESSAGE NOW ✅');
-      print('═══════════════════════════════════════════════════════════════');
-      _handleMessage(_initialMessage);
-    }
+    // BottomProv aplikasiýanyň ömri boýunça ýaşaýar, şonuň üçin MyHomePage
+    // entek gurulmadyk (Splash) bolsa-da "page" bahasy saklanyp galýar we
+    // MyHomePage gurlanda dogry sahypany görkezýär.
+    openProfileFromNotification(context);
   }
 
   Map<String, WidgetBuilder> _buildRoutes() {
@@ -236,11 +217,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // İlk frame render edildikten sonra initial message'ı kontrol et
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _handleInitialMessageAfterBuild();
-    });
-
     return GetMaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
@@ -261,7 +237,7 @@ class _MyAppState extends State<MyApp> {
           ),
           MediaQuery(
             data: MediaQuery.of(context).copyWith(
-              textScaleFactor: 1.0,
+              textScaler: TextScaler.linear(1.0),
             ),
             child: child!,
           ),
@@ -513,6 +489,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         if (_tabController.index != 0) {
           _tabController.animateTo(0);
         }
+        // Profil sekmesiniň içinde alt sahypa açyk bolsa, kökine gaýtar.
+        _tabNavKey5.currentState?.popUntil((route) => route.isFirst);
       }
     });
 

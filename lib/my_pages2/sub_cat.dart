@@ -1,5 +1,4 @@
 import 'package:bamboo/my_pages/cart_items.dart';
-import 'package:bamboo/my_pages2/cart_item_linear.dart';
 import 'package:bamboo/values/colors.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:bamboo/values/constants.dart';
@@ -60,7 +59,7 @@ class _SubCatState extends State<SubCat> {
           image: mitem[i]['image'],
           price: double.parse(mitem[i]['price']),
           count: toDouble(mitem[i]['count']),
-            quantity_step: stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
+          quantity_step: stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
           rating: double.parse(mitem[i]['rating']),
           discount: mitem[i]['discount'],
           discount_price: double.parse(mitem[i]['discounted_price'] == null ? "0.00" : mitem[i]['discounted_price'].toString()),

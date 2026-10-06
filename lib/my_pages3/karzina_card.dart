@@ -29,7 +29,7 @@ class KarzinaCard extends StatefulWidget {
   final dynamic values;
   final double quantityStep;
 
-  KarzinaCard(
+  const KarzinaCard(
     this.id,
     this.nameTm,
     this.nameRu,

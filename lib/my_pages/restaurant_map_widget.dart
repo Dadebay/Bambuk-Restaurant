@@ -31,7 +31,7 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMapFullPage(
+        builder: (context) => const RestaurantMapFullPage(
           restaurantLocation: _restaurantLatLng,
           restaurantName: _restaurantName,
         ),
@@ -57,7 +57,7 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     IconlyLight.location,
                     color: AppColors.primary,
                     size: 20,
@@ -116,10 +116,10 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                       absorbing: true,
                       child: FlutterMap(
                         mapController: _mapController,
-                        options: MapOptions(
+                        options: const MapOptions(
                           initialCenter: _restaurantLatLng,
                           initialZoom: 18.0,
-                          interactionOptions: const InteractionOptions(flags: InteractiveFlag.none),
+                          interactionOptions: InteractionOptions(flags: InteractiveFlag.none),
                         ),
                         children: [
                           TileLayer(
@@ -159,7 +159,7 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.map, color: Colors.white, size: 20),
+                                const Icon(Icons.map, color: Colors.white, size: 20),
                                 const SizedBox(width: 10),
                                 Text(
                                   Constants.open_map[provDil],
@@ -170,7 +170,7 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                                   ),
                                 ),
                                 const SizedBox(width: 4),
-                                Icon(Icons.arrow_forward_ios, color: Colors.white, size: 14),
+                                const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 14),
                               ],
                             ),
                           ),
@@ -194,14 +194,14 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                             ),
                           ],
                         ),
-                        child: Row(
+                        child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.restaurant, color: AppColors.primary, size: 16),
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6),
                             Text(
                               _restaurantName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'GilroyBold',
                                 fontSize: 13,
                                 color: Colors.black,
@@ -247,8 +247,8 @@ class _RestaurantMarker extends StatelessWidget {
           ),
           child: const Icon(Icons.restaurant, color: Colors.white, size: 26),
         ),
-        CustomPaint(
-          size: const Size(14, 8),
+        const CustomPaint(
+          size: Size(14, 8),
           painter: _ArrowPainter(AppColors.primary),
         ),
       ],

@@ -183,7 +183,7 @@ class _OptionsItemState extends State<OptionsItem> {
                       errorWidget: (_, __, ___) => Image.asset(logoImage, fit: BoxFit.contain),
                     ),
                     // bottom fade so content card blends into image
-                    Positioned(
+                    const Positioned(
                       bottom: 0,
                       left: 0,
                       right: 0,

@@ -131,46 +131,46 @@ class _MainVisiblesState extends State<MainVisibles> {
           ),
         ),
         Builder(builder: (context) {
-        // Halanýanlar sahypasyndaky kart bilen deň ölçeg: kartyň suraty
-        // kwadrat, şonuň üçin boýy = ini + ýazgy zolagy (~92dp: gyralar +
-        // bir setir at + aralyk + 44dp düwme). Öňki 250x375 kartda at
-        // sygman kesilýärdi we aşakda boş ak ýer galýardy.
-        final bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
-        final double cardW = isTablet ? 300 : 180;
+          // Halanýanlar sahypasyndaky kart bilen deň ölçeg: kartyň suraty
+          // kwadrat, şonuň üçin boýy = ini + ýazgy zolagy (~92dp: gyralar +
+          // bir setir at + aralyk + 44dp düwme). Öňki 250x375 kartda at
+          // sygman kesilýärdi we aşakda boş ak ýer galýardy.
+          final bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+          final double cardW = isTablet ? 300 : 180;
 
-        return Container(
-          height: isTablet ? cardW + 92 : 290,
-          alignment: Alignment.centerLeft,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: widget.items.length,
-            shrinkWrap: true,
-            padding: EdgeInsets.only(left: 15),
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return SizedBox(
-                width: cardW,
-                child: CartItems(
-                    widget.items[index].id,
-                    widget.items[index].name_tm,
-                    widget.items[index].name_ru,
-                    widget.items[index].name_en,
-                    widget.items[index].description_tm,
-                    widget.items[index].description_ru,
-                    widget.items[index].description_en,
-                    widget.items[index].image,
-                    widget.items[index].price,
-                    widget.items[index].count,
-                    widget.items[index].rating,
-                    widget.items[index].discount,
-                    widget.items[index].discount_price,
-                    widget.items[index].category,
-                    widget.items[index].values,
-                    quantity_step: widget.items[index].quantity_step),
-              );
-            },
-          ),
-        );
+          return Container(
+            height: isTablet ? cardW + 92 : 290,
+            alignment: Alignment.centerLeft,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.items.length,
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(left: 15),
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                return SizedBox(
+                  width: cardW,
+                  child: CartItems(
+                      widget.items[index].id,
+                      widget.items[index].name_tm,
+                      widget.items[index].name_ru,
+                      widget.items[index].name_en,
+                      widget.items[index].description_tm,
+                      widget.items[index].description_ru,
+                      widget.items[index].description_en,
+                      widget.items[index].image,
+                      widget.items[index].price,
+                      widget.items[index].count,
+                      widget.items[index].rating,
+                      widget.items[index].discount,
+                      widget.items[index].discount_price,
+                      widget.items[index].category,
+                      widget.items[index].values,
+                      quantity_step: widget.items[index].quantity_step),
+                );
+              },
+            ),
+          );
         }),
       ],
     );

@@ -368,7 +368,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
         height: 56,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
+            colors: const [
               AppColors.primary,
               Color(0xFF6BA31A),
             ],
@@ -415,12 +415,12 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
+          colors: const [
             Color(0xFFF0F7E4),
             Colors.white,
             Colors.white,
           ],
-          stops: [0.0, 0.4, 1.0],
+          stops: const [0.0, 0.4, 1.0],
         ),
       ),
     );

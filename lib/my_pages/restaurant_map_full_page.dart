@@ -421,7 +421,7 @@ class _RestaurantMapFullPageState extends State<RestaurantMapFullPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            Icon(Icons.location_disabled, color: Colors.orange, size: 28),
+            const Icon(Icons.location_disabled, color: Colors.orange, size: 28),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -479,7 +479,7 @@ class _RestaurantMapFullPageState extends State<RestaurantMapFullPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(IconlyLight.arrow_left_circle, color: Colors.black),
+          icon: const Icon(IconlyLight.arrow_left_circle, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
@@ -508,7 +508,7 @@ class _RestaurantMapFullPageState extends State<RestaurantMapFullPage> {
         actions: [
           if (_routePoints.isNotEmpty)
             IconButton(
-              icon: Icon(Icons.clear, color: Colors.red),
+              icon: const Icon(Icons.clear, color: Colors.red),
               tooltip: Constants.clear_route_tooltip[provDil],
               onPressed: () {
                 print('\n🔘 [BUTON DEBUG] "Rotayı Temizle" butonu basıldı');
@@ -516,7 +516,7 @@ class _RestaurantMapFullPageState extends State<RestaurantMapFullPage> {
               },
             ),
           IconButton(
-            icon: Icon(Icons.restaurant, color: AppColors.primary),
+            icon: const Icon(Icons.restaurant, color: AppColors.primary),
             tooltip: Constants.focus_restaurant_tooltip[provDil],
             onPressed: () {
               print('\n🔘 [BUTON DEBUG] "Restorana Odaklan" butonu basıldı');
@@ -596,8 +596,8 @@ class _RestaurantMapFullPageState extends State<RestaurantMapFullPage> {
                         size: 28,
                       ),
                     ),
-                    CustomPaint(
-                      size: const Size(16, 10),
+                    const CustomPaint(
+                      size: Size(16, 10),
                       painter: _ArrowPainter(AppColors.primary),
                     ),
                   ],
@@ -654,7 +654,7 @@ class _RestaurantMapFullPageState extends State<RestaurantMapFullPage> {
               ),
             ),
           if (_isLocating)
-            FloatingActionButton(
+            const FloatingActionButton(
               heroTag: 'location_loading',
               onPressed: null,
               backgroundColor: Colors.white,
@@ -682,7 +682,7 @@ class _RestaurantMapFullPageState extends State<RestaurantMapFullPage> {
                     },
               backgroundColor: AppColors.primary,
               icon: _isRouting
-                  ? SizedBox(
+                  ? const SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
@@ -710,7 +710,7 @@ class _RestaurantMapFullPageState extends State<RestaurantMapFullPage> {
               icon: const Icon(Icons.check_circle, color: Colors.white, size: 24),
               label: Text(
                 Constants.route_active_label[provDil],
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'Semi',
                   fontSize: 15,

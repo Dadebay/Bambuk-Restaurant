@@ -1,9 +1,5 @@
-import 'dart:io';
-
-import 'package:bamboo/providers/bottom_prov.dart';
+import 'package:bamboo/values/notification_navigation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 
 class LocalNotificationsService {
   LocalNotificationsService._();
@@ -17,7 +13,7 @@ class LocalNotificationsService {
   Future<void> init() async {
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    final DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
+    const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
 
     final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -43,9 +39,7 @@ class LocalNotificationsService {
 
     // Bildirime basylanda (aplikasiýa öňdurumynda goşmaça görkezilen ýerli
     // bildirim bolsa-da) hemişe Profil sahypasyna geçilýär.
-    final context = Get.context;
-    if (context == null) return;
-    Provider.of<BottomProv>(context, listen: false).goToProfile();
+    openProfileFromNotification();
   }
 
   Future<void> showNotification({

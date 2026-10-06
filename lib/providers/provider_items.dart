@@ -13,92 +13,64 @@ class ProvItem with ChangeNotifier, DiagnosticableTreeMixin {
   double _dis = 0.00;
   double get dis => _dis;
 
-  List _myid = [];
+  final List _myid = [];
   List get myid => _myid;
 
-  Map<int, products> _items = {};
+  final Map<int, products> _items = {};
 
   Map<int, products> get items {
     return {..._items};
   }
 
-  void addSplash(
-      int id,
-      String name_tm,
-      String name_ru,
-      String name_en,
-      String description_tm,
-      String description_ru,
-      String description_en,
-      String image,
-      double price,
-      double count,
-      double rating,
-      int discount,
-      double discount_price,
-      String category,
-      var values,
-      [double quantity_step = 1.0]) {
+  void addSplash(int id, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, double count, double rating,
+      int discount, double discountPrice, String category, var values,
+      [double quantityStep = 1.0]) {
     if (_items.containsKey(id)) {
     } else {
       _price = _price + (count * price);
       if (discount == 0) {
         _total_price = _total_price + (count * price);
       } else {
-        _dis = _dis + ((count * price) - (count * discount_price));
-        _total_price = _total_price + (count * discount_price);
+        _dis = _dis + ((count * price) - (count * discountPrice));
+        _total_price = _total_price + (count * discountPrice);
       }
       _myid.add(id);
       _items.putIfAbsent(
         id,
         () => products(
             id: id,
-            name_tm: name_tm,
-            name_ru: name_ru,
-            name_en: name_en,
-            description_tm: description_tm,
-            description_ru: description_ru,
-            description_en: description_en,
+            name_tm: nameTm,
+            name_ru: nameRu,
+            name_en: nameEn,
+            description_tm: descriptionTm,
+            description_ru: descriptionRu,
+            description_en: descriptionEn,
             image: image,
             price: price,
             count: count,
             rating: rating,
             discount: discount,
-            discount_price: discount_price,
+            discount_price: discountPrice,
             category: category,
-            quantity_step: quantity_step,
+            quantity_step: quantityStep,
             values: values),
       );
       notifyListeners();
     }
   }
 
-  void addItem(
-      int id,
-      String name_tm,
-      String name_ru,
-      String name_en,
-      String description_tm,
-      String description_ru,
-      String description_en,
-      String image,
-      double price,
-      double count,
-      double rating,
-      int discount,
-      double discount_price,
-      String category,
-      var values,
-      [double quantity_step = 1.0]) {
+  void addItem(int id, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, double count, double rating,
+      int discount, double discountPrice, String category, var values,
+      [double quantityStep = 1.0]) {
     // Eger haryt sebetde bar bolsa, onun oz adimini ulanyarys.
-    final double step = stepOf(_items.containsKey(id) ? _items[id]!.quantity_step : quantity_step);
+    final double step = stepOf(_items.containsKey(id) ? _items[id]!.quantity_step : quantityStep);
 
     _price = _price + (price * step);
     if (discount == 0) {
       _total_price = _total_price + (price * step);
     } else {
-      _dis = _dis + ((price - discount_price) * step);
-      _total_price = _total_price + (discount_price * step);
+      _dis = _dis + ((price - discountPrice) * step);
+      _total_price = _total_price + (discountPrice * step);
     }
     if (_items.containsKey(id)) {
       _items.update(
@@ -128,38 +100,23 @@ class ProvItem with ChangeNotifier, DiagnosticableTreeMixin {
         id,
         () => products(
             id: id,
-            name_tm: name_tm,
-            name_ru: name_ru,
-            name_en: name_en,
-            description_tm: description_tm,
-            description_ru: description_ru,
-            description_en: description_en,
+            name_tm: nameTm,
+            name_ru: nameRu,
+            name_en: nameEn,
+            description_tm: descriptionTm,
+            description_ru: descriptionRu,
+            description_en: descriptionEn,
             image: image,
             price: price,
             count: step,
             rating: rating,
             discount: discount,
-            discount_price: discount_price,
+            discount_price: discountPrice,
             category: category,
             quantity_step: step,
             values: values),
       );
-      DatabaseHelper.createItem(
-          id,
-          name_tm,
-          name_ru,
-          name_en,
-          description_tm,
-          description_ru,
-          description_en,
-          image,
-          price,
-          step,
-          rating,
-          discount,
-          discount_price,
-          category,
-          step);
+      DatabaseHelper.createItem(id, nameTm, nameRu, nameEn, descriptionTm, descriptionRu, descriptionEn, image, price, step, rating, discount, discountPrice, category, step);
     }
     notifyListeners();
   }
@@ -206,11 +163,8 @@ class ProvItem with ChangeNotifier, DiagnosticableTreeMixin {
         if (_items[id]!.discount == 0) {
           _total_price = _total_price - _items[id]!.price * _items[id]!.count;
         } else {
-          _dis = _dis -
-              ((_items[id]!.price * _items[id]!.count) -
-                  (_items[id]!.discount_price * _items[id]!.count));
-          _total_price =
-              _total_price - _items[id]!.discount_price * _items[id]!.count;
+          _dis = _dis - ((_items[id]!.price * _items[id]!.count) - (_items[id]!.discount_price * _items[id]!.count));
+          _total_price = _total_price - _items[id]!.discount_price * _items[id]!.count;
         }
         _myid.remove(id);
         _items.remove(id);
@@ -225,11 +179,8 @@ class ProvItem with ChangeNotifier, DiagnosticableTreeMixin {
     if (_items[id]!.discount == 0) {
       _total_price = _total_price - _items[id]!.price * _items[id]!.count;
     } else {
-      _dis = _dis -
-          ((_items[id]!.price * _items[id]!.count) -
-              (_items[id]!.discount_price * _items[id]!.count));
-      _total_price =
-          _total_price - _items[id]!.discount_price * _items[id]!.count;
+      _dis = _dis - ((_items[id]!.price * _items[id]!.count) - (_items[id]!.discount_price * _items[id]!.count));
+      _total_price = _total_price - _items[id]!.discount_price * _items[id]!.count;
     }
     _myid.remove(id);
     _items.remove(id);

@@ -53,14 +53,28 @@ class _ActivState extends State<Activ> {
 
     Constants.dis_activ.clear();
     product.clear();
-    if (mitem.length == 0) loading = true;
+    if (mitem.isEmpty) loading = true;
     for (int i = 0; i < mitem.length; i++) {
       if (mitem[i]['status']['id'] == 1 || mitem[i]['status']['id'] == 2 || mitem[i]['status']['id'] == 3) {
         product.add(orders(
-            id: mitem[i]['id'], date: mitem[i]['created_at'], status_id: mitem[i]['status']['id'], status: mitem[i]['status']['name_tm'], status_ru: mitem[i]['status']['name_ru'], order_no: mitem[i]['track_code'], my_products: mitem[i]['products'], total_price: mitem[i]['total_price'].toString()));
+            id: mitem[i]['id'],
+            date: mitem[i]['created_at'],
+            status_id: mitem[i]['status']['id'],
+            status: mitem[i]['status']['name_tm'],
+            status_ru: mitem[i]['status']['name_ru'],
+            order_no: mitem[i]['track_code'],
+            my_products: mitem[i]['products'],
+            total_price: mitem[i]['total_price'].toString()));
       } else {
         Constants.dis_activ.add(orders(
-            id: mitem[i]['id'], date: mitem[i]['created_at'], status_id: mitem[i]['status']['id'], status: mitem[i]['status']['name_tm'], status_ru: mitem[i]['status']['name_ru'], order_no: mitem[i]['track_code'], my_products: mitem[i]['products'], total_price: mitem[i]['total_price'].toString()));
+            id: mitem[i]['id'],
+            date: mitem[i]['created_at'],
+            status_id: mitem[i]['status']['id'],
+            status: mitem[i]['status']['name_tm'],
+            status_ru: mitem[i]['status']['name_ru'],
+            order_no: mitem[i]['track_code'],
+            my_products: mitem[i]['products'],
+            total_price: mitem[i]['total_price'].toString()));
       }
     }
     if (mounted) {

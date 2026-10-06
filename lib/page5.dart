@@ -256,7 +256,7 @@ class __TileState extends State<_Tile> {
   void _pushNav(BuildContext context) {
     switch (widget.id) {
       case "1":
-        Navigator.push(context, MaterialPageRoute(builder: (context) => UserInf()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const UserInf()));
         break;
       case "2":
         constants.which_sign = true;
@@ -285,7 +285,7 @@ class __TileState extends State<_Tile> {
         _navigateToComments(context);
         break;
       case "18":
-        Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsPage()));
         break;
       case "19":
         Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatPage()));
@@ -313,7 +313,7 @@ class __TileState extends State<_Tile> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         height: 60,
-        margin: EdgeInsets.only(bottom: 6),
+        margin: const EdgeInsets.only(bottom: 6),
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.01),
@@ -404,9 +404,9 @@ class __TileState extends State<_Tile> {
     final isSelected = prov.dil == code;
     return GestureDetector(
       onTap: () {
-        if (code == 0)
+        if (code == 0) {
           prov.setRu();
-        else if (code == 1)
+        } else if (code == 1)
           prov.setTm();
         else
           prov.setEn();
@@ -504,8 +504,8 @@ class _ProfileHelpTileState extends State<_ProfileHelpTile> {
           children: [
             Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 4, right: 12),
+                const Padding(
+                  padding: EdgeInsets.only(left: 4, right: 12),
                   child: Icon(
                     IconlyLight.info_circle,
                     color: AppColors.primary,

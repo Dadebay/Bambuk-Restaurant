@@ -11,7 +11,7 @@ import '../values/models.dart';
 class NewsOption extends StatefulWidget {
   List<new_post> product;
   int index;
-  NewsOption(this.product, this.index);
+  NewsOption(this.product, this.index, {super.key});
 
   @override
   _NewsOptionState createState() => _NewsOptionState();
@@ -20,28 +20,18 @@ class NewsOption extends StatefulWidget {
 class _NewsOptionState extends State<NewsOption> {
   @override
   Widget build(BuildContext context) {
-    widget.product[widget.index].body_tm =
-        widget.product[widget.index].body_tm.replaceAll('<h2>', '');
-    widget.product[widget.index].body_tm =
-        widget.product[widget.index].body_tm.replaceAll('<h1>', '');
-    widget.product[widget.index].body_tm =
-        widget.product[widget.index].body_tm.replaceAll('<h3>', '');
-    widget.product[widget.index].body_tm =
-        widget.product[widget.index].body_tm.replaceAll('<h4>', '');
-    widget.product[widget.index].body_tm =
-        widget.product[widget.index].body_tm.replaceAll('<strong>', '');
+    widget.product[widget.index].body_tm = widget.product[widget.index].body_tm.replaceAll('<h2>', '');
+    widget.product[widget.index].body_tm = widget.product[widget.index].body_tm.replaceAll('<h1>', '');
+    widget.product[widget.index].body_tm = widget.product[widget.index].body_tm.replaceAll('<h3>', '');
+    widget.product[widget.index].body_tm = widget.product[widget.index].body_tm.replaceAll('<h4>', '');
+    widget.product[widget.index].body_tm = widget.product[widget.index].body_tm.replaceAll('<strong>', '');
 
-    widget.product[widget.index].body_ru =
-        widget.product[widget.index].body_ru.replaceAll('<h2>', '');
-    widget.product[widget.index].body_ru =
-        widget.product[widget.index].body_ru.replaceAll('<h1>', '');
-    widget.product[widget.index].body_ru =
-        widget.product[widget.index].body_ru.replaceAll('<h3>', '');
-    widget.product[widget.index].body_ru =
-        widget.product[widget.index].body_ru.replaceAll('<h4>', '');
+    widget.product[widget.index].body_ru = widget.product[widget.index].body_ru.replaceAll('<h2>', '');
+    widget.product[widget.index].body_ru = widget.product[widget.index].body_ru.replaceAll('<h1>', '');
+    widget.product[widget.index].body_ru = widget.product[widget.index].body_ru.replaceAll('<h3>', '');
+    widget.product[widget.index].body_ru = widget.product[widget.index].body_ru.replaceAll('<h4>', '');
 
-    widget.product[widget.index].body_ru =
-        widget.product[widget.index].body_ru.replaceAll('<strong>', '');
+    widget.product[widget.index].body_ru = widget.product[widget.index].body_ru.replaceAll('<strong>', '');
 
     return Scaffold(
         appBar: PreferredSize(
@@ -49,15 +39,13 @@ class _NewsOptionState extends State<NewsOption> {
           child: SafeArea(
             child: Container(
               height: 60,
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(color: AppColors.appBar_back),
+              padding: const EdgeInsets.all(5),
+              decoration: const BoxDecoration(color: AppColors.appBar_back),
               child: Stack(
                 children: [
                   Center(
                     child: Text(
-                      (Provider.of<Which_page>(context).dil != 0)
-                          ? 'Täzelikler'
-                          : 'Новости',
+                      (Provider.of<Which_page>(context).dil != 0) ? 'Täzelikler' : 'Новости',
                       // ignore: prefer_const_constructors
                       style: TextStyle(
                         color: Colors.black,
@@ -96,7 +84,7 @@ class _NewsOptionState extends State<NewsOption> {
               ),
             ),
           ),
-          preferredSize: Size.fromHeight(100),
+          preferredSize: const Size.fromHeight(100),
         ),
         body: Container(
           padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
@@ -121,9 +109,7 @@ class _NewsOptionState extends State<NewsOption> {
                 height: 15,
               ),
               Text(
-                (Provider.of<Which_page>(context).dil != 0)
-                    ? widget.product[widget.index].name_tm
-                    : widget.product[widget.index].name_ru,
+                (Provider.of<Which_page>(context).dil != 0) ? widget.product[widget.index].name_tm : widget.product[widget.index].name_ru,
                 style: const TextStyle(
                   fontFamily: 'Semi',
                   fontSize: 18,
@@ -143,12 +129,10 @@ class _NewsOptionState extends State<NewsOption> {
                   ),
                   Container(
                     alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.only(left: 5, right: 10),
+                    margin: const EdgeInsets.only(left: 5, right: 10),
                     // ignore: prefer_const_constructors
                     child: Text(
-                      (Provider.of<Which_page>(context).dil != 0)
-                          ? widget.product[widget.index].date
-                          : widget.product[widget.index].date,
+                      (Provider.of<Which_page>(context).dil != 0) ? widget.product[widget.index].date : widget.product[widget.index].date,
                       maxLines: 2,
                       style: const TextStyle(
                         color: Colors.black,
@@ -162,8 +146,7 @@ class _NewsOptionState extends State<NewsOption> {
                 height: 15,
               ),
               Html(
-                data:
-                    """${(Provider.of<Which_page>(context).dil != 0) ? widget.product[widget.index].body_tm : widget.product[widget.index].body_ru}""",
+                data: (Provider.of<Which_page>(context).dil != 0) ? widget.product[widget.index].body_tm : widget.product[widget.index].body_ru,
               ),
             ],
           ),

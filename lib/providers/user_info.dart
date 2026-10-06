@@ -54,8 +54,8 @@ class UserInfo with ChangeNotifier {
     notifyListeners();
   }
 
-  void setCostumer_id(String getCostumer_id) {
-    _costumer_id = getCostumer_id;
+  void setCostumer_id(String getcostumerId) {
+    _costumer_id = getcostumerId;
     notifyListeners();
   }
 }

@@ -10,7 +10,7 @@ import 'package:bamboo/values/constants.dart' as Constants;
 import 'add_adress.dart';
 
 class MyAddress extends StatefulWidget {
-  const MyAddress({Key? key}) : super(key: key);
+  const MyAddress({super.key});
 
   @override
   _MyAddressState createState() => _MyAddressState();
@@ -39,10 +39,10 @@ class _MyAddressState extends State<MyAddress> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            (Provider.of<Favourite>(context).address.length != 0)
+            (Provider.of<Favourite>(context).address.isNotEmpty)
                 ? ListView.builder(
                     shrinkWrap: true,
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     itemCount: Provider.of<Favourite>(context).address.length,
                     itemBuilder: (context, index) {
                       return Container(
@@ -51,7 +51,7 @@ class _MyAddressState extends State<MyAddress> {
                             Row(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(left: 20),
+                                  padding: const EdgeInsets.only(left: 20),
                                   child: const Icon(
                                     IconlyLight.location,
                                     color: AppColors.primary,
@@ -95,7 +95,7 @@ class _MyAddressState extends State<MyAddress> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddAddress()),
+                  MaterialPageRoute(builder: (context) => const AddAddress()),
                 );
               },
               child: Container(

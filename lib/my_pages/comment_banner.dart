@@ -131,7 +131,7 @@ class CommentBannerPage extends StatelessWidget {
                                 color: AppColors.primary.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: Row(
+                              child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
@@ -139,7 +139,7 @@ class CommentBannerPage extends StatelessWidget {
                                     size: 14,
                                     color: AppColors.primary,
                                   ),
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4),
                                   Text(
                                     'Bambuk Restaurant',
                                     style: TextStyle(
@@ -161,7 +161,7 @@ class CommentBannerPage extends StatelessWidget {
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     height: 1,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
                           Colors.transparent,

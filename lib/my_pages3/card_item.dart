@@ -6,7 +6,6 @@ import 'package:bamboo/values/constants.dart' as Constants;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/page1provider.dart';
@@ -174,8 +173,23 @@ class _CardItemState extends State<CardItem> {
                         onTap: () {
                           isFav
                               ? Provider.of<Favourite>(context, listen: false).removeItem(widget.id)
-                              : Provider.of<Favourite>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru,
-                                  widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values, widget.quantity_step);
+                              : Provider.of<Favourite>(context, listen: false).addItem(
+                                  widget.id,
+                                  widget.name_tm,
+                                  widget.name_ru,
+                                  widget.name_en,
+                                  widget.description_tm,
+                                  widget.description_ru,
+                                  widget.description_en,
+                                  widget.image,
+                                  widget.price,
+                                  widget.count,
+                                  widget.rating,
+                                  widget.discount,
+                                  widget.discount_price,
+                                  widget.category,
+                                  widget.values,
+                                  widget.quantity_step);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(8),
@@ -351,8 +365,23 @@ class _CardItemState extends State<CardItem> {
                         onTap: () {
                           isFav
                               ? Provider.of<Favourite>(context, listen: false).removeItem(widget.id)
-                              : Provider.of<Favourite>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru,
-                                  widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values, widget.quantity_step);
+                              : Provider.of<Favourite>(context, listen: false).addItem(
+                                  widget.id,
+                                  widget.name_tm,
+                                  widget.name_ru,
+                                  widget.name_en,
+                                  widget.description_tm,
+                                  widget.description_ru,
+                                  widget.description_en,
+                                  widget.image,
+                                  widget.price,
+                                  widget.count,
+                                  widget.rating,
+                                  widget.discount,
+                                  widget.discount_price,
+                                  widget.category,
+                                  widget.values,
+                                  widget.quantity_step);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(5),

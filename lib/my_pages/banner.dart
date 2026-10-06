@@ -86,7 +86,7 @@ class _BannerScreen2State extends State<BannerScreen2> {
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.campaign_rounded,
                     color: AppColors.primary,
                     size: 20,

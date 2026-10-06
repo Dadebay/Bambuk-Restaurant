@@ -77,8 +77,8 @@ class _CategoriesState extends State<Categories> {
         actions: [
           GestureDetector(
             onTap: () => callRestaurant(context),
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10),
+            child: const Padding(
+              padding: EdgeInsets.only(right: 10),
               child: Icon(IconlyBold.call, color: AppColors.primary),
             ),
           ),

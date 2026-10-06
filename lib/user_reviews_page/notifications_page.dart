@@ -153,7 +153,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   Widget _buildBody(int dil) {
     if (_isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(
           strokeWidth: 3,
           valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
@@ -329,7 +329,7 @@ class _NotificationCardState extends State<_NotificationCard> {
                           children: [
                             Text(
                               _expanded ? 'Doly görkez' : 'Doly gör',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12,
                                 fontFamily: 'Semi',
                                 color: AppColors.primary,

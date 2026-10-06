@@ -19,7 +19,7 @@ class CategoryCart extends StatefulWidget {
   final ScrollController? scrollController;
   final bool isGrid;
 
-  CategoryCart(this.id, this.name_tm, this.name_ru, this.name_en, this.image, this.children, {super.key, this.scrollController, this.isGrid = true});
+  const CategoryCart(this.id, this.name_tm, this.name_ru, this.name_en, this.image, this.children, {super.key, this.scrollController, this.isGrid = true});
 
   @override
   _CategoryCartState createState() => _CategoryCartState();

@@ -8,7 +8,7 @@ import 'package:bamboo/values/colors.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 
 class ContactUs extends StatefulWidget {
-  const ContactUs({Key? key}) : super(key: key);
+  const ContactUs({super.key});
 
   @override
   _ContactUsState createState() => _ContactUsState();
@@ -23,7 +23,7 @@ class _ContactUsState extends State<ContactUs> {
         child: SafeArea(
           child: Container(
             height: 55,
-            margin: EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 10),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -31,7 +31,7 @@ class _ContactUsState extends State<ContactUs> {
                   color: Colors.grey.withOpacity(0.25),
                   spreadRadius: 3,
                   blurRadius: 4,
-                  offset: Offset(0, 3), // changes position of shadow
+                  offset: const Offset(0, 3), // changes position of shadow
                 ),
               ],
             ),
@@ -65,8 +65,7 @@ class _ContactUsState extends State<ContactUs> {
                   onTap: (() {}),
                   // ignore: prefer_const_constructors
                   child: Text(
-                    Constants
-                        .ru_contuct_us[Provider.of<Which_page>(context).dil],
+                    Constants.ru_contuct_us[Provider.of<Which_page>(context).dil],
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 18,
@@ -77,11 +76,11 @@ class _ContactUsState extends State<ContactUs> {
             ),
           ),
         ),
-        preferredSize: Size.fromHeight(100),
+        preferredSize: const Size.fromHeight(100),
       ),
       body: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.only(left: 50, right: 50),
+        padding: const EdgeInsets.only(left: 50, right: 50),
         child: ListView(
           children: [
             const SizedBox(
@@ -99,7 +98,7 @@ class _ContactUsState extends State<ContactUs> {
             Text(
               'Lebap Welaýaty',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
                 fontSize: 15,
               ),
@@ -107,7 +106,7 @@ class _ContactUsState extends State<ContactUs> {
             const SizedBox(
               height: 25,
             ),
-            Text(
+            const Text(
               ' Bahar kiçi etrapça, S.A.Niýazow şaýoly, Türkmenabat ş',
               textAlign: TextAlign.center,
               style: TextStyle(

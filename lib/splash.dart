@@ -244,8 +244,23 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     if (!mounted) return;
     Provider.of<ProvItem>(context, listen: false).clearItem();
     for (var item in cartItems) {
-      Provider.of<ProvItem>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
-          item['description_en'], item['image'], toDouble(item['price']), toDouble(item['count']), toDouble(item['rating']), item['discount'], toDouble(item['discount_price']), item['category'], item['values'], stepOf(toDouble(item['quantity_step'], fallback: 1.0)));
+      Provider.of<ProvItem>(context, listen: false).addSplash(
+          item['productId'],
+          item['name_tm'],
+          item['name_ru'],
+          item['name_en'],
+          item['description_tm'],
+          item['description_ru'],
+          item['description_en'],
+          item['image'],
+          toDouble(item['price']),
+          toDouble(item['count']),
+          toDouble(item['rating']),
+          item['discount'],
+          toDouble(item['discount_price']),
+          item['category'],
+          item['values'],
+          stepOf(toDouble(item['quantity_step'], fallback: 1.0)));
     }
   }
 
@@ -265,8 +280,23 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     if (!mounted) return;
     Provider.of<Favourite>(context, listen: false);
     for (var item in favoriteItems) {
-      Provider.of<Favourite>(context, listen: false).addSplash(item['productId'], item['name_tm'], item['name_ru'], item['name_en'], item['description_tm'], item['description_ru'],
-          item['description_en'], item['image'], toDouble(item['price']), toDouble(item['count']), toDouble(item['rating']), item['discount'], toDouble(item['discount_price']), item['category'], item['values'], stepOf(toDouble(item['quantity_step'], fallback: 1.0)));
+      Provider.of<Favourite>(context, listen: false).addSplash(
+          item['productId'],
+          item['name_tm'],
+          item['name_ru'],
+          item['name_en'],
+          item['description_tm'],
+          item['description_ru'],
+          item['description_en'],
+          item['image'],
+          toDouble(item['price']),
+          toDouble(item['count']),
+          toDouble(item['rating']),
+          item['discount'],
+          toDouble(item['discount_price']),
+          item['category'],
+          item['values'],
+          stepOf(toDouble(item['quantity_step'], fallback: 1.0)));
     }
   }
 
@@ -387,7 +417,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                           const SizedBox(height: 30),
 
                           // Restaurant name
-                          Text(
+                          const Text(
                             'BAMBOO RESTAURANT',
                             style: TextStyle(
                               fontSize: 28,
@@ -400,7 +430,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                           const SizedBox(height: 8),
 
                           // Slogan
-                          Text(
+                          const Text(
                             'AJAÝYP AZIÝA TAGAMLARY',
                             style: TextStyle(
                               fontSize: 18,
@@ -418,7 +448,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                               if (_connection) {
                                 return Column(
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 50,
                                       height: 50,
                                       child: CircularProgressIndicator(

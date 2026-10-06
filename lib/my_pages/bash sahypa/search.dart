@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../values/models.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../my_pages3/card_item.dart';
-import '../../providers/page1provider.dart';
 import '../../providers/page1settings.dart';
 import '../../values/colors.dart';
 // ignore: library_prefixes
@@ -55,7 +52,7 @@ class _SearchState extends State<Search> {
           image: mitem[i]['image'],
           price: double.parse(mitem[i]['price']),
           count: toDouble(mitem[i]['count']),
-            quantity_step: stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
+          quantity_step: stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
           rating: double.parse(mitem[i]['rating']),
           discount: mitem[i]['discount'],
           discount_price: double.parse(mitem[i]['discounted_price'] == null ? "0.00" : mitem[i]['discounted_price'].toString()),

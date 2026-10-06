@@ -3,14 +3,13 @@ import 'package:photo_view/photo_view.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 
 class PhotView extends StatelessWidget {
-  const PhotView({Key? key}) : super(key: key);
+  const PhotView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-            child: PhotoView(imageProvider: NetworkImage(Constants.op_image))),
+        Container(child: PhotoView(imageProvider: NetworkImage(Constants.op_image))),
         GestureDetector(
           onTap: () {
             Navigator.pop(context);
@@ -18,9 +17,9 @@ class PhotView extends StatelessWidget {
           child: Container(
             height: 55,
             width: 55,
-            margin: EdgeInsets.only(top: 40, left: 20),
-            color: Color.fromARGB(0, 255, 255, 255),
-            child: Icon(
+            margin: const EdgeInsets.only(top: 40, left: 20),
+            color: const Color.fromARGB(0, 255, 255, 255),
+            child: const Icon(
               Icons.arrow_back_ios,
               color: Colors.white,
             ),

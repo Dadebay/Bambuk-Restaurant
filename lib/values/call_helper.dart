@@ -22,7 +22,7 @@ Future<void> callRestaurant(BuildContext context) async {
     SnackBar(
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.all(20),
-      content: Text(restaurantPhone),
+      content: const Text(restaurantPhone),
       action: SnackBarAction(
         label: 'OK',
         textColor: Colors.white,

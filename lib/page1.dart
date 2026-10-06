@@ -81,7 +81,7 @@ class _Page1State extends State<Page1> {
         Navigator.push(context, MaterialPageRoute(builder: (context) => const Search()));
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
         decoration: BoxDecoration(
           color: AppColors.light_silver,
@@ -122,7 +122,7 @@ class _Page1State extends State<Page1> {
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.rate_review_rounded,
                     color: AppColors.primary,
                     size: 20,

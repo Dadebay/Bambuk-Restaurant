@@ -63,7 +63,7 @@ class _MainCatState extends State<MainCat> {
               color: AppColors.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
+            child: const Icon(
               IconlyBold.category,
               color: AppColors.primary,
               size: 20,
