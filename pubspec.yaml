@@ -1,7 +1,7 @@
 name: bamboo
 description: Bamboo Restaurant mobile ordering app for Ashgabat.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 2.0.4+14
+version: 2.0.5+15
 
 environment:
   sdk: ">=3.6.0 <4.0.0"

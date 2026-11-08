@@ -2,7 +2,9 @@
 
 ## Current status (2026-11-08)
 
-The repository currently declares `2.0.4+14` and Android package `com.softpage.bamboo`. This is preparation work, not a new published version. Do not tag or upload an APK until the version/build number is advanced, a real-device smoke test passes, and the Play app-signing certificate is compared with the local release certificate. The existing local release APK is **unpublished**.
+The repository declares release candidate `2.0.5+15` and Android package `com.softpage.bamboo`. This is not a published version. Before offering the APK as a Play-installed app update, compare its signing certificate with Play Console's app-signing certificate and test installation on a real device. The previous local `2.0.4+14` APK is **unpublished**.
+
+This GitHub repository is private. A Release here is visible only to people with repository access; a public download for customers requires an approved public distribution location. Do not change repository visibility solely to distribute the APK without reviewing the source and its history for private material.
 
 The Android release signing key is kept outside Git in the owner's `Project Keys/6.Bambuk` folder. The ignored `android/key.properties` references it. The project owner controls the keystore, passwords, Play Console, Firebase project, and backup/recovery process. Rotate a compromised upload key through Play Console; never copy the key or credentials into issues, CI logs, or documentation. CI runs debug builds and needs no signing credentials.
 

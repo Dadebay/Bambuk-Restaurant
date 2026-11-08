@@ -1,12 +1,23 @@
 # Bamboo Restaurant
 
-Bamboo Restaurant is a Flutter app for browsing the restaurant menu and placing delivery or pickup orders in Ashgabat. The app also includes order history, restaurant information, a map, and push notifications. Its interface supports Turkmen, Russian, and English.
+Bamboo Restaurant is the mobile ordering app for Ho-Go Restaurant Bamboo in Ashgabat, Turkmenistan. It brings the restaurant's Asian and local dishes to your phone, so you can browse the menu and order without calling.
+
+## What the app does
+
+According to the [Google Play listing](https://play.google.com/store/apps/details?id=com.softpage.bamboo), customers can:
+
+- Explore a photo menu with more than 23 categories, including grilled dishes, salads, drinks, children's meals, and healthier choices.
+- Add dishes to a cart and place an order for delivery across Ashgabat or pickup. The listing also describes table reservations.
+- Choose from the payment methods offered at checkout, including online payment, a bank card on delivery, or cash.
+- Follow an order's status, receive notifications about offers, and send feedback from their profile.
+
+The app also includes restaurant information, a map, and order history. Its interface supports Turkmen, Russian, and English. Menu items, availability, prices, and payment options come from the restaurant and may change.
 
 ## Download
 
 - [Google Play: Bamboo Restaurant](https://play.google.com/store/apps/details?id=com.softpage.bamboo) (`com.softpage.bamboo`)
 - An iOS store listing has not been verified for this repository.
-- A direct APK download will be linked here only after a signed release passes the checks in [Release guide](docs/RELEASE.md).
+- A direct APK download will be linked here after a signed release passes the checks in the [release guide](docs/RELEASE.md). This repository is currently private, so its GitHub Releases are accessible only to people with repository access.
 
 ## Development
 
