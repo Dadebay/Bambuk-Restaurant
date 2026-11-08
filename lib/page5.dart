@@ -48,8 +48,10 @@ class _Page5State extends State<Page5> {
     });
 
     try {
-      final response = await http.get(Uri.https(constants.api, '/api/v1/pages'));
-      final data = json.decode(utf8.decode(response.bodyBytes))['data'] as List<dynamic>;
+      final response =
+          await http.get(Uri.https(constants.api, '/api/v1/pages'));
+      final data =
+          json.decode(utf8.decode(response.bodyBytes))['data'] as List<dynamic>;
       final items = <help>[];
 
       for (final item in data) {
@@ -58,9 +60,12 @@ class _Page5State extends State<Page5> {
           name_tm: item['name_tm'] ?? '',
           name_ru: item['name_ru'] ?? '',
           name_en: item['name_en'] ?? '',
-          body_tm: item['pages'] == null ? '' : item['pages'][0]['body_tm'] ?? '',
-          body_ru: item['pages'] == null ? '' : item['pages'][0]['body_ru'] ?? '',
-          body_en: item['pages'] == null ? '' : item['pages'][0]['body_en'] ?? '',
+          body_tm:
+              item['pages'] == null ? '' : item['pages'][0]['body_tm'] ?? '',
+          body_ru:
+              item['pages'] == null ? '' : item['pages'][0]['body_ru'] ?? '',
+          body_en:
+              item['pages'] == null ? '' : item['pages'][0]['body_en'] ?? '',
         ));
       }
 
@@ -109,50 +114,69 @@ class _Page5State extends State<Page5> {
     );
   }
 
-  Widget _buildBody(BuildContext context, Which_page pageProvider, BottomProv bottomProv) {
+  Widget _buildBody(
+      BuildContext context, Which_page pageProvider, BottomProv bottomProv) {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
       children: [
-        if (bottomProv.reg) _buildTile('1', constants.ru_profil[pageProvider.dil], HugeIcons.strokeRoundedLogin03),
-        if (!bottomProv.reg) _buildTile('2', constants.ru_sign[pageProvider.dil], HugeIcons.strokeRoundedLogin02),
-        if (!bottomProv.reg) _buildTile('3', constants.ru_login[pageProvider.dil], HugeIcons.strokeRoundedLogin01),
-        _buildTile('4', constants.ru_orders[pageProvider.dil], HugeIcons.strokeRoundedShoppingBag01),
-        _buildTile('15', constants.ru_address[pageProvider.dil], IconlyLight.location),
-        _buildTile('5', constants.ru_language[pageProvider.dil], HugeIcons.strokeRoundedLanguageCircle),
+        if (bottomProv.reg)
+          _buildTile('1', constants.ru_profil[pageProvider.dil],
+              HugeIcons.strokeRoundedLogin03),
+        if (!bottomProv.reg)
+          _buildTile('2', constants.ru_sign[pageProvider.dil],
+              HugeIcons.strokeRoundedLogin02),
+        if (!bottomProv.reg)
+          _buildTile('3', constants.ru_login[pageProvider.dil],
+              HugeIcons.strokeRoundedLogin01),
+        _buildTile('4', constants.ru_orders[pageProvider.dil],
+            HugeIcons.strokeRoundedShoppingBag01),
+        _buildTile(
+            '15', constants.ru_address[pageProvider.dil], IconlyLight.location),
+        _buildTile('5', constants.ru_language[pageProvider.dil],
+            HugeIcons.strokeRoundedLanguageCircle),
         _buildHelpSection(pageProvider),
-        if (bottomProv.reg) _buildTile('19', constants.ru_ttt[pageProvider.dil], IconlyLight.chat),
+        if (bottomProv.reg)
+          _buildTile(
+              '19', constants.ru_ttt[pageProvider.dil], IconlyLight.chat),
 
         // _buildTile('17', constants.ru_ttt[pageProvider.dil], IconlyLight.document),
-        _buildTile('18', constants.ru_notifications[pageProvider.dil], IconlyLight.notification),
+        _buildTile('18', constants.ru_notifications[pageProvider.dil],
+            IconlyLight.notification),
         if (bottomProv.reg) _buildLogoutTile(context, pageProvider, bottomProv),
         _buildAboutSection(pageProvider),
       ],
     );
   }
 
-  Widget _buildLogoutTile(BuildContext context, Which_page pageProvider, BottomProv bottomProv) {
+  Widget _buildLogoutTile(
+      BuildContext context, Which_page pageProvider, BottomProv bottomProv) {
     return GestureDetector(
       onTap: () => _logout(context, bottomProv),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         height: 60,
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.01),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ]),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.01),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ]),
         child: Row(
           children: [
             Container(
               margin: const EdgeInsets.only(right: 15),
-              child: const Icon(IconlyLight.logout, color: Colors.red, size: 24),
+              child:
+                  const Icon(IconlyLight.logout, color: Colors.red, size: 24),
             ),
             Expanded(
               child: Text(
                 constants.ru_logout[pageProvider.dil],
-                style: const TextStyle(color: Colors.red, fontSize: 15, fontFamily: 'Semi'),
+                style: const TextStyle(
+                    color: Colors.red, fontSize: 15, fontFamily: 'Semi'),
               ),
             ),
           ],
@@ -174,7 +198,11 @@ class _Page5State extends State<Page5> {
           const SizedBox(height: 6),
           Text(
             'Bamboo Restaurant',
-            style: TextStyle(color: Colors.grey.shade500, fontSize: 12, fontFamily: 'Semi', letterSpacing: 0.3),
+            style: TextStyle(
+                color: Colors.grey.shade500,
+                fontSize: 12,
+                fontFamily: 'Semi',
+                letterSpacing: 0.3),
           ),
           const SizedBox(height: 2),
           Text(
@@ -191,13 +219,16 @@ class _Page5State extends State<Page5> {
       return Container(
         height: 56,
         margin: const EdgeInsets.only(bottom: 6),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.01),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ]),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.01),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ]),
         child: const Center(
           child: SizedBox(
             width: 22,
@@ -256,39 +287,47 @@ class __TileState extends State<_Tile> {
   void _pushNav(BuildContext context) {
     switch (widget.id) {
       case "1":
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const UserInf()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const UserInf()));
         break;
       case "2":
         constants.which_sign = true;
         Provider.of<BottomProv>(context, listen: false).set_ver_false();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Page4()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Page4()));
         break;
       case "3":
         constants.which_sign = false;
         Provider.of<BottomProv>(context, listen: false).set_ver_false();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Page4()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Page4()));
         break;
       case "4":
         Provider.of<PageSettings>(context, listen: false).set_page0();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const MainOrders()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const MainOrders()));
         break;
       case "15":
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const MyAddress()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const MyAddress()));
         break;
       case "5":
         _showLanguageDialog(context);
         break;
       case "8":
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const MyNews()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const MyNews()));
         break;
       case "17":
         _navigateToComments(context);
         break;
       case "18":
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsPage()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const NotificationsPage()));
         break;
       case "19":
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatPage()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const ChatPage()));
         break;
     }
   }
@@ -296,7 +335,8 @@ class __TileState extends State<_Tile> {
   void _navigateToComments(BuildContext context) {
     final bottomProv = Provider.of<BottomProv>(context, listen: false);
     if (bottomProv.reg) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const Comments()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const Comments()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -314,13 +354,16 @@ class __TileState extends State<_Tile> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         height: 60,
         margin: const EdgeInsets.only(bottom: 6),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.01),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ]),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.01),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ]),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -344,10 +387,12 @@ class __TileState extends State<_Tile> {
             Expanded(
               child: Text(
                 widget.name,
-                style: const TextStyle(color: Colors.black, fontSize: 15, fontFamily: 'Semi'),
+                style: const TextStyle(
+                    color: Colors.black, fontSize: 15, fontFamily: 'Semi'),
               ),
             ),
-            Icon(IconlyLight.arrow_right_circle, color: Colors.grey.shade400, size: 20),
+            Icon(IconlyLight.arrow_right_circle,
+                color: Colors.grey.shade400, size: 20),
           ],
         ),
       ),
@@ -382,7 +427,10 @@ class __TileState extends State<_Tile> {
                   children: [
                     Text(
                       constants.ru_selectLan[prov.dil],
-                      style: const TextStyle(fontFamily: 'Semi', fontSize: 16, color: Colors.black),
+                      style: const TextStyle(
+                          fontFamily: 'Semi',
+                          fontSize: 16,
+                          color: Colors.black),
                     ),
                     const SizedBox(height: 16),
                     _buildLangOption(ctx, prov, 'Türkmen dili', '🇹🇲', 1),
@@ -400,7 +448,8 @@ class __TileState extends State<_Tile> {
     );
   }
 
-  Widget _buildLangOption(BuildContext context, Which_page prov, String label, String flag, int code) {
+  Widget _buildLangOption(BuildContext context, Which_page prov, String label,
+      String flag, int code) {
     final isSelected = prov.dil == code;
     return GestureDetector(
       onTap: () {
@@ -417,7 +466,9 @@ class __TileState extends State<_Tile> {
         height: 56,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withOpacity(0.08) : const Color(0xFFF6F7FA),
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.08)
+              : const Color(0xFFF6F7FA),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isSelected ? AppColors.primary : Colors.transparent,
@@ -438,7 +489,9 @@ class __TileState extends State<_Tile> {
                 ),
               ),
             ),
-            if (isSelected) const Icon(IconlyBold.tick_square, color: AppColors.primary, size: 22),
+            if (isSelected)
+              const Icon(IconlyBold.tick_square,
+                  color: AppColors.primary, size: 22),
           ],
         ),
       ),
@@ -493,13 +546,16 @@ class _ProfileHelpTileState extends State<_ProfileHelpTile> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         margin: const EdgeInsets.only(bottom: 6),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.01),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ]),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.01),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ]),
         child: Column(
           children: [
             Row(
@@ -515,11 +571,14 @@ class _ProfileHelpTileState extends State<_ProfileHelpTile> {
                 Expanded(
                   child: Text(
                     name,
-                    style: const TextStyle(color: Colors.black, fontSize: 15, fontFamily: 'Semi'),
+                    style: const TextStyle(
+                        color: Colors.black, fontSize: 15, fontFamily: 'Semi'),
                   ),
                 ),
                 Icon(
-                  _expanded ? IconlyLight.arrow_down_circle : IconlyLight.arrow_right_circle,
+                  _expanded
+                      ? IconlyLight.arrow_down_circle
+                      : IconlyLight.arrow_right_circle,
                   color: Colors.grey.shade400,
                   size: 20,
                 ),
@@ -532,9 +591,18 @@ class _ProfileHelpTileState extends State<_ProfileHelpTile> {
               Html(
                 data: body,
                 style: {
-                  'body': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
-                  'p': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
-                  'li': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
+                  'body': Style(
+                      fontFamily: 'GilroyRegular',
+                      fontSize: FontSize(14),
+                      color: Colors.black87),
+                  'p': Style(
+                      fontFamily: 'GilroyRegular',
+                      fontSize: FontSize(14),
+                      color: Colors.black87),
+                  'li': Style(
+                      fontFamily: 'GilroyRegular',
+                      fontSize: FontSize(14),
+                      color: Colors.black87),
                 },
               ),
             ],

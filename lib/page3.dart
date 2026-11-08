@@ -43,7 +43,8 @@ class _Page3State extends State<Page3> {
         ),
         actions: [
           IconButton(
-            onPressed: () => Provider.of<ProvItem>(context, listen: false).clearItem(),
+            onPressed: () =>
+                Provider.of<ProvItem>(context, listen: false).clearItem(),
             icon: const Icon(IconlyLight.delete),
           ),
         ],
@@ -94,7 +95,10 @@ class _Page3State extends State<Page3> {
             const SizedBox(height: 20),
             Text(
               constants.ru_empty[pageProvider.dil],
-              style: const TextStyle(fontFamily: gilroyMedium, fontSize: 20, color: Colors.black54),
+              style: const TextStyle(
+                  fontFamily: gilroyMedium,
+                  fontSize: 20,
+                  color: Colors.black54),
             ),
           ],
         ),
@@ -111,7 +115,10 @@ class _Page3State extends State<Page3> {
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: [BoxShadow(color: Color(0x12000000), blurRadius: 16, offset: Offset(0, -4))],
+        boxShadow: [
+          BoxShadow(
+              color: Color(0x12000000), blurRadius: 16, offset: Offset(0, -4))
+        ],
       ),
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       child: Column(
@@ -122,7 +129,9 @@ class _Page3State extends State<Page3> {
             width: 40,
             height: 4,
             margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2)),
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2)),
           ),
           _priceRow(
             constants.ru_product_price[pageProvider.dil],
@@ -140,17 +149,23 @@ class _Page3State extends State<Page3> {
           ),
           _priceRow(
             constants.ru_net_price[pageProvider.dil],
-            (provItem.price < pageProvider.dostawka_min) ? '${provItem.total_price} TMT' : '${provItem.total_price.toStringAsFixed(2)} TMT',
-            labelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyBold, color: Colors.black),
-            valueStyle: TextStyle(fontSize: 18, fontFamily: gilroyBold, color: AppColors.primary),
+            (provItem.price < pageProvider.dostawka_min)
+                ? '${provItem.total_price} TMT'
+                : '${provItem.total_price.toStringAsFixed(2)} TMT',
+            labelStyle: const TextStyle(
+                fontSize: 16, fontFamily: gilroyBold, color: Colors.black),
+            valueStyle: TextStyle(
+                fontSize: 18, fontFamily: gilroyBold, color: AppColors.primary),
           ),
           const SizedBox(height: 16),
           GestureDetector(
             onTap: () {
               if (constants.token.isNotEmpty) {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => SendOrder()));
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => SendOrder()));
               } else {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const Page4()));
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => const Page4()));
               }
             },
             child: Container(
@@ -160,7 +175,12 @@ class _Page3State extends State<Page3> {
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
+                boxShadow: [
+                  BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4))
+                ],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -169,12 +189,20 @@ class _Page3State extends State<Page3> {
                   const SizedBox(width: 8),
                   Text(
                     constants.ru_order[pageProvider.dil],
-                    style: const TextStyle(color: Colors.white, fontSize: 16, fontFamily: gilroyBold),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: gilroyBold),
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    (provItem.price < pageProvider.dostawka_min) ? '(${provItem.total_price} TMT)' : '(${provItem.total_price.toStringAsFixed(2)} TMT)',
-                    style: const TextStyle(fontSize: 14, color: Colors.white70, fontFamily: gilroyMedium),
+                    (provItem.price < pageProvider.dostawka_min)
+                        ? '(${provItem.total_price} TMT)'
+                        : '(${provItem.total_price.toStringAsFixed(2)} TMT)',
+                    style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white70,
+                        fontFamily: gilroyMedium),
                   ),
                 ],
               ),
@@ -185,12 +213,23 @@ class _Page3State extends State<Page3> {
     );
   }
 
-  Widget _priceRow(String label, String value, {Color? valueColor, TextStyle? labelStyle, TextStyle? valueStyle}) {
+  Widget _priceRow(String label, String value,
+      {Color? valueColor, TextStyle? labelStyle, TextStyle? valueStyle}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: labelStyle ?? const TextStyle(fontSize: 14, fontFamily: gilroyMedium, color: Colors.black54)),
-        Text(value, style: valueStyle ?? TextStyle(fontSize: 14, fontFamily: gilroyBold, color: valueColor ?? Colors.black)),
+        Text(label,
+            style: labelStyle ??
+                const TextStyle(
+                    fontSize: 14,
+                    fontFamily: gilroyMedium,
+                    color: Colors.black54)),
+        Text(value,
+            style: valueStyle ??
+                TextStyle(
+                    fontSize: 14,
+                    fontFamily: gilroyBold,
+                    color: valueColor ?? Colors.black)),
       ],
     );
   }

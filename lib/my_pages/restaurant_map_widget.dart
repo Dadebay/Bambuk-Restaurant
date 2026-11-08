@@ -54,7 +54,7 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
@@ -99,7 +99,7 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.12),
+                  color: Colors.black.withValues(alpha: 0.12),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -119,11 +119,13 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                         options: const MapOptions(
                           initialCenter: _restaurantLatLng,
                           initialZoom: 18.0,
-                          interactionOptions: InteractionOptions(flags: InteractiveFlag.none),
+                          interactionOptions:
+                              InteractionOptions(flags: InteractiveFlag.none),
                         ),
                         children: [
                           TileLayer(
-                            urlTemplate: 'https://map.ayterek.com/tile/{z}/{x}/{y}.png',
+                            urlTemplate:
+                                'https://map.ayterek.com/tile/{z}/{x}/{y}.png',
                             userAgentPackageName: 'com.softpage.bamboo',
                             maxZoom: 22,
                             minZoom: 3,
@@ -151,15 +153,17 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                         color: Colors.transparent,
                         child: Center(
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 12),
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.7),
+                              color: Colors.black.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(24),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.map, color: Colors.white, size: 20),
+                                const Icon(Icons.map,
+                                    color: Colors.white, size: 20),
                                 const SizedBox(width: 10),
                                 Text(
                                   Constants.open_map[provDil],
@@ -170,7 +174,8 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                                   ),
                                 ),
                                 const SizedBox(width: 4),
-                                const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 14),
+                                const Icon(Icons.arrow_forward_ios,
+                                    color: Colors.white, size: 14),
                               ],
                             ),
                           ),
@@ -183,13 +188,14 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                       top: 12,
                       left: 12,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
+                              color: Colors.black.withValues(alpha: 0.15),
                               blurRadius: 8,
                             ),
                           ],
@@ -197,7 +203,8 @@ class _RestaurantMapWidgetState extends State<RestaurantMapWidget> {
                         child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.restaurant, color: AppColors.primary, size: 16),
+                            Icon(Icons.restaurant,
+                                color: AppColors.primary, size: 16),
                             SizedBox(width: 6),
                             Text(
                               _restaurantName,
@@ -239,7 +246,7 @@ class _RestaurantMarker extends StatelessWidget {
             border: Border.all(color: Colors.white, width: 2.5),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.45),
+                color: AppColors.primary.withValues(alpha: 0.45),
                 blurRadius: 8,
                 offset: const Offset(0, 3),
               ),

@@ -99,25 +99,43 @@ class _KarzinaCardState extends State<KarzinaCard> {
     constants.op_discount_price = widget.discountPrice;
     constants.op_category = widget.category;
     constants.op_values = widget.values;
-    Navigator.push(context, MaterialPageRoute(builder: (_) => OptionsItem(image: widget.image)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => OptionsItem(image: widget.image)));
   }
 
   void _decreaseCount(BuildContext context) {
     if (_count > 0) {
       setState(() => _count = roundQty(_count - widget.quantityStep));
-      Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, _count);
+      Provider.of<ProvItem>(context, listen: false)
+          .removeItem(widget.id, _count);
     }
   }
 
   void _increaseCount(BuildContext context) {
     setState(() => _count = roundQty(_count + widget.quantityStep));
-    Provider.of<ProvItem>(context, listen: false).addItem(widget.id, widget.nameTm, widget.nameRu, widget.nameEn, widget.descriptionTm, widget.descriptionRu, widget.descriptionEn, widget.image,
-        widget.price, _count, widget.rating, widget.discount, widget.discountPrice, widget.category, widget.values, widget.quantityStep);
+    Provider.of<ProvItem>(context, listen: false).addItem(
+        widget.id,
+        widget.nameTm,
+        widget.nameRu,
+        widget.nameEn,
+        widget.descriptionTm,
+        widget.descriptionRu,
+        widget.descriptionEn,
+        widget.image,
+        widget.price,
+        _count,
+        widget.rating,
+        widget.discount,
+        widget.discountPrice,
+        widget.category,
+        widget.values,
+        widget.quantityStep);
   }
 
   @override
   Widget build(BuildContext context) {
-    final itemCount = Provider.of<ProvItem>(context).items[widget.id]?.count ?? _count;
+    final itemCount =
+        Provider.of<ProvItem>(context).items[widget.id]?.count ?? _count;
 
     return Slidable(
       key: ValueKey(widget.id),
@@ -130,12 +148,14 @@ class _KarzinaCardState extends State<KarzinaCard> {
         children: [
           SlidableAction(
             onPressed: (_) {
-              Provider.of<ProvItem>(context, listen: false).removeItem2(widget.id);
+              Provider.of<ProvItem>(context, listen: false)
+                  .removeItem2(widget.id);
             },
             backgroundColor: const Color(0xFFFF3B30),
             foregroundColor: Colors.white,
             icon: Icons.delete_rounded,
-            borderRadius: const BorderRadius.horizontal(right: Radius.circular(18)),
+            borderRadius:
+                const BorderRadius.horizontal(right: Radius.circular(18)),
           ),
         ],
       ),
@@ -147,7 +167,10 @@ class _KarzinaCardState extends State<KarzinaCard> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(18),
             boxShadow: const [
-              BoxShadow(color: Color(0x0E000000), blurRadius: 16, offset: Offset(0, 3)),
+              BoxShadow(
+                  color: Color(0x0E000000),
+                  blurRadius: 16,
+                  offset: Offset(0, 3)),
             ],
           ),
           child: Row(
@@ -185,7 +208,8 @@ class _KarzinaCardState extends State<KarzinaCard> {
                           ),
                         ),
                         errorWidget: (_, __, ___) => Center(
-                          child: Image.asset(logoImage, width: 60, height: 60, fit: BoxFit.contain),
+                          child: Image.asset(logoImage,
+                              width: 60, height: 60, fit: BoxFit.contain),
                         ),
                       ),
                     ),
@@ -195,7 +219,8 @@ class _KarzinaCardState extends State<KarzinaCard> {
                         top: 4,
                         left: 4,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 2),
                           decoration: BoxDecoration(
                             color: const Color(0xFFFF3B30),
                             borderRadius: BorderRadius.circular(6),

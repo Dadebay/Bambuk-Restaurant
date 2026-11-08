@@ -26,7 +26,9 @@ class _CommentsState extends State<Comments> {
 
   Future getTime() async {
     Map<String, String> header = {'Authorization': 'Bearer ${Constants.token}'};
-    var response3 = await http.get(Uri.https(Constants.api, '/api/v1/users/me/comments/'), headers: header);
+    var response3 = await http.get(
+        Uri.https(Constants.api, '/api/v1/users/me/comments/'),
+        headers: header);
     var mitem = json.decode(utf8.decode(response3.bodyBytes))['data'];
     messageBody.clear();
     for (int i = 0; i < mitem.length; i++) {
@@ -107,7 +109,8 @@ class _CommentsState extends State<Comments> {
         ),
         title: Text(
           Constants.ru_ttt[dil],
-          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+          style: const TextStyle(
+              color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
@@ -121,18 +124,21 @@ class _CommentsState extends State<Comments> {
               margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
-                  const Icon(IconlyLight.info_circle, color: AppColors.primary, size: 20),
+                  const Icon(IconlyLight.info_circle,
+                      color: AppColors.primary, size: 20),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       Constants.ru_ttt_subtitle[dil],
                       maxLines: 5,
-                      style: TextStyle(color: AppColors.primary.withOpacity(0.85), fontSize: 13),
+                      style: TextStyle(
+                          color: AppColors.primary.withValues(alpha: 0.85),
+                          fontSize: 13),
                     ),
                   ),
                 ],
@@ -141,7 +147,9 @@ class _CommentsState extends State<Comments> {
             // Messages list
             Expanded(
               child: k == 0
-                  ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                  ? const Center(
+                      child:
+                          CircularProgressIndicator(color: AppColors.primary))
                   : messageBody.isEmpty
                       ? _buildEmptyState(dil)
                       : ListView.builder(
@@ -149,7 +157,8 @@ class _CommentsState extends State<Comments> {
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                           physics: const BouncingScrollPhysics(),
                           itemCount: messageBody.length,
-                          itemBuilder: (context, index) => _buildBubble(messageBody[index]),
+                          itemBuilder: (context, index) =>
+                              _buildBubble(messageBody[index]),
                         ),
             ),
             // Input bar
@@ -169,15 +178,17 @@ class _CommentsState extends State<Comments> {
             height: 80,
             width: 80,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: const Icon(IconlyLight.chat, color: AppColors.primary, size: 36),
+            child: const Icon(IconlyLight.chat,
+                color: AppColors.primary, size: 36),
           ),
           const SizedBox(height: 16),
           Text(
             Constants.ru_ttt_empty[dil],
-            style: const TextStyle(color: Colors.grey, fontSize: 15, fontFamily: 'Semi'),
+            style: const TextStyle(
+                color: Colors.grey, fontSize: 15, fontFamily: 'Semi'),
           ),
         ],
       ),
@@ -188,7 +199,8 @@ class _CommentsState extends State<Comments> {
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
         margin: const EdgeInsets.only(top: 8, bottom: 4),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
@@ -201,7 +213,7 @@ class _CommentsState extends State<Comments> {
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.25),
+              color: AppColors.primary.withValues(alpha: 0.25),
               blurRadius: 8,
               offset: const Offset(0, 3),
             ),
@@ -209,7 +221,8 @@ class _CommentsState extends State<Comments> {
         ),
         child: Text(
           text,
-          style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4),
+          style:
+              const TextStyle(color: Colors.white, fontSize: 15, height: 1.4),
         ),
       ),
     );
@@ -221,7 +234,8 @@ class _CommentsState extends State<Comments> {
       decoration: const BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Color(0x0F000000), blurRadius: 12, offset: Offset(0, -3)),
+          BoxShadow(
+              color: Color(0x0F000000), blurRadius: 12, offset: Offset(0, -3)),
         ],
       ),
       child: Row(
@@ -240,7 +254,8 @@ class _CommentsState extends State<Comments> {
                 decoration: InputDecoration(
                   hintText: Constants.ru_ttt_hint[dil],
                   hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                   border: InputBorder.none,
                 ),
               ),
@@ -257,7 +272,10 @@ class _CommentsState extends State<Comments> {
                 color: AppColors.primary,
                 shape: BoxShape.circle,
                 boxShadow: [
-                  BoxShadow(color: Color(0x33000000), blurRadius: 6, offset: Offset(0, 2)),
+                  BoxShadow(
+                      color: Color(0x33000000),
+                      blurRadius: 6,
+                      offset: Offset(0, 2)),
                 ],
               ),
               child: const Icon(IconlyBold.send, color: Colors.white, size: 20),

@@ -18,11 +18,13 @@ class AddAddress extends StatefulWidget {
 class _AddAddressState extends State<AddAddress> {
   TextEditingController address_name = TextEditingController();
   TextEditingController address = TextEditingController();
-  Future<void> sending(String addressName1, String address1, BuildContext context) async {
+  Future<void> sending(
+      String addressName1, String address1, BuildContext context) async {
     try {
       if (address1 != '' && addressName1 != '') {
         DatabaseHelper.add_address(addressName1, address1);
-        Provider.of<Favourite>(context, listen: false).addAddress(addressName1, address1);
+        Provider.of<Favourite>(context, listen: false)
+            .addAddress(addressName1, address1);
         setState(() {
           address.clear();
           address_name.clear();
@@ -49,7 +51,8 @@ class _AddAddressState extends State<AddAddress> {
                 Center(
                   child: Text(
                     Constants.ru_address[Provider.of<Which_page>(context).dil],
-                    style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+                    style: const TextStyle(
+                        color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
                   ),
                 ),
                 Row(
@@ -82,7 +85,8 @@ class _AddAddressState extends State<AddAddress> {
           children: [
             Text(
               Constants.ru_addSal[Provider.of<Which_page>(context).dil],
-              style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+              style: const TextStyle(
+                  color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
             ),
             const SizedBox(
               height: 20,
@@ -91,10 +95,21 @@ class _AddAddressState extends State<AddAddress> {
               controller: address_name,
               autofocus: true,
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.only(left: 25, top: 20, right: 25, bottom: 20),
-                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.primary, width: 2.0), gapPadding: 6.0),
-                enabledBorder: OutlineInputBorder(gapPadding: 6.0, borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                labelText: (Provider.of<Which_page>(context).dil != 0) ? 'Salgynyň ady' : 'Название адреса',
+                contentPadding: const EdgeInsets.only(
+                    left: 25, top: 20, right: 25, bottom: 20),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide:
+                        const BorderSide(color: AppColors.primary, width: 2.0),
+                    gapPadding: 6.0),
+                enabledBorder: OutlineInputBorder(
+                    gapPadding: 6.0,
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide:
+                        const BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
+                labelText: (Provider.of<Which_page>(context).dil != 0)
+                    ? 'Salgynyň ady'
+                    : 'Название адреса',
                 labelStyle: const TextStyle(fontSize: 16, color: Colors.black),
               ),
             ),
@@ -112,10 +127,20 @@ class _AddAddressState extends State<AddAddress> {
                 autofocus: true,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.only(left: 25, right: 25, top: 20, bottom: 20),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.primary, width: 2.0), gapPadding: 6.0),
-                  enabledBorder: OutlineInputBorder(gapPadding: 6.0, borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color.fromRGBO(0, 0, 0, 0.25))),
-                  labelText: Constants.ru_adres[Provider.of<Which_page>(context).dil],
+                  contentPadding: const EdgeInsets.only(
+                      left: 25, right: 25, top: 20, bottom: 20),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(
+                          color: AppColors.primary, width: 2.0),
+                      gapPadding: 6.0),
+                  enabledBorder: OutlineInputBorder(
+                      gapPadding: 6.0,
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(
+                          color: Color.fromRGBO(0, 0, 0, 0.25))),
+                  labelText:
+                      Constants.ru_adres[Provider.of<Which_page>(context).dil],
                   alignLabelWithHint: true,
                   labelStyle: const TextStyle(
                     fontSize: 16,
@@ -132,7 +157,9 @@ class _AddAddressState extends State<AddAddress> {
                 height: 60,
                 alignment: Alignment.center,
                 margin: const EdgeInsets.only(top: 35),
-                decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -143,8 +170,12 @@ class _AddAddressState extends State<AddAddress> {
                         borderRadius: BorderRadius.circular(25),
                       ),
                       child: Text(
-                        Constants.ru_addSal[Provider.of<Which_page>(context).dil],
-                        style: const TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'Semi'),
+                        Constants
+                            .ru_addSal[Provider.of<Which_page>(context).dil],
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontFamily: 'Semi'),
                       ),
                     ),
                   ],

@@ -28,7 +28,7 @@ class _ContactUsState extends State<ContactUs> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.25),
+                  color: Colors.grey.withValues(alpha: 0.25),
                   spreadRadius: 3,
                   blurRadius: 4,
                   offset: const Offset(0, 3), // changes position of shadow
@@ -65,7 +65,8 @@ class _ContactUsState extends State<ContactUs> {
                   onTap: (() {}),
                   // ignore: prefer_const_constructors
                   child: Text(
-                    Constants.ru_contuct_us[Provider.of<Which_page>(context).dil],
+                    Constants
+                        .ru_contuct_us[Provider.of<Which_page>(context).dil],
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 18,

@@ -20,7 +20,8 @@ class SubCat extends StatefulWidget {
 
 class _SubCatState extends State<SubCat> {
   /// Planşet: gysga gyra 600dp-den uly bolsa.
-  bool _isTablet(BuildContext context) => MediaQuery.of(context).size.shortestSide >= 600;
+  bool _isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.shortestSide >= 600;
 
   List<products> product = [];
   int _selected = 0;
@@ -28,12 +29,16 @@ class _SubCatState extends State<SubCat> {
   bool loading = true;
   int pindex = -2;
   int page = 0;
-  String sort_by = 'cheap';
   bool canGet = true;
   final dio = Dio();
   Future get() async {
     try {
-      var repo = await dio.get('https://${Constants.api}/api/v1/products/', queryParameters: {'category': '${Constants.myCatID}', 'page': '$page', 'limit': '20'});
+      var repo = await dio.get('https://${Constants.api}/api/v1/products/',
+          queryParameters: {
+            'category': '${Constants.myCatID}',
+            'page': '$page',
+            'limit': '20'
+          });
       return repo.data;
     } catch (e) {}
   }
@@ -59,10 +64,13 @@ class _SubCatState extends State<SubCat> {
           image: mitem[i]['image'],
           price: double.parse(mitem[i]['price']),
           count: toDouble(mitem[i]['count']),
-          quantity_step: stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
+          quantity_step:
+              stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
           rating: double.parse(mitem[i]['rating']),
           discount: mitem[i]['discount'],
-          discount_price: double.parse(mitem[i]['discounted_price'] == null ? "0.00" : mitem[i]['discounted_price'].toString()),
+          discount_price: double.parse(mitem[i]['discounted_price'] == null
+              ? "0.00"
+              : mitem[i]['discounted_price'].toString()),
           category: mitem[i]['category']['id'].toString(),
           values: mitem[i]['values']));
     }
@@ -82,11 +90,18 @@ class _SubCatState extends State<SubCat> {
   void initState() {
     super.initState();
     try {
-      children.add(category_home2(id: Constants.myCatID, name_tm: 'Ählisi', name_ru: 'Все', name_en: 'All'));
+      children.add(category_home2(
+          id: Constants.myCatID,
+          name_tm: 'Ählisi',
+          name_ru: 'Все',
+          name_en: 'All'));
       for (int j = 0; j < Constants.children.length; j++) {
         try {
           children.add(category_home2(
-              id: Constants.children[j]['id'], name_tm: Constants.children[j]['name_tm'] ?? '', name_ru: Constants.children[j]['name_ru'] ?? '', name_en: Constants.children[j]['name_en'] ?? ''));
+              id: Constants.children[j]['id'],
+              name_tm: Constants.children[j]['name_tm'] ?? '',
+              name_ru: Constants.children[j]['name_ru'] ?? '',
+              name_en: Constants.children[j]['name_en'] ?? ''));
         } catch (e) {}
       }
     } catch (e) {}
@@ -95,7 +110,6 @@ class _SubCatState extends State<SubCat> {
 
   @override
   Widget build(BuildContext context) {
-    var provDil = Provider.of<Which_page>(context).dil;
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: PreferredSize(
@@ -130,10 +144,14 @@ class _SubCatState extends State<SubCat> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Search()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Search()));
                     },
                     child: Container(
-                      padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
+                      padding: const EdgeInsets.only(
+                          left: 10, right: 10, top: 15, bottom: 15),
                       decoration: BoxDecoration(
                         color: AppColors.light_silver,
                         borderRadius: BorderRadius.circular(10),
@@ -153,8 +171,10 @@ class _SubCatState extends State<SubCat> {
                             width: 10,
                           ),
                           Text(
-                            Constants.ru_search[Provider.of<Which_page>(context).dil],
-                            style: const TextStyle(color: AppColors.silver, fontFamily: 'Semi'),
+                            Constants.ru_search[
+                                Provider.of<Which_page>(context).dil],
+                            style: const TextStyle(
+                                color: AppColors.silver, fontFamily: 'Semi'),
                           ),
                         ],
                       ),
@@ -178,7 +198,11 @@ class _SubCatState extends State<SubCat> {
               children: [
                 Text(
                   Constants.myCatName,
-                  style: const TextStyle(fontFamily: 'Semi', fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
+                  style: const TextStyle(
+                      fontFamily: 'Semi',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.black),
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -201,16 +225,26 @@ class _SubCatState extends State<SubCat> {
                           },
                           child: Container(
                             margin: const EdgeInsets.symmetric(vertical: 8),
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
                             alignment: Alignment.center,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: (index == _selected) ? AppColors.primary.withOpacity(0.4) : AppColors.light_silver),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: (index == _selected)
+                                    ? AppColors.primary.withValues(alpha: 0.4)
+                                    : AppColors.light_silver),
                             child: Text(
                               Provider.of<Which_page>(context).dil == 0
                                   ? children[index].name_ru
                                   : Provider.of<Which_page>(context).dil == 1
                                       ? children[index].name_tm
                                       : children[index].name_en,
-                              style: TextStyle(fontSize: 15, fontFamily: gilroyMedium, color: (index == _selected) ? Colors.black : Colors.black),
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontFamily: gilroyMedium,
+                                  color: (index == _selected)
+                                      ? Colors.black
+                                      : Colors.black),
                             ),
                           ),
                         );
@@ -274,157 +308,6 @@ class _SubCatState extends State<SubCat> {
                 ),
         ],
       ),
-    );
-  }
-
-  Future<void> _dialogBuilder(BuildContext context) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          actions: <Widget>[
-            SizedBox(
-              width: 500,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    height: 50,
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        textStyle: const TextStyle(fontFamily: 'Semi', color: AppColors.primary, fontSize: 16),
-                      ),
-                      child: Text(
-                        (Provider.of<Which_page>(context).dil != 0) ? 'FILTER' : 'ФИЛЬТР',
-                        style: const TextStyle(fontFamily: 'Semi', color: AppColors.primary, fontSize: 16),
-                      ),
-                      onPressed: () {},
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 50,
-                          width: 50,
-                          margin: const EdgeInsets.only(left: 10),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.white),
-                        ),
-                        TextButton(
-                          child: Text(
-                            (Provider.of<Which_page>(context).dil != 0) ? 'ARZANDAN GYMMADA' : 'СНАЧАЛА ДЕШЕВЫЕ',
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              loading = true;
-                              sort_by = 'cheap';
-                            });
-                            getTime();
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  SizedBox(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 50,
-                          width: 50,
-                          margin: const EdgeInsets.only(left: 10),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.white),
-                        ),
-                        TextButton(
-                          child: Text(
-                            (Provider.of<Which_page>(context).dil != 0) ? 'GYMMATDAN ARZANA' : 'СНАЧАЛА ДОРОГИЕ',
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              sort_by = 'expensive';
-                              loading = true;
-                            });
-                            getTime();
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  SizedBox(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 50,
-                          width: 50,
-                          margin: const EdgeInsets.only(left: 10),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.white),
-                        ),
-                        TextButton(
-                          child: Text(
-                            (Provider.of<Which_page>(context).dil != 0) ? 'KÖNEDEN TÄZE' : 'СНАЧАЛА СТАРЫЕ',
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              sort_by = 'oldest';
-                              loading = true;
-                            });
-                            getTime();
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  SizedBox(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 50,
-                          width: 50,
-                          margin: const EdgeInsets.only(left: 10),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.white),
-                        ),
-                        TextButton(
-                          child: Text(
-                            (Provider.of<Which_page>(context).dil != 0) ? 'TÄZEDEN KÖNÄ' : 'СНАЧАЛА НОВИНКИ',
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              sort_by = 'latest';
-                              loading = true;
-                            });
-                            getTime();
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }

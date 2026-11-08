@@ -11,25 +11,24 @@ import '../options_item.dart';
 import '../providers/favourite.dart';
 import '../providers/page1provider.dart';
 import '../providers/provider_items.dart';
-import '../values/colors.dart';
 
 class CartItems extends StatefulWidget {
-  int id;
-  String name_tm;
-  String name_ru;
-  String name_en;
-  String description_tm;
-  String description_ru;
-  String description_en;
-  String image;
-  double price;
-  double count;
-  double rating;
-  int discount;
-  double discount_price;
-  String category;
-  var values;
-  double quantity_step;
+  final int id;
+  final String name_tm;
+  final String name_ru;
+  final String name_en;
+  final String description_tm;
+  final String description_ru;
+  final String description_en;
+  final String image;
+  final double price;
+  final double count;
+  final double rating;
+  final int discount;
+  final double discount_price;
+  final String category;
+  final dynamic values;
+  final double quantity_step;
   final double imageHeight;
   CartItems(
     this.id,
@@ -101,7 +100,7 @@ class _CartItemsState extends State<CartItems> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -122,7 +121,8 @@ class _CartItemsState extends State<CartItems> {
                     CachedNetworkImage(
                       fit: BoxFit.cover,
                       imageUrl: widget.image,
-                      errorWidget: (_, __, ___) => Image.asset(logoImage, fit: BoxFit.cover),
+                      errorWidget: (_, __, ___) =>
+                          Image.asset(logoImage, fit: BoxFit.cover),
                     ),
 
                     // Top-right: favourite button
@@ -131,8 +131,12 @@ class _CartItemsState extends State<CartItems> {
                       right: 8,
                       child: GestureDetector(
                         onTap: () {
-                          if (Provider.of<Favourite>(context, listen: false).items[widget.id]?.count == null) {
-                            Provider.of<Favourite>(context, listen: false).addItem(
+                          if (Provider.of<Favourite>(context, listen: false)
+                                  .items[widget.id]
+                                  ?.count ==
+                              null) {
+                            Provider.of<Favourite>(context, listen: false)
+                                .addItem(
                               widget.id,
                               widget.name_tm,
                               widget.name_ru,
@@ -150,15 +154,22 @@ class _CartItemsState extends State<CartItems> {
                               widget.values,
                             );
                           } else {
-                            Provider.of<Favourite>(context, listen: false).removeItem(widget.id);
+                            Provider.of<Favourite>(context, listen: false)
+                                .removeItem(widget.id);
                           }
                         },
                         child: Container(
                           padding: const EdgeInsets.all(6),
-                          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                          child: (Provider.of<Favourite>(context).items[widget.id]?.count == null)
-                              ? const Icon(IconlyLight.heart, color: Colors.grey, size: 20)
-                              : const Icon(IconlyBold.heart, color: Color(0xFFDA2C20), size: 20),
+                          decoration: const BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle),
+                          child: (Provider.of<Favourite>(context)
+                                      .items[widget.id]
+                                      ?.count ==
+                                  null)
+                              ? const Icon(IconlyLight.heart,
+                                  color: Colors.grey, size: 20)
+                              : const Icon(IconlyBold.heart,
+                                  color: Color(0xFFDA2C20), size: 20),
                         ),
                       ),
                     ),
@@ -169,14 +180,18 @@ class _CartItemsState extends State<CartItems> {
                         top: 8,
                         left: 8,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7, vertical: 3),
                           decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
                             '-${widget.discount}%',
-                            style: const TextStyle(color: Colors.white, fontFamily: 'Semi', fontSize: 11),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Semi',
+                                fontSize: 11),
                           ),
                         ),
                       ),
@@ -220,13 +235,19 @@ class _CartItemsState extends State<CartItems> {
   }
 
   Widget _addCartButton(BuildContext context) {
-    final bool inCart = Provider.of<ProvItem>(context).items[widget.id]?.count != null;
-    final String priceText = widget.discount != 0 ? '${widget.discount_price.toStringAsFixed(1)} TMT' : '${widget.price.toStringAsFixed(1)} TMT';
+    final bool inCart =
+        Provider.of<ProvItem>(context).items[widget.id]?.count != null;
+    final String priceText = widget.discount != 0
+        ? '${widget.discount_price.toStringAsFixed(1)} TMT'
+        : '${widget.price.toStringAsFixed(1)} TMT';
 
     return GestureDetector(
       onTap: () {
-        if (Provider.of<ProvItem>(context, listen: false).items[widget.id]?.count == null) {
-          widget.count = roundQty(widget.count + widget.quantity_step);
+        if (Provider.of<ProvItem>(context, listen: false)
+                .items[widget.id]
+                ?.count ==
+            null) {
+          final nextCount = roundQty(widget.count + widget.quantity_step);
           Provider.of<ProvItem>(context, listen: false).addItem(
             widget.id,
             widget.name_tm,
@@ -237,7 +258,7 @@ class _CartItemsState extends State<CartItems> {
             widget.description_en,
             widget.image,
             widget.price,
-            widget.count,
+            nextCount,
             widget.rating,
             widget.discount,
             widget.discount_price,
@@ -246,21 +267,25 @@ class _CartItemsState extends State<CartItems> {
             widget.quantity_step,
           );
         } else {
-          widget.count = 0;
-          Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, widget.count);
+          Provider.of<ProvItem>(context, listen: false)
+              .removeItem(widget.id, 0);
         }
       },
       child: Container(
         height: 44,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: inCart ? Colors.red.shade400 : const Color.fromARGB(255, 28, 192, 19),
+          color: inCart
+              ? Colors.red.shade400
+              : const Color.fromARGB(255, 28, 192, 19),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              inCart ? CupertinoIcons.cart_fill_badge_minus : CupertinoIcons.cart,
+              inCart
+                  ? CupertinoIcons.cart_fill_badge_minus
+                  : CupertinoIcons.cart,
               color: Colors.white,
               size: 20,
             ),

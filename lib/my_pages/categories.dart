@@ -19,7 +19,8 @@ class Categories extends StatefulWidget {
 
 class _CategoriesState extends State<Categories> {
   /// Planşet: gysga gyra 600dp-den uly bolsa.
-  bool _isTablet(BuildContext context) => MediaQuery.of(context).size.shortestSide >= 600;
+  bool _isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.shortestSide >= 600;
 
   bool stat = false;
   bool _isGrid = true;
@@ -55,9 +56,12 @@ class _CategoriesState extends State<Categories> {
                     onTap: () => setState(() => _isGrid = !_isGrid),
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 250),
-                      transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
+                      transitionBuilder: (child, anim) =>
+                          ScaleTransition(scale: anim, child: child),
                       child: Icon(
-                        _isGrid ? Icons.view_agenda_rounded : Icons.grid_view_rounded,
+                        _isGrid
+                            ? Icons.view_agenda_rounded
+                            : Icons.grid_view_rounded,
                         key: ValueKey(_isGrid),
                         color: AppColors.primary,
                         size: 28,
@@ -86,7 +90,8 @@ class _CategoriesState extends State<Categories> {
       ),
       body: (_isGrid || _isTablet(context))
           ? GridView.builder(
-              padding: const EdgeInsets.only(left: 15, right: 15, bottom: 80, top: 15),
+              padding: const EdgeInsets.only(
+                  left: 15, right: 15, bottom: 80, top: 15),
               controller: _scrollController,
               // Planşetde bir hatarda 3 kart. Kartyn boyy hem uzaldylyar:
               // giň kartda 190dp galsa, surat keseligine süýnüp görünýär.
@@ -110,7 +115,8 @@ class _CategoriesState extends State<Categories> {
                 );
               })
           : ListView.builder(
-              padding: const EdgeInsets.only(left: 15, right: 15, bottom: 80, top: 15),
+              padding: const EdgeInsets.only(
+                  left: 15, right: 15, bottom: 80, top: 15),
               controller: _scrollController,
               itemCount: Constants.category.length,
               itemBuilder: (BuildContext context, int index) {

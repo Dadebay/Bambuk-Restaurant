@@ -32,14 +32,15 @@ class _MainVisiblesState extends State<MainVisibles> {
       children: [
         // ── Section header (page1 stiliyle) ──────────────────────────────
         Padding(
-          padding: const EdgeInsets.only(left: 17, right: 15, top: 30, bottom: 10),
+          padding:
+              const EdgeInsets.only(left: 17, right: 15, top: 30, bottom: 10),
           child: Row(
             children: [
               // İkon kutusu — type'a göre farklı ikon
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
@@ -74,10 +75,22 @@ class _MainVisiblesState extends State<MainVisibles> {
                     const SizedBox(height: 2),
                     Text(
                       widget.type == 0
-                          ? ['Лучшие предложения', 'Iň gowy teklipler', 'Best offers'][prov.dil]
+                          ? [
+                              'Лучшие предложения',
+                              'Iň gowy teklipler',
+                              'Best offers'
+                            ][prov.dil]
                           : widget.type == 1
-                              ? ['Только что добавлено', 'Täze goşulanlar', 'Just added'][prov.dil]
-                              : ['Самые популярные', 'Iň meşhurlar', 'Most popular'][prov.dil],
+                              ? [
+                                  'Только что добавлено',
+                                  'Täze goşulanlar',
+                                  'Just added'
+                                ][prov.dil]
+                              : [
+                                  'Самые популярные',
+                                  'Iň meşhurlar',
+                                  'Most popular'
+                                ][prov.dil],
                       style: TextStyle(
                         fontSize: 12,
                         fontFamily: 'Monto',
@@ -101,9 +114,10 @@ class _MainVisiblesState extends State<MainVisibles> {
                   );
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(

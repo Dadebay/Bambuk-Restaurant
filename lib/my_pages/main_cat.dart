@@ -60,7 +60,7 @@ class _MainCatState extends State<MainCat> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
@@ -105,7 +105,7 @@ class _MainCatState extends State<MainCat> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
@@ -177,8 +177,14 @@ class _CategoryCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(radius),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 4, offset: const Offset(0, 1)),
-            BoxShadow(color: Colors.black.withOpacity(0.07), blurRadius: 18, offset: const Offset(0, 8)),
+            BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 4,
+                offset: const Offset(0, 1)),
+            BoxShadow(
+                color: Colors.black.withValues(alpha: 0.07),
+                blurRadius: 18,
+                offset: const Offset(0, 8)),
           ],
         ),
         child: ClipRRect(
@@ -217,7 +223,8 @@ class _CategoryCard extends StatelessWidget {
                 child: Container(
                   color: Colors.white,
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                   child: Text(
                     categoryName,
                     maxLines: 2,

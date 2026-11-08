@@ -82,12 +82,17 @@ Page resource error:
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isLoading ? "Loading..." : _pageTitle, style: const TextStyle(fontSize: 16)),
+        title: Text(_isLoading ? "Loading..." : _pageTitle,
+            style: const TextStyle(fontSize: 16)),
         actions: [
           if (_isLoading)
             const Padding(
               padding: EdgeInsets.only(right: 16.0),
-              child: Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))),
+              child: Center(
+                  child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2))),
             )
         ],
       ),

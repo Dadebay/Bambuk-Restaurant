@@ -39,7 +39,8 @@ class _MainOrdersState extends State<MainOrders> {
         ),
         title: Text(
           Constants.ru_orders[prov.dil],
-          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+          style: const TextStyle(
+              color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(2),

@@ -6,7 +6,11 @@ import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 
 class ReviewViewInfo extends StatelessWidget {
-  const ReviewViewInfo({super.key, required this.image, required this.date, required this.title});
+  const ReviewViewInfo(
+      {super.key,
+      required this.image,
+      required this.date,
+      required this.title});
   final String image;
   final String date;
   final String title;
@@ -28,13 +32,15 @@ class ReviewViewInfo extends StatelessWidget {
               )),
           title: Text(
             Constants.review_user[prov.dil],
-            style: const TextStyle(color: Colors.black, fontFamily: "Semi", fontSize: 20),
+            style: const TextStyle(
+                color: Colors.black, fontFamily: "Semi", fontSize: 20),
           ),
         ),
         backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             SizedBox(
                 height: Get.size.height / 2,
                 width: Get.size.width,
@@ -47,12 +53,14 @@ class ReviewViewInfo extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               date,
-              style: const TextStyle(color: Colors.black, fontFamily: "Semi", fontSize: 20),
+              style: const TextStyle(
+                  color: Colors.black, fontFamily: "Semi", fontSize: 20),
             ),
             const SizedBox(height: 10),
             Text(
               title,
-              style: const TextStyle(color: Colors.black, fontFamily: "Semi", fontSize: 20),
+              style: const TextStyle(
+                  color: Colors.black, fontFamily: "Semi", fontSize: 20),
             ),
           ]),
         ));

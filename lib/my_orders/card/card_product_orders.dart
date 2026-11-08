@@ -31,7 +31,7 @@ class _CardProductOrdersState extends State<CardProductOrders> {
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -50,10 +50,11 @@ class _CardProductOrdersState extends State<CardProductOrders> {
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.08),
+                  color: AppColors.primary.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(IconlyLight.image, color: AppColors.primary, size: 28),
+                child: const Icon(IconlyLight.image,
+                    color: AppColors.primary, size: 28),
               ),
             ),
           ),
@@ -66,7 +67,8 @@ class _CardProductOrdersState extends State<CardProductOrders> {
                   dil != 0 ? item.name_tm : item.name_ru,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontFamily: 'Semi', fontSize: 14, color: Colors.black),
+                  style: const TextStyle(
+                      fontFamily: 'Semi', fontSize: 14, color: Colors.black),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -74,17 +76,24 @@ class _CardProductOrdersState extends State<CardProductOrders> {
                   children: [
                     Text(
                       '${item.price} TMT',
-                      style: const TextStyle(fontFamily: 'Semi', fontSize: 14, color: AppColors.green),
+                      style: const TextStyle(
+                          fontFamily: 'Semi',
+                          fontSize: 14,
+                          color: AppColors.green),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.08),
+                        color: AppColors.primary.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         '× ${item.count}',
-                        style: const TextStyle(fontFamily: 'Semi', fontSize: 13, color: AppColors.primary),
+                        style: const TextStyle(
+                            fontFamily: 'Semi',
+                            fontSize: 13,
+                            color: AppColors.primary),
                       ),
                     ),
                   ],

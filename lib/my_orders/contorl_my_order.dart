@@ -74,7 +74,8 @@ class _ContorlMyOrderState extends State<ContorlMyOrder> {
         ),
         title: Text(
           Constants.ru_control_oder[prov.dil],
-          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+          style: const TextStyle(
+              color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
@@ -99,7 +100,10 @@ class _ContorlMyOrderState extends State<ContorlMyOrder> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 3)),
+          BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 3)),
         ],
       ),
       child: Column(
@@ -109,23 +113,26 @@ class _ContorlMyOrderState extends State<ContorlMyOrder> {
               Container(
                 padding: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(IconlyLight.bag_2, color: AppColors.primary, size: 20),
+                child: const Icon(IconlyLight.bag_2,
+                    color: AppColors.primary, size: 20),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   '${Constants.ru_orderNo} #${Constants.or_track_code}',
-                  style: const TextStyle(fontFamily: 'Semi', fontSize: 15, color: Colors.black),
+                  style: const TextStyle(
+                      fontFamily: 'Semi', fontSize: 15, color: Colors.black),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(width: 8),
               Text(
                 '${Constants.or_total_price} TMT',
-                style: const TextStyle(fontFamily: 'Semi', fontSize: 15, color: AppColors.green),
+                style: const TextStyle(
+                    fontFamily: 'Semi', fontSize: 15, color: AppColors.green),
               ),
             ],
           ),
@@ -138,18 +145,25 @@ class _ContorlMyOrderState extends State<ContorlMyOrder> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(IconlyLight.profile, color: AppColors.primary, size: 20),
+                child: const Icon(IconlyLight.profile,
+                    color: AppColors.primary, size: 20),
               ),
               const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(Constants.name, style: const TextStyle(fontFamily: 'Semi', fontSize: 14, color: Colors.black)),
+                  Text(Constants.name,
+                      style: const TextStyle(
+                          fontFamily: 'Semi',
+                          fontSize: 14,
+                          color: Colors.black)),
                   const SizedBox(height: 2),
-                  Text(Constants.email, style: const TextStyle(fontSize: 12, color: AppColors.silver)),
+                  Text(Constants.email,
+                      style: const TextStyle(
+                          fontSize: 12, color: AppColors.silver)),
                 ],
               ),
             ],
@@ -166,10 +180,15 @@ class _ContorlMyOrderState extends State<ContorlMyOrder> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 3)),
+          BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 3)),
         ],
       ),
-      child: isCancelled ? _buildCancelledState(dil) : _buildNormalTimeline(dil, status),
+      child: isCancelled
+          ? _buildCancelledState(dil)
+          : _buildNormalTimeline(dil, status),
     );
   }
 
@@ -196,7 +215,9 @@ class _ContorlMyOrderState extends State<ContorlMyOrder> {
     return Column(
       children: [
         _buildStep(
-          label: dil != 0 ? 'Sargyt barlan\u00fdar' : '\u0417\u0430\u043a\u0430\u0437 \u0432 \u043e\u0436\u0438\u0434\u0430\u043d\u0438\u0438',
+          label: dil != 0
+              ? 'Sargyt barlan\u00fdar'
+              : '\u0417\u0430\u043a\u0430\u0437 \u0432 \u043e\u0436\u0438\u0434\u0430\u043d\u0438\u0438',
           icon: IconlyBold.time_circle,
           color: const Color(0xFFFF9800),
           active: true,
@@ -210,17 +231,21 @@ class _ContorlMyOrderState extends State<ContorlMyOrder> {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.12),
+                color: Colors.red.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(IconlyBold.close_square, size: 18, color: Colors.red),
+              child: const Icon(IconlyBold.close_square,
+                  size: 18, color: Colors.red),
             ),
             const SizedBox(width: 14),
             Padding(
               padding: const EdgeInsets.only(top: 9),
               child: Text(
-                dil != 0 ? 'Sargyt \u00fdatyryldy' : '\u0417\u0430\u043a\u0430\u0437 \u043e\u0442\u043c\u0435\u043d\u0435\u043d',
-                style: const TextStyle(fontFamily: 'Semi', fontSize: 14, color: Colors.red),
+                dil != 0
+                    ? 'Sargyt \u00fdatyryldy'
+                    : '\u0417\u0430\u043a\u0430\u0437 \u043e\u0442\u043c\u0435\u043d\u0435\u043d',
+                style: const TextStyle(
+                    fontFamily: 'Semi', fontSize: 14, color: Colors.red),
               ),
             ),
           ],
@@ -247,11 +272,14 @@ class _ContorlMyOrderState extends State<ContorlMyOrder> {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: active ? color.withOpacity(0.15) : const Color(0xFFF0F0F0),
+                color: active
+                    ? color.withValues(alpha: 0.15)
+                    : const Color(0xFFF0F0F0),
                 shape: BoxShape.circle,
                 border: isCurrent ? Border.all(color: color, width: 2) : null,
               ),
-              child: Icon(icon, size: 18, color: active ? color : Colors.grey.shade400),
+              child: Icon(icon,
+                  size: 18, color: active ? color : Colors.grey.shade400),
             ),
             if (showConnector)
               Container(
@@ -259,7 +287,9 @@ class _ContorlMyOrderState extends State<ContorlMyOrder> {
                 height: 32,
                 margin: const EdgeInsets.symmetric(vertical: 2),
                 decoration: BoxDecoration(
-                  color: active ? color.withOpacity(0.35) : const Color(0xFFE0E0E0),
+                  color: active
+                      ? color.withValues(alpha: 0.35)
+                      : const Color(0xFFE0E0E0),
                   borderRadius: BorderRadius.circular(1),
                 ),
               ),
@@ -288,5 +318,10 @@ class _StepData {
   final IconData icon;
   final Color color;
   final int minStatus;
-  const _StepData({required this.tm, required this.ru, required this.icon, required this.color, required this.minStatus});
+  const _StepData(
+      {required this.tm,
+      required this.ru,
+      required this.icon,
+      required this.color,
+      required this.minStatus});
 }

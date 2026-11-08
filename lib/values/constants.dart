@@ -73,7 +73,11 @@ var op_values;
 String tm_onum = 'Gündelik harytlar';
 String tm_category = 'Kategoriýalar';
 String tm_favourites = 'Halanlarym';
-List<String> emptyFavouritesTitle = ['Нет избранных товаров', 'Halanan önüm ýok', 'No favourite items'];
+List<String> emptyFavouritesTitle = [
+  'Нет избранных товаров',
+  'Halanan önüm ýok',
+  'No favourite items'
+];
 List<String> emptyFavouritesSubtitle = [
   'Нажмите на сердечко, чтобы сохранить понравившийся товар',
   'Haladyňyz önümi ýürek belgisine basyp saklap bilersiňiz',
@@ -121,11 +125,19 @@ String tm_send = 'Eltip bermek';
 
 //for ru language
 
-List<String> ruCykmak = ['Вы уверены, что хотите выйти из программы?', 'Siz hakykatdanda programmadan çykmak isleýärsiňizmi ?', 'Are you sure you want to exit the program?'];
+List<String> ruCykmak = [
+  'Вы уверены, что хотите выйти из программы?',
+  'Siz hakykatdanda programmadan çykmak isleýärsiňizmi ?',
+  'Are you sure you want to exit the program?'
+];
 List<String> ruCykmakYes = ['Да', 'Hawwa', 'Yes'];
 List<String> bonus = ['Ваш бонус', 'Bonusyňyz', 'Your bonus'];
 List<String> ruCykmakNo = ['Нет', 'Ýok', 'No'];
-List<String> ru_onum = ['Повседневные товары', 'Gündelik harytlar', 'Everyday goods'];
+List<String> ru_onum = [
+  'Повседневные товары',
+  'Gündelik harytlar',
+  'Everyday goods'
+];
 List<String> ru_bonus = [
   'Бонус',
   'Bonus',
@@ -167,7 +179,11 @@ List<String> ru_favourites = [
   'Halanlarym',
   'Favorites',
 ];
-List<String> ru_orders = ['История заказов', 'Sargytlarym', 'History of orders'];
+List<String> ru_orders = [
+  'История заказов',
+  'Sargytlarym',
+  'History of orders'
+];
 List<String> ru_product = [
   'Продукт',
   'Haryt',
@@ -188,15 +204,31 @@ List<String> ru_discounts = [
   'Aksiýalar',
   'Promotions',
 ];
-List<String> ru_discounts_products = ['Акции и скидки', 'Aksiýa we arzanladyş', 'Promotions and discounts'];
-List<String> ru_product_category = ['Товары категории', 'Kategoriýadaky harytlar', 'Category products'];
-List<String> ru_product_same = ['Похожие товары', 'Meňzeş harytlar', 'Similar products'];
+List<String> ru_discounts_products = [
+  'Акции и скидки',
+  'Aksiýa we arzanladyş',
+  'Promotions and discounts'
+];
+List<String> ru_product_category = [
+  'Товары категории',
+  'Kategoriýadaky harytlar',
+  'Category products'
+];
+List<String> ru_product_same = [
+  'Похожие товары',
+  'Meňzeş harytlar',
+  'Similar products'
+];
 List<String> ru_rate = [
   'Оценить',
   'Bahalandyrmak',
   'Estimate',
 ];
-List<String> ru_full_dep = ['Описание блюда', 'Tagamyň düzümi', 'Description of the dish'];
+List<String> ru_full_dep = [
+  'Описание блюда',
+  'Tagamyň düzümi',
+  'Description of the dish'
+];
 List<String> ru_login = [
   'Войти',
   'Içeri gir',
@@ -247,7 +279,11 @@ List<String> ru_extra_info = [
   'Eltip bermäniň goşmaça jemi',
   'Cost of delivery',
 ];
-List<String> ru_product_price = ['Цены на товары', 'Harytlaryň bahalary', 'Commodity prices'];
+List<String> ru_product_price = [
+  'Цены на товары',
+  'Harytlaryň bahalary',
+  'Commodity prices'
+];
 List<String> ru_discount_info = [
   'Скидка',
   'Aksiýa boýunça arzanladyş',
@@ -454,6 +490,7 @@ List<String> ru_asap = [
   'Mümkin boldugyça çalt',
   'As soon as possible',
 ];
+
 /// Hepdäniň günleriniň gysga atlary: [rus, türkmen, iňlis]
 List<List<String>> weekdayShort = [
   ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
@@ -511,6 +548,16 @@ List<String> ru_contin = [
   'Продолжить',
   'Dowam et',
   'Continue',
+];
+List<String> ru_order_status_unknown = [
+  'Не удалось подтвердить статус заказа. Проверьте «Мои заказы» перед повторной попыткой.',
+  'Sargydyň ýagdaýyny tassyklap bolmady. Gaýtadan synanyşmazdan öň «Sargytlarym» bölüminde barlaň.',
+  'Order status could not be confirmed. Check My Orders before trying again.',
+];
+List<String> ru_payment_link_unavailable = [
+  'Заказ принят, но ссылка на оплату недоступна. Проверьте его статус в «Моих заказах».',
+  'Sargyt kabul edildi, ýöne töleg salgysy elýeterli däl. Ýagdaýyny «Sargytlarym» bölüminde barlaň.',
+  'Order placed, but the payment link is unavailable. Check its status in My Orders.',
 ];
 List<String> ru_newBlud = [
   'Новые блюда',

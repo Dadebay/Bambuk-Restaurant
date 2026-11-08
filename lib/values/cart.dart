@@ -12,7 +12,12 @@ class Cart {
     dynamic totalRaw = json.length;
 
     // ignore: prefer_for_elements_to_map_fromiterable
-    Map<int, products> cartProducts = Map.fromIterable(productsIterable, key: (mapCartProduct) => mapCartProduct['productId'], value: (mapCartProduct) => products.fromLocal(mapCartProduct));
-    return Cart(total: totalRaw is int ? totalRaw.toDouble() : totalRaw, totalProductsCount: cartProducts.length, product: cartProducts);
+    Map<int, products> cartProducts = Map.fromIterable(productsIterable,
+        key: (mapCartProduct) => mapCartProduct['productId'],
+        value: (mapCartProduct) => products.fromLocal(mapCartProduct));
+    return Cart(
+        total: totalRaw is int ? totalRaw.toDouble() : totalRaw,
+        totalProductsCount: cartProducts.length,
+        product: cartProducts);
   }
 }

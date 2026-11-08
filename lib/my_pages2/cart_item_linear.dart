@@ -12,25 +12,40 @@ import '../providers/page1provider.dart';
 import '../values/constants.dart';
 
 class CartItemsLinear extends StatefulWidget {
-  int id;
-  String name_tm;
-  String name_ru;
-  String name_en;
-  String description_tm;
-  String description_ru;
-  String description_en;
-  String image;
-  double price;
-  double count;
-  double rating;
-  int discount;
-  double discount_price;
-  String category;
-  var values;
-  double quantity_step;
-  CartItemsLinear(this.id, this.name_tm, this.name_ru, this.name_en, this.description_tm, this.description_ru, this.description_en, this.image, this.price, this.count, this.rating, this.discount,
-      this.discount_price, this.category, this.values,
-      {this.quantity_step = 1.0, super.key});
+  final int id;
+  final String name_tm;
+  final String name_ru;
+  final String name_en;
+  final String description_tm;
+  final String description_ru;
+  final String description_en;
+  final String image;
+  final double price;
+  final double count;
+  final double rating;
+  final int discount;
+  final double discount_price;
+  final String category;
+  final dynamic values;
+  final double quantity_step;
+  CartItemsLinear(
+      this.id,
+      this.name_tm,
+      this.name_ru,
+      this.name_en,
+      this.description_tm,
+      this.description_ru,
+      this.description_en,
+      this.image,
+      this.price,
+      this.count,
+      this.rating,
+      this.discount,
+      this.discount_price,
+      this.category,
+      this.values,
+      {this.quantity_step = 1.0,
+      super.key});
 
   @override
   _CartItemsLinearState createState() => _CartItemsLinearState();
@@ -108,7 +123,8 @@ class _CartItemsLinearState extends State<CartItemsLinear> {
                           ),
                           child: Text(
                             '${widget.discount}%',
-                            style: const TextStyle(color: Colors.white, fontSize: 12),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 12),
                           ),
                         )
                       : Container(),
@@ -124,11 +140,14 @@ class _CartItemsLinearState extends State<CartItemsLinear> {
                           alignment: Alignment.topLeft,
                           margin: const EdgeInsets.only(top: 15),
                           child: Text(
-                            (Provider.of<Which_page>(context).dil != 0) ? widget.name_tm : widget.name_ru,
+                            (Provider.of<Which_page>(context).dil != 0)
+                                ? widget.name_tm
+                                : widget.name_ru,
                             textAlign: TextAlign.left,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontFamily: "Semi", fontSize: 14),
+                            style: const TextStyle(
+                                fontFamily: "Semi", fontSize: 14),
                           )),
                     ),
                     Container(
@@ -139,7 +158,10 @@ class _CartItemsLinearState extends State<CartItemsLinear> {
                               children: [
                                 Text(
                                   '${widget.price}TMT',
-                                  style: const TextStyle(color: AppColors.light_black, fontSize: 14, decoration: TextDecoration.lineThrough),
+                                  style: const TextStyle(
+                                      color: AppColors.light_black,
+                                      fontSize: 14,
+                                      decoration: TextDecoration.lineThrough),
                                 ),
                                 Text(
                                   '${widget.discount_price}TMT',
@@ -166,13 +188,32 @@ class _CartItemsLinearState extends State<CartItemsLinear> {
               const SizedBox(height: 8),
               GestureDetector(
                 onTap: () {
-                  if (Provider.of<ProvItem>(context, listen: false).items[widget.id]?.count == null) {
-                    widget.count = roundQty(widget.count + widget.quantity_step);
-                    Provider.of<ProvItem>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru,
-                        widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values, widget.quantity_step);
+                  if (Provider.of<ProvItem>(context, listen: false)
+                          .items[widget.id]
+                          ?.count ==
+                      null) {
+                    final nextCount =
+                        roundQty(widget.count + widget.quantity_step);
+                    Provider.of<ProvItem>(context, listen: false).addItem(
+                        widget.id,
+                        widget.name_tm,
+                        widget.name_ru,
+                        widget.name_en,
+                        widget.description_tm,
+                        widget.description_ru,
+                        widget.description_en,
+                        widget.image,
+                        widget.price,
+                        nextCount,
+                        widget.rating,
+                        widget.discount,
+                        widget.discount_price,
+                        widget.category,
+                        widget.values,
+                        widget.quantity_step);
                   } else {
-                    widget.count = 0;
-                    Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, widget.count);
+                    Provider.of<ProvItem>(context, listen: false)
+                        .removeItem(widget.id, 0);
                   }
                 },
                 child: Container(
@@ -182,7 +223,12 @@ class _CartItemsLinearState extends State<CartItemsLinear> {
                   // ignore: prefer_const_constructors
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    color: (Provider.of<ProvItem>(context).items[widget.id]?.count == null) ? AppColors.hover : AppColors.primary,
+                    color: (Provider.of<ProvItem>(context)
+                                .items[widget.id]
+                                ?.count ==
+                            null)
+                        ? AppColors.hover
+                        : AppColors.primary,
                   ),
                   child: SvgPicture.asset(
                     'assets/images/man3.svg',

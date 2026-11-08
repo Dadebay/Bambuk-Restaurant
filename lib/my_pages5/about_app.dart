@@ -29,7 +29,8 @@ class _AboutAppState extends State<AboutApp> {
         ),
         title: Text(
           Constants.ru_programma[Provider.of<Which_page>(context).dil],
-          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+          style: const TextStyle(
+              color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
         ),
       ),
       body: Container(

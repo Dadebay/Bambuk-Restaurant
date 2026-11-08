@@ -35,9 +35,15 @@ class _HelpState extends State<Help> {
         name_tm: mitem[i]['name_tm'] ?? '',
         name_ru: mitem[i]['name_ru'] ?? '',
         name_en: mitem[i]['name_en'] ?? '',
-        body_tm: mitem[i]['pages'] == null ? '' : mitem[i]['pages'][0]['body_tm'] ?? '',
-        body_ru: mitem[i]['pages'] == null ? '' : mitem[i]['pages'][0]['body_ru'] ?? '',
-        body_en: mitem[i]['pages'] == null ? '' : mitem[i]['pages'][0]['body_en'] ?? '',
+        body_tm: mitem[i]['pages'] == null
+            ? ''
+            : mitem[i]['pages'][0]['body_tm'] ?? '',
+        body_ru: mitem[i]['pages'] == null
+            ? ''
+            : mitem[i]['pages'][0]['body_ru'] ?? '',
+        body_en: mitem[i]['pages'] == null
+            ? ''
+            : mitem[i]['pages'][0]['body_en'] ?? '',
       ));
     }
     setState(() {});
@@ -57,7 +63,8 @@ class _HelpState extends State<Help> {
         ),
         title: Text(
           Constants.ru_help[Provider.of<Which_page>(context).dil],
-          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+          style: const TextStyle(
+              color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
         ),
       ),
       body: Container(
@@ -82,14 +89,15 @@ class _HelpState extends State<Help> {
 }
 
 class _tile extends StatefulWidget {
-  int id;
-  String name_tm;
-  String name_ru;
-  String name_en;
-  String body_tm;
-  String body_ru;
-  String body_en;
-  _tile(this.id, this.name_tm, this.name_ru, this.name_en, this.body_tm, this.body_ru, this.body_en);
+  final int id;
+  final String name_tm;
+  final String name_ru;
+  final String name_en;
+  final String body_tm;
+  final String body_ru;
+  final String body_en;
+  _tile(this.id, this.name_tm, this.name_ru, this.name_en, this.body_tm,
+      this.body_ru, this.body_en);
 
   @override
   State<_tile> createState() => __tileState();
@@ -99,28 +107,29 @@ class __tileState extends State<_tile> {
   bool stat = false;
   @override
   Widget build(BuildContext context) {
-    widget.body_tm = widget.body_tm.replaceAll('<h2', '<p');
-    widget.body_tm = widget.body_tm.replaceAll('<h1', '<p');
-    widget.body_tm = widget.body_tm.replaceAll('<h3', '<p');
-    widget.body_tm = widget.body_tm.replaceAll('<h4', '<p');
-    widget.body_tm = widget.body_tm.replaceAll('<h5', '<p');
-    widget.body_tm = widget.body_tm.replaceAll('<strong>', '');
-
-    widget.body_ru = widget.body_ru.replaceAll('<h2 style="text-align: center;">', '');
-    widget.body_ru = widget.body_ru.replaceAll('<h2>', '');
-    widget.body_ru = widget.body_ru.replaceAll('<h1>', '');
-    widget.body_ru = widget.body_ru.replaceAll('<h3>', '');
-    widget.body_ru = widget.body_ru.replaceAll('<h4>', '');
-    widget.body_ru = widget.body_ru.replaceAll('<h5', '<p');
-    widget.body_ru = widget.body_ru.replaceAll('<strong>', '');
-
-    widget.body_en = widget.body_en.replaceAll('<h2 style="text-align: center;">', '');
-    widget.body_en = widget.body_en.replaceAll('<h2>', '');
-    widget.body_en = widget.body_en.replaceAll('<h1>', '');
-    widget.body_en = widget.body_en.replaceAll('<h3>', '');
-    widget.body_en = widget.body_en.replaceAll('<h4>', '');
-    widget.body_en = widget.body_en.replaceAll('<h5', '<p');
-    widget.body_en = widget.body_en.replaceAll('<strong>', '');
+    final bodyTm = widget.body_tm
+        .replaceAll('<h2', '<p')
+        .replaceAll('<h1', '<p')
+        .replaceAll('<h3', '<p')
+        .replaceAll('<h4', '<p')
+        .replaceAll('<h5', '<p')
+        .replaceAll('<strong>', '');
+    final bodyRu = widget.body_ru
+        .replaceAll('<h2 style="text-align: center;">', '')
+        .replaceAll('<h2>', '')
+        .replaceAll('<h1>', '')
+        .replaceAll('<h3>', '')
+        .replaceAll('<h4>', '')
+        .replaceAll('<h5', '<p')
+        .replaceAll('<strong>', '');
+    final bodyEn = widget.body_en
+        .replaceAll('<h2 style="text-align: center;">', '')
+        .replaceAll('<h2>', '')
+        .replaceAll('<h1>', '')
+        .replaceAll('<h3>', '')
+        .replaceAll('<h4>', '')
+        .replaceAll('<h5', '<p')
+        .replaceAll('<strong>', '');
 
     var prov = Provider.of<Which_page>(context);
     return GestureDetector(
@@ -130,14 +139,15 @@ class __tileState extends State<_tile> {
           });
         },
         child: Container(
-            padding: const EdgeInsets.only(left: 12, right: 12, top: 14, bottom: 14),
+            padding:
+                const EdgeInsets.only(left: 12, right: 12, top: 14, bottom: 14),
             margin: const EdgeInsets.only(top: 8, bottom: 8),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.15),
+                  color: Colors.grey.withValues(alpha: 0.15),
                   spreadRadius: 2,
                   blurRadius: 6,
                   offset: const Offset(0, 2),
@@ -155,11 +165,16 @@ class __tileState extends State<_tile> {
                               ? widget.name_ru
                               : widget.name_en,
                       maxLines: 2,
-                      style: const TextStyle(color: Colors.black, fontFamily: "GilroySemiBold", fontSize: 16),
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontFamily: "GilroySemiBold",
+                          fontSize: 16),
                     ),
                   ),
                   Icon(
-                    stat ? IconlyLight.arrow_up_circle : IconlyLight.arrow_down_circle,
+                    stat
+                        ? IconlyLight.arrow_up_circle
+                        : IconlyLight.arrow_down_circle,
                     color: AppColors.primary,
                     size: 20,
                   ),
@@ -169,14 +184,23 @@ class __tileState extends State<_tile> {
                 const Divider(),
                 Html(
                   data: (prov.dil == 1)
-                      ? widget.body_tm
+                      ? bodyTm
                       : prov.dil == 0
-                          ? widget.body_ru
-                          : widget.body_en,
+                          ? bodyRu
+                          : bodyEn,
                   style: {
-                    'body': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
-                    'p': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
-                    'li': Style(fontFamily: 'GilroyRegular', fontSize: FontSize(14), color: Colors.black87),
+                    'body': Style(
+                        fontFamily: 'GilroyRegular',
+                        fontSize: FontSize(14),
+                        color: Colors.black87),
+                    'p': Style(
+                        fontFamily: 'GilroyRegular',
+                        fontSize: FontSize(14),
+                        color: Colors.black87),
+                    'li': Style(
+                        fontFamily: 'GilroyRegular',
+                        fontSize: FontSize(14),
+                        color: Colors.black87),
                   },
                 ),
               ],

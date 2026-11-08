@@ -25,8 +25,8 @@ class _MyCatItemsState extends State<MyCatItems> {
   Future getTime() async {
     page++;
     loading = false;
-    var headers = {"limit": 15};
-    var response3 = await http.get(Uri.https(Constants.api, '/api/v1/products/', {'limit': '15', 'page': '$page', 'category': Constants.op_category}));
+    var response3 = await http.get(Uri.https(Constants.api, '/api/v1/products/',
+        {'limit': '15', 'page': '$page', 'category': Constants.op_category}));
     var mitem = json.decode(utf8.decode(response3.bodyBytes))['data'];
     if (mitem.length == 0) loading = true;
     for (int i = 0; i < mitem.length; i++) {
@@ -42,7 +42,8 @@ class _MyCatItemsState extends State<MyCatItems> {
           image: mitem[i]['image'],
           price: double.parse(mitem[i]['price']),
           count: toDouble(mitem[i]['count']),
-            quantity_step: stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
+          quantity_step:
+              stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
           rating: double.parse(mitem[i]['rating']),
           discount: mitem[i]['discount'],
           discount_price: double.parse(mitem[i]['discounted_price'] ?? "0.00"),
@@ -73,7 +74,7 @@ class _MyCatItemsState extends State<MyCatItems> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.25),
+                  color: Colors.grey.withValues(alpha: 0.25),
                   spreadRadius: 3,
                   blurRadius: 4,
                   offset: const Offset(0, 3), // changes position of shadow

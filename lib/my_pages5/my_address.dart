@@ -31,7 +31,8 @@ class _MyAddressState extends State<MyAddress> {
         ),
         title: Text(
           Constants.ru_address[Provider.of<Which_page>(context).dil],
-          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+          style: const TextStyle(
+              color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
         ),
       ),
       body: Container(
@@ -60,19 +61,32 @@ class _MyAddressState extends State<MyAddress> {
                                 ),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
                                     children: [
                                       Container(
-                                        margin: const EdgeInsets.only(left: 20, top: 10, bottom: 10, right: 10),
+                                        margin: const EdgeInsets.only(
+                                            left: 20,
+                                            top: 10,
+                                            bottom: 10,
+                                            right: 10),
                                         child: Text(
-                                          Provider.of<Favourite>(context).address[index].name,
-                                          style: const TextStyle(color: Colors.black, fontSize: 16, fontFamily: 'Semi'),
+                                          Provider.of<Favourite>(context)
+                                              .address[index]
+                                              .name,
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16,
+                                              fontFamily: 'Semi'),
                                         ),
                                       ),
                                       Container(
-                                        margin: const EdgeInsets.only(left: 20, bottom: 10, right: 10),
+                                        margin: const EdgeInsets.only(
+                                            left: 20, bottom: 10, right: 10),
                                         child: Text(
-                                          Provider.of<Favourite>(context).address[index].address_txt,
+                                          Provider.of<Favourite>(context)
+                                              .address[index]
+                                              .address_txt,
                                           style: const TextStyle(fontSize: 14),
                                         ),
                                       ),
@@ -112,7 +126,8 @@ class _MyAddressState extends State<MyAddress> {
                     const SizedBox(width: 8),
                     Text(
                       Constants.ru_addNew[Provider.of<Which_page>(context).dil],
-                      style: const TextStyle(color: AppColors.primary, fontFamily: 'Semi'),
+                      style: const TextStyle(
+                          color: AppColors.primary, fontFamily: 'Semi'),
                     ),
                   ],
                 ),

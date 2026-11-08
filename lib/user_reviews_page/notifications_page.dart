@@ -80,14 +80,17 @@ class _NotificationsPageState extends State<NotificationsPage> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['data'] != null) {
-          final backendNotifications = (data['data'] as List).map((item) => NotificationModel.fromJson(item)).toList();
+          final backendNotifications = (data['data'] as List)
+              .map((item) => NotificationModel.fromJson(item))
+              .toList();
           for (var notification in backendNotifications) {
             final key = '${notification.title}-${notification.body}';
             notificationsMap.putIfAbsent(key, () => notification);
           }
         }
       } else {
-        throw Exception('Failed to load notifications from backend. Status Code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load notifications from backend. Status Code: ${response.statusCode}');
       }
 
       final prefs = await SharedPreferences.getInstance();
@@ -95,7 +98,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
       int localIndex = 0;
       for (final notificationJson in localNotificationsJson.reversed) {
         final notificationData = json.decode(notificationJson);
-        final notification = NotificationModel.fromPrefs(notificationData, localIndex++);
+        final notification =
+            NotificationModel.fromPrefs(notificationData, localIndex++);
         final key = '${notification.title}-${notification.body}';
         notificationsMap[key] = notification;
       }
@@ -135,7 +139,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () => Navigator.pop(context),
-            child: const Icon(IconlyLight.arrow_left_circle, color: Colors.black87, size: 26),
+            child: const Icon(IconlyLight.arrow_left_circle,
+                color: Colors.black87, size: 26),
           ),
         ),
         title: Text(
@@ -168,12 +173,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(IconlyLight.info_circle, size: 56, color: Colors.grey.shade400),
+              Icon(IconlyLight.info_circle,
+                  size: 56, color: Colors.grey.shade400),
               const SizedBox(height: 16),
               Text(
                 constants.ru_failed_to_load[dil],
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 15, fontFamily: 'Semi', color: Colors.grey.shade600),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'Semi',
+                    color: Colors.grey.shade600),
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
@@ -183,7 +192,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
               ),
             ],
@@ -201,15 +211,19 @@ class _NotificationsPageState extends State<NotificationsPage> {
               width: 90,
               height: 90,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.10),
+                color: AppColors.primary.withValues(alpha: 0.10),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(IconlyLight.notification, size: 44, color: AppColors.primary),
+              child: const Icon(IconlyLight.notification,
+                  size: 44, color: AppColors.primary),
             ),
             const SizedBox(height: 18),
             Text(
               constants.ru_no_notifications[dil],
-              style: TextStyle(fontSize: 16, fontFamily: 'Semi', color: Colors.grey.shade600),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Semi',
+                  color: Colors.grey.shade600),
             ),
           ],
         ),
@@ -253,7 +267,8 @@ class _NotificationCardState extends State<_NotificationCard> {
       onTap: isLink
           ? () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => WebViewPage(url: notification.body)),
+                MaterialPageRoute(
+                    builder: (_) => WebViewPage(url: notification.body)),
               )
           : isLong
               ? () => setState(() => _expanded = !_expanded)
@@ -267,7 +282,7 @@ class _NotificationCardState extends State<_NotificationCard> {
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -283,7 +298,7 @@ class _NotificationCardState extends State<_NotificationCard> {
                 width: 46,
                 height: 46,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.12),
+                  color: AppColors.primary.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -311,7 +326,8 @@ class _NotificationCardState extends State<_NotificationCard> {
                     Text(
                       notification.body,
                       maxLines: _expanded || !isLong ? null : 3,
-                      overflow: _expanded || !isLong ? null : TextOverflow.ellipsis,
+                      overflow:
+                          _expanded || !isLong ? null : TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 13,
                         fontFamily: 'Monto',
@@ -337,7 +353,9 @@ class _NotificationCardState extends State<_NotificationCard> {
                             ),
                             const SizedBox(width: 3),
                             Icon(
-                              _expanded ? IconlyLight.arrow_up_2 : IconlyLight.arrow_down_2,
+                              _expanded
+                                  ? IconlyLight.arrow_up_2
+                                  : IconlyLight.arrow_down_2,
                               size: 14,
                               color: AppColors.primary,
                             ),
@@ -350,10 +368,12 @@ class _NotificationCardState extends State<_NotificationCard> {
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          const Icon(IconlyLight.time_circle, size: 13, color: Colors.grey),
+                          const Icon(IconlyLight.time_circle,
+                              size: 13, color: Colors.grey),
                           const SizedBox(width: 4),
                           Text(
-                            DateFormat('dd MMM yyyy, HH:mm').format(notification.createdAt!),
+                            DateFormat('dd MMM yyyy, HH:mm')
+                                .format(notification.createdAt!),
                             style: TextStyle(
                               fontSize: 11,
                               fontFamily: 'Semi',
@@ -370,13 +390,16 @@ class _NotificationCardState extends State<_NotificationCard> {
               if (isLink)
                 Padding(
                   padding: const EdgeInsets.only(left: 8, top: 2),
-                  child: Icon(IconlyLight.arrow_right_2, color: Colors.grey.shade400, size: 18),
+                  child: Icon(IconlyLight.arrow_right_2,
+                      color: Colors.grey.shade400, size: 18),
                 )
               else if (isLong)
                 Padding(
                   padding: const EdgeInsets.only(left: 8, top: 2),
                   child: Icon(
-                    _expanded ? IconlyLight.arrow_up_2 : IconlyLight.arrow_down_2,
+                    _expanded
+                        ? IconlyLight.arrow_up_2
+                        : IconlyLight.arrow_down_2,
                     color: Colors.grey.shade400,
                     size: 18,
                   ),

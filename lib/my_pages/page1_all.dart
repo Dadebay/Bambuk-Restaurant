@@ -11,8 +11,8 @@ import '../values/models.dart';
 import 'cart_items.dart';
 
 class Page1All extends StatefulWidget {
-  int type;
-  List<products> items;
+  final int type;
+  final List<products> items;
   Page1All({
     super.key,
     required this.type,
@@ -49,7 +49,8 @@ class _Page1AllState extends State<Page1All> {
                   ? Constants.ru_newBlud[prov.dil]
                   : Constants.ru_hitBlud[prov.dil],
           // ignore: prefer_const_constructors
-          style: TextStyle(color: Colors.black, fontSize: 23, fontFamily: gilroySemiBold),
+          style: TextStyle(
+              color: Colors.black, fontSize: 23, fontFamily: gilroySemiBold),
         ),
       ),
       body: Container(

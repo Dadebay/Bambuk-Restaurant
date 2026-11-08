@@ -75,9 +75,12 @@ Future<void> _initNotifications() async {
     await localNotificationsService.init();
 
     final firebaseMessagingService = FirebaseMessagingService.instance();
-    await firebaseMessagingService.init(localNotificationsService: localNotificationsService);
+    await firebaseMessagingService.init(
+        localNotificationsService: localNotificationsService);
 
-    await FirebaseMessaging.instance.subscribeToTopic('ttf_channel').timeout(const Duration(seconds: 10));
+    await FirebaseMessaging.instance
+        .subscribeToTopic('ttf_channel')
+        .timeout(const Duration(seconds: 10));
     debugPrint('✅ Bildiris hyzmaty taýýar');
   } on TimeoutException {
     debugPrint('⏱️ Bildiris hyzmaty wagtynda jogap bermedi - dowam edilýär');
@@ -90,21 +93,8 @@ Future<void> _initNotifications() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  print('');
-  print('🔔 BACKGROUND MESSAGE RECEIVED 🔔');
-  print('═══════════════════════════════════════════════════════════════');
-  debugPrint("Handling a background message: ${message.messageId}");
   final String? title = message.notification?.title;
   final String? body = message.notification?.body;
-  print("Message ID: ${message.messageId}");
-  print("Title: $title");
-  print("Body: $body");
-  print("Data: ${message.data}");
-  print('═══════════════════════════════════════════════════════════════');
-  print('');
-  debugPrint("Background Message Title: $title");
-  debugPrint("Background Message Body (URL if present): $body");
-  debugPrint("Background Message Data: ${message.data}");
 
   // Extract URL from data payload based on platform
   String? urlToLaunch;
@@ -127,13 +117,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       urlToLaunch = body;
     }
   }
-
-  print('');
-  print('🔗 EXTRACTED URL (BACKGROUND) 🔗');
-  print('═══════════════════════════════════════════════════════════════');
-  print('URL: $urlToLaunch');
-  print('═══════════════════════════════════════════════════════════════');
-  print('');
 
   // Save notification to SharedPreferences, but do not show it manually
   if (title != null || body != null) {
@@ -172,31 +155,18 @@ class _MyAppState extends State<MyApp> {
     // build'e bırakmayıp doğrudan burada işliyoruz.
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null && mounted) {
-        print('');
-        print('🚀 INITIAL MESSAGE (TERMINATED STATE) 🚀');
-        print('═══════════════════════════════════════════════════════════════');
         _handleMessage(message);
       }
     });
 
     // Background state - uygulama arka planda iken bildirime tıklanmış
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('');
-      print('📱 MESSAGE OPENED APP (BACKGROUND STATE) 📱');
-      print('═══════════════════════════════════════════════════════════════');
       _handleMessage(message);
     });
   }
 
   void _handleMessage(RemoteMessage? message) {
     if (message == null) return;
-
-    print('');
-    print('🔔 HANDLING MESSAGE - PROFIL SAHYPASYNA GEÇILÝÄR 🔔');
-    print('═══════════════════════════════════════════════════════════════');
-    print('Message data: ${message.data}');
-    print('═══════════════════════════════════════════════════════════════');
-    print('');
 
     // BottomProv aplikasiýanyň ömri boýunça ýaşaýar, şonuň üçin MyHomePage
     // entek gurulmadyk (Splash) bolsa-da "page" bahasy saklanyp galýar we
@@ -232,12 +202,12 @@ class _MyAppState extends State<MyApp> {
           // Ürünlerin daha iyi görünmesi için arka planı yumuşatan opaklık katmanı
           Positioned.fill(
             child: Container(
-              color: Colors.white.withOpacity(0.80),
+              color: Colors.white.withValues(alpha: 0.80),
             ),
           ),
           MediaQuery(
             data: MediaQuery.of(context).copyWith(
-              textScaler: TextScaler.linear(1.0),
+              textScaler: const TextScaler.linear(1.0),
             ),
             child: child!,
           ),
@@ -263,7 +233,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   /// Yokarky TabBar-yn beyikligi. Flutter-in ozunde 46px minimum bar,
   /// sonun ucin her Tab-a gonuden-goni berilyar.
   static const double tabBarHeight = 34;
@@ -273,11 +244,16 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   final _pageController = PageController(initialPage: 0);
   late TabController _tabController;
-  final GlobalKey<NavigatorState> _tabNavKey1 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_1');
-  final GlobalKey<NavigatorState> _tabNavKey2 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_2');
-  final GlobalKey<NavigatorState> _tabNavKey3 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_3');
-  final GlobalKey<NavigatorState> _tabNavKey4 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_4');
-  final GlobalKey<NavigatorState> _tabNavKey5 = GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_5');
+  final GlobalKey<NavigatorState> _tabNavKey1 =
+      GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_1');
+  final GlobalKey<NavigatorState> _tabNavKey2 =
+      GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_2');
+  final GlobalKey<NavigatorState> _tabNavKey3 =
+      GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_3');
+  final GlobalKey<NavigatorState> _tabNavKey4 =
+      GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_4');
+  final GlobalKey<NavigatorState> _tabNavKey5 =
+      GlobalKey<NavigatorState>(debugLabel: 'home_tab_nav_key_5');
   late List<Widget> _bottomBarPages;
   bool _pagesInitialized = false;
   int _handledProfileRequestToken = 0;
@@ -301,7 +277,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     // Aşakda BottomProv.goToProfile() çagyrylanda diňe täze token'lary
     // işlemek üçin başlangyç bahany saklaýarys (aplikasiýa täze açylanda
     // ýokarky tab-y gereksiz ýere "Ресторан"-a atlatmazlyk üçin).
-    _handledProfileRequestToken = Provider.of<BottomProv>(context, listen: false).profileRequestToken;
+    _handledProfileRequestToken =
+        Provider.of<BottomProv>(context, listen: false).profileRequestToken;
   }
 
   @override
@@ -313,7 +290,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         _buildNavigatorPage(key: _tabNavKey1, initialPage: const Page1()),
         _buildNavigatorPage(key: _tabNavKey2, initialPage: const Categories()),
         _buildNavigatorPage(key: _tabNavKey3, initialPage: const Page3()),
-        _buildNavigatorPage(key: _tabNavKey4, initialPage: const MyFavourites()),
+        _buildNavigatorPage(
+            key: _tabNavKey4, initialPage: const MyFavourites()),
         _buildNavigatorPage(key: _tabNavKey5, initialPage: const Page5()),
       ];
     }
@@ -360,7 +338,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: Colors.white.withOpacity(0.85),
+      backgroundColor: Colors.white.withValues(alpha: 0.85),
       elevation: 0,
       iconSize: 22,
       type: BottomNavigationBarType.fixed,
@@ -392,7 +370,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                   provItem.items.length.toString(),
                   style: const TextStyle(color: Colors.white),
                 ),
-                badgeStyle: const badges.BadgeStyle(badgeColor: Colors.red, padding: EdgeInsets.all(5)),
+                badgeStyle: const badges.BadgeStyle(
+                    badgeColor: Colors.red, padding: EdgeInsets.all(5)),
                 child: child!,
               );
             },
@@ -408,7 +387,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                   provItem.items.length.toString(),
                   style: const TextStyle(color: Colors.white),
                 ),
-                badgeStyle: const badges.BadgeStyle(badgeColor: Colors.red, padding: EdgeInsets.all(5)),
+                badgeStyle: const badges.BadgeStyle(
+                    badgeColor: Colors.red, padding: EdgeInsets.all(5)),
                 child: child!,
               );
             },
@@ -476,7 +456,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (_pageController.hasClients) {
-        final int current = _pageController.page?.round() ?? _pageController.initialPage;
+        final int current =
+            _pageController.page?.round() ?? _pageController.initialPage;
         if (current != selectedIndex) {
           _pageController.jumpToPage(selectedIndex);
         }
@@ -515,8 +496,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(false),
                       child: Text(
-                        Constants.ruCykmakNo[Provider.of<Which_page>(context).dil],
-                        style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: gilroyMedium),
+                        Constants
+                            .ruCykmakNo[Provider.of<Which_page>(context).dil],
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontFamily: gilroyMedium),
                       ),
                     ),
                     TextButton(
@@ -525,8 +510,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                         exit(0);
                       },
                       child: Text(
-                        Constants.ruCykmakYes[Provider.of<Which_page>(context).dil],
-                        style: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: gilroyRegular),
+                        Constants
+                            .ruCykmakYes[Provider.of<Which_page>(context).dil],
+                        style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18,
+                            fontFamily: gilroyRegular),
                       ),
                     ),
                   ],
@@ -536,7 +525,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         }
       },
       child: Scaffold(
-        appBar: const PreferredSize(preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
+        appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
         body: SafeArea(
           bottom: false,
           // NestedScrollView ulanylmaýar: header hiç ýygrylmaýardy (minExtent == maxExtent),
@@ -558,8 +548,10 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                   padding: const EdgeInsets.symmetric(horizontal: 0.0),
                   indicatorPadding: const EdgeInsets.symmetric(horizontal: 8.0),
                   controller: _tabController,
-                  labelStyle: const TextStyle(fontSize: 15, fontFamily: gilroyBold),
-                  unselectedLabelStyle: const TextStyle(fontSize: 15, fontFamily: gilroyMedium),
+                  labelStyle:
+                      const TextStyle(fontSize: 15, fontFamily: gilroyBold),
+                  unselectedLabelStyle:
+                      const TextStyle(fontSize: 15, fontFamily: gilroyMedium),
                   onTap: (value) {
                     setState(() {
                       which_page = value;
@@ -567,9 +559,18 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                   },
                   tabs: [
                     // Tab.height bolmasa Flutter 46px minimum goyyar.
-                    Tab(height: tabBarHeight, text: Constants.tabBarName1[Provider.of<Which_page>(context).dil]),
-                    Tab(height: tabBarHeight, text: Constants.tabBarName2[Provider.of<Which_page>(context).dil]),
-                    Tab(height: tabBarHeight, text: Constants.tabBarName3[Provider.of<Which_page>(context).dil]),
+                    Tab(
+                        height: tabBarHeight,
+                        text: Constants
+                            .tabBarName1[Provider.of<Which_page>(context).dil]),
+                    Tab(
+                        height: tabBarHeight,
+                        text: Constants
+                            .tabBarName2[Provider.of<Which_page>(context).dil]),
+                    Tab(
+                        height: tabBarHeight,
+                        text: Constants
+                            .tabBarName3[Provider.of<Which_page>(context).dil]),
                   ],
                 ),
               ),
@@ -590,7 +591,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             ],
           ),
         ),
-        bottomNavigationBar: _tabController.index == 0 ? _buildBottomNavigationBar(context) : const SizedBox.shrink(),
+        bottomNavigationBar: _tabController.index == 0
+            ? _buildBottomNavigationBar(context)
+            : const SizedBox.shrink(),
       ),
     );
   }
@@ -637,7 +640,8 @@ class _Page2ContentState extends State<Page2Content> {
           bodyKey = 'body_en';
         }
 
-        String bodyHtml = data[bodyKey] ?? data['body_tm'] ?? "No content available.";
+        String bodyHtml =
+            data[bodyKey] ?? data['body_tm'] ?? "No content available.";
 
         setState(() {
           bodyText = bodyHtml;
@@ -732,7 +736,8 @@ class _Page3ContentState extends State<Page3Content> {
           bodyKey = 'body_en';
         }
 
-        String bodyHtml = data[bodyKey] ?? data['body_tm'] ?? "No content available.";
+        String bodyHtml =
+            data[bodyKey] ?? data['body_tm'] ?? "No content available.";
 
         setState(() {
           bodyText = bodyHtml;

@@ -28,7 +28,8 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
+    controller = AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this);
     animation = Tween(begin: 0.0, end: 1.0).animate(controller)
       ..addListener(() {
         setState(() {});
@@ -46,16 +47,21 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
   static const int phoneDigitCount = 8;
 
   bool sign = Constants.which_sign;
-  TextEditingController loginName = TextEditingController(text: Constants.phone);
+  TextEditingController loginName =
+      TextEditingController(text: Constants.phone);
   TextEditingController regName = TextEditingController();
   TextEditingController regSurname = TextEditingController();
   TextEditingController regEmail = TextEditingController();
   TextEditingController regPhone = TextEditingController();
   TextEditingController regName1 = TextEditingController(text: Constants.name1);
-  TextEditingController regSurname1 = TextEditingController(text: Constants.name2);
-  TextEditingController regEmail1 = TextEditingController(text: Constants.email);
-  TextEditingController regPhone1 = TextEditingController(text: Constants.phone);
-  TextEditingController regMoney = TextEditingController(text: '${Constants.bonusMoney} TMT');
+  TextEditingController regSurname1 =
+      TextEditingController(text: Constants.name2);
+  TextEditingController regEmail1 =
+      TextEditingController(text: Constants.email);
+  TextEditingController regPhone1 =
+      TextEditingController(text: Constants.phone);
+  TextEditingController regMoney =
+      TextEditingController(text: '${Constants.bonusMoney} TMT');
   bool loading = false;
 
   /// Telefon belgisi doly (8 san) dalse duydurys gorkezyar.
@@ -74,12 +80,15 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
     };
 
     var url = Uri.https(Constants.api, '/api/v1/login');
-    ApiLog.request(tag: 'LOGIN / OTP SORAG', method: 'POST', url: url, body: headers);
+    ApiLog.request(
+        tag: 'LOGIN / OTP SORAG', method: 'POST', url: url, body: headers);
 
     http.Response response;
     try {
       // Wagt cakli: server jogap bermese-de ekran hemise aylanyp durmaly dal.
-      response = await http.post(url, body: headers).timeout(const Duration(seconds: 25));
+      response = await http
+          .post(url, body: headers)
+          .timeout(const Duration(seconds: 25));
     } catch (e, st) {
       ApiLog.error(tag: 'LOGIN / OTP SORAG', error: e, stackTrace: st);
       if (!mounted) return;
@@ -87,7 +96,8 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
         loading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(Constants.ru_failed_to_load[Provider.of<Which_page>(context, listen: false).dil]),
+        content: Text(Constants.ru_failed_to_load[
+            Provider.of<Which_page>(context, listen: false).dil]),
       ));
       return;
     }
@@ -118,7 +128,9 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
 
   Future delete_accaunt() async {
     Map<String, String> header = {'Authorization': 'Bearer ${Constants.token}'};
-    var response = await http.delete(Uri.https(Constants.api, '/api/v1/users/me/destroy'), headers: header);
+    var response = await http.delete(
+        Uri.https(Constants.api, '/api/v1/users/me/destroy'),
+        headers: header);
     if (response.statusCode == 200) {
       Constants.name = '';
       Constants.token = '';
@@ -133,7 +145,8 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
 
   String gmail = '';
   String mail = '';
-  Future reg_sending(String name, String surname, String email, String phone) async {
+  Future reg_sending(
+      String name, String surname, String email, String phone) async {
     if (!_isPhoneValid(phone)) {
       setState(() {
         loading = false;
@@ -162,7 +175,8 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
           loading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(Constants.ru_failed_to_load[Provider.of<Which_page>(context, listen: false).dil]),
+          content: Text(Constants.ru_failed_to_load[
+              Provider.of<Which_page>(context, listen: false).dil]),
         ));
         return;
       }
@@ -214,7 +228,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.08),
+            color: AppColors.primary.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: Offset(0, 4),
           ),
@@ -276,7 +290,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.08),
+            color: AppColors.primary.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: Offset(0, 4),
           ),
@@ -378,7 +392,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.35),
+              color: AppColors.primary.withValues(alpha: 0.35),
               blurRadius: 16,
               offset: Offset(0, 6),
             ),
@@ -438,7 +452,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
             height: 180,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primary.withOpacity(0.06),
+              color: AppColors.primary.withValues(alpha: 0.06),
             ),
           ),
         ),
@@ -450,7 +464,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
             height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primary.withOpacity(0.04),
+              color: AppColors.primary.withValues(alpha: 0.04),
             ),
           ),
         ),
@@ -462,7 +476,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
             height: 140,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primary.withOpacity(0.05),
+              color: AppColors.primary.withValues(alpha: 0.05),
             ),
           ),
         ),
@@ -484,11 +498,11 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
             height: 44,
             width: 44,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 10,
                   offset: Offset(0, 2),
                 ),
@@ -550,15 +564,15 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.primary.withOpacity(0.15),
-                          AppColors.primary.withOpacity(0.05),
+                          AppColors.primary.withValues(alpha: 0.15),
+                          AppColors.primary.withValues(alpha: 0.05),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.15),
+                          color: AppColors.primary.withValues(alpha: 0.15),
                           blurRadius: 24,
                           offset: Offset(0, 8),
                         ),
@@ -620,9 +634,13 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                 (Provider.of<BottomProv>(context).reg)
                     ? GestureDetector(
                         onTap: () async {
-                          Map<String, String> header = {'Authorization': 'Bearer ${Constants.token}'};
-                          var url = Uri.https(Constants.api, '/api/v1/users/me/destroy');
-                          var response = await http.delete(url, headers: header);
+                          Map<String, String> header = {
+                            'Authorization': 'Bearer ${Constants.token}'
+                          };
+                          var url = Uri.https(
+                              Constants.api, '/api/v1/users/me/destroy');
+                          var response =
+                              await http.delete(url, headers: header);
                           if (response.statusCode == 204) {
                             DatabaseHelper.deleteUserAll();
                             setState(() {
@@ -632,12 +650,17 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                               Constants.name1 = '';
                               Constants.name2 = '';
                               Constants.email = '';
-                              regName1 = TextEditingController(text: Constants.name1);
-                              regSurname1 = TextEditingController(text: Constants.name2);
-                              regEmail1 = TextEditingController(text: Constants.email);
-                              regPhone1 = TextEditingController(text: Constants.phone);
+                              regName1 =
+                                  TextEditingController(text: Constants.name1);
+                              regSurname1 =
+                                  TextEditingController(text: Constants.name2);
+                              regEmail1 =
+                                  TextEditingController(text: Constants.email);
+                              regPhone1 =
+                                  TextEditingController(text: Constants.phone);
                             });
-                            Provider.of<BottomProv>(context, listen: false).set_reg(false);
+                            Provider.of<BottomProv>(context, listen: false)
+                                .set_reg(false);
                             // ignore: use_build_context_synchronously
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: const Text("Siz ulgamdan çykdyňyz!"),
@@ -645,7 +668,8 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                           } else {
                             // ignore: use_build_context_synchronously
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: const Text("Ýalňyşlyk ýüze çykdy täzeden synanyşyň!"),
+                              content: const Text(
+                                  "Ýalňyşlyk ýüze çykdy täzeden synanyşyň!"),
                             ));
                           }
                         },
@@ -655,10 +679,11 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.red.shade300, width: 1.5),
+                            border: Border.all(
+                                color: Colors.red.shade300, width: 1.5),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.red.withOpacity(0.08),
+                                color: Colors.red.withValues(alpha: 0.08),
                                 blurRadius: 16,
                                 offset: Offset(0, 4),
                               ),
@@ -666,7 +691,8 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                           ),
                           child: Center(
                             child: Text(
-                              Constants.ru_delete[Provider.of<Which_page>(context).dil],
+                              Constants.ru_delete[
+                                  Provider.of<Which_page>(context).dil],
                               style: TextStyle(
                                 fontFamily: 'GilroySemiBold',
                                 color: Colors.red.shade400,
@@ -713,7 +739,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                         color: Colors.white,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.12),
+                            color: AppColors.primary.withValues(alpha: 0.12),
                             blurRadius: 30,
                             offset: Offset(0, 10),
                           ),
@@ -865,7 +891,7 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.12),
+                          color: AppColors.primary.withValues(alpha: 0.12),
                           blurRadius: 24,
                           offset: Offset(0, 8),
                         ),
@@ -936,7 +962,8 @@ class _Page4State extends State<Page4> with SingleTickerProviderStateMixin {
                         _showPhoneWarning();
                         return;
                       }
-                      reg_sending(regName.text, regSurname.text, 'test@gmail.como', regPhone.text);
+                      reg_sending(regName.text, regSurname.text,
+                          'test@gmail.como', regPhone.text);
                       setState(() {
                         loading = true;
                       });

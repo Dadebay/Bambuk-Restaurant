@@ -4,18 +4,23 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class LocalNotificationsService {
   LocalNotificationsService._();
 
-  static final LocalNotificationsService _instance = LocalNotificationsService._();
+  static final LocalNotificationsService _instance =
+      LocalNotificationsService._();
 
   factory LocalNotificationsService.instance() => _instance;
 
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
 
-    final InitializationSettings initializationSettings = InitializationSettings(
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
@@ -28,15 +33,6 @@ class LocalNotificationsService {
 
   // Handle notification tap
   void _onNotificationTap(NotificationResponse notificationResponse) {
-    final String? payload = notificationResponse.payload;
-
-    print('');
-    print('🔔 NOTIFICATION TAPPED - PROFIL SAHYPASYNA GEÇILÝÄR 🔔');
-    print('═══════════════════════════════════════════════════════════════');
-    print('Payload: $payload');
-    print('═══════════════════════════════════════════════════════════════');
-    print('');
-
     // Bildirime basylanda (aplikasiýa öňdurumynda goşmaça görkezilen ýerli
     // bildirim bolsa-da) hemişe Profil sahypasyna geçilýär.
     openProfileFromNotification();
@@ -47,7 +43,8 @@ class LocalNotificationsService {
     required String body,
     String? payload,
   }) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
       'bambuk_channel_id',
       'Bambuk Notifications',
       channelDescription: 'Channel for Bambuk app notifications',
@@ -56,7 +53,8 @@ class LocalNotificationsService {
       showWhen: false,
     );
 
-    const DarwinNotificationDetails iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+        DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true,

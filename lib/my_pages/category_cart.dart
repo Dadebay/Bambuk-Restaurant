@@ -19,7 +19,9 @@ class CategoryCart extends StatefulWidget {
   final ScrollController? scrollController;
   final bool isGrid;
 
-  const CategoryCart(this.id, this.name_tm, this.name_ru, this.name_en, this.image, this.children, {super.key, this.scrollController, this.isGrid = true});
+  const CategoryCart(this.id, this.name_tm, this.name_ru, this.name_en,
+      this.image, this.children,
+      {super.key, this.scrollController, this.isGrid = true});
 
   @override
   _CategoryCartState createState() => _CategoryCartState();
@@ -48,18 +50,6 @@ class _CategoryCartState extends State<CategoryCart> {
     if (mounted) setState(() {});
   }
 
-  double _parallaxAlignmentY() {
-    final ctrl = widget.scrollController;
-    if (ctrl == null || !ctrl.hasClients) return 0;
-    final box = _cardKey.currentContext?.findRenderObject() as RenderBox?;
-    if (box == null) return 0;
-    final viewport = RenderAbstractViewport.of(box);
-    final vh = MediaQuery.of(context).size.height;
-    final revealOffset = viewport.getOffsetToReveal(box, 0.5).offset;
-    final rel = (ctrl.offset - revealOffset) / vh;
-    return rel.clamp(-0.5, 0.5) * 2;
-  }
-
   @override
   Widget build(BuildContext context) {
     final int dil = Provider.of<Which_page>(context).dil;
@@ -74,7 +64,8 @@ class _CategoryCartState extends State<CategoryCart> {
         Constants.children = widget.children;
         Constants.myCatID = widget.id;
         Constants.myCatName = name;
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const SubCat()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => const SubCat()));
       },
       // Basylanda kart azajyk kiçelýär - degilendigi duýulýar.
       onTapDown: (_) => setState(() => _pressed = true),
@@ -84,7 +75,9 @@ class _CategoryCartState extends State<CategoryCart> {
         scale: _pressed ? 0.97 : 1,
         duration: const Duration(milliseconds: 130),
         curve: Curves.easeOut,
-        child: widget.isGrid ? _buildGridCard(context, name) : _buildListCard(context, name),
+        child: widget.isGrid
+            ? _buildGridCard(context, name)
+            : _buildListCard(context, name),
       ),
     );
   }
@@ -97,7 +90,7 @@ class _CategoryCartState extends State<CategoryCart> {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
@@ -131,7 +124,10 @@ class _CategoryCartState extends State<CategoryCart> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.80)],
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.80)
+                    ],
                   ),
                 ),
               ),
@@ -151,7 +147,10 @@ class _CategoryCartState extends State<CategoryCart> {
                   fontSize: 17,
                   height: 1.25,
                   shadows: [
-                    Shadow(color: Colors.black54, offset: Offset(0, 1), blurRadius: 4),
+                    Shadow(
+                        color: Colors.black54,
+                        offset: Offset(0, 1),
+                        blurRadius: 4),
                   ],
                 ),
               ),
@@ -163,10 +162,11 @@ class _CategoryCartState extends State<CategoryCart> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.90),
+                  color: AppColors.primary.withValues(alpha: 0.90),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.arrow_forward_ios_rounded, size: 13, color: Colors.white),
+                child: const Icon(Icons.arrow_forward_ios_rounded,
+                    size: 13, color: Colors.white),
               ),
             ),
           ],
@@ -184,8 +184,10 @@ class _CategoryCartState extends State<CategoryCart> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final totalH = constraints.maxHeight.isFinite ? constraints.maxHeight : 190.0;
-        final totalW = constraints.maxWidth.isFinite ? constraints.maxWidth : 200.0;
+        final totalH =
+            constraints.maxHeight.isFinite ? constraints.maxHeight : 190.0;
+        final totalW =
+            constraints.maxWidth.isFinite ? constraints.maxWidth : 200.0;
         final imageH = totalH - stripH;
         final cacheW = (totalW * 2).toInt(); // retina üçin x2
         final cacheH = (imageH * 2).toInt();
@@ -198,8 +200,14 @@ class _CategoryCartState extends State<CategoryCart> {
             // Iki gatly kölege: ýakyn we ýiti + uzak we ýumşak. Bir gatly
             // kölegeden tapawutlylykda kart tekiz ýerde duran ýaly görünýär.
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 4, offset: const Offset(0, 1)),
-              BoxShadow(color: Colors.black.withOpacity(0.07), blurRadius: 18, offset: const Offset(0, 8)),
+              BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1)),
+              BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.07),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8)),
             ],
           ),
           child: ClipRRect(
@@ -222,10 +230,13 @@ class _CategoryCartState extends State<CategoryCart> {
                         imageUrl: widget.image,
                         memCacheWidth: cacheW,
                         memCacheHeight: cacheH,
-                        placeholder: (_, __) => Container(color: Colors.grey.shade100),
+                        placeholder: (_, __) =>
+                            Container(color: Colors.grey.shade100),
                         errorWidget: (_, __, ___) => Container(
                           color: Colors.grey.shade200,
-                          child: Center(child: Image.asset(logoImage, fit: BoxFit.contain)),
+                          child: Center(
+                              child:
+                                  Image.asset(logoImage, fit: BoxFit.contain)),
                         ),
                       ),
                       // Suratyň aşak gyrasy ak zolaga ýumşak geçýär.
@@ -237,7 +248,10 @@ class _CategoryCartState extends State<CategoryCart> {
                             gradient: LinearGradient(
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
-                              colors: [Colors.black.withOpacity(0.16), Colors.transparent],
+                              colors: [
+                                Colors.black.withValues(alpha: 0.16),
+                                Colors.transparent
+                              ],
                             ),
                           ),
                         ),
@@ -250,7 +264,8 @@ class _CategoryCartState extends State<CategoryCart> {
                 Expanded(
                   child: Container(
                     color: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: _isTablet ? 12 : 8, vertical: 6),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: _isTablet ? 12 : 8, vertical: 6),
                     child: Row(
                       children: [
                         Expanded(
@@ -274,7 +289,7 @@ class _CategoryCartState extends State<CategoryCart> {
                           width: _isTablet ? 26 : 22,
                           height: _isTablet ? 26 : 22,
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(

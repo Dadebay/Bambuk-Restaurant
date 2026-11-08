@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:bamboo/DB/db.dart';
 import 'package:bamboo/values/models.dart';
@@ -22,8 +21,22 @@ class ProvItem with ChangeNotifier, DiagnosticableTreeMixin {
     return {..._items};
   }
 
-  void addSplash(int id, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, double count, double rating,
-      int discount, double discountPrice, String category, var values,
+  void addSplash(
+      int id,
+      String nameTm,
+      String nameRu,
+      String nameEn,
+      String descriptionTm,
+      String descriptionRu,
+      String descriptionEn,
+      String image,
+      double price,
+      double count,
+      double rating,
+      int discount,
+      double discountPrice,
+      String category,
+      values,
       [double quantityStep = 1.0]) {
     if (_items.containsKey(id)) {
     } else {
@@ -59,11 +72,26 @@ class ProvItem with ChangeNotifier, DiagnosticableTreeMixin {
     }
   }
 
-  void addItem(int id, String nameTm, String nameRu, String nameEn, String descriptionTm, String descriptionRu, String descriptionEn, String image, double price, double count, double rating,
-      int discount, double discountPrice, String category, var values,
+  void addItem(
+      int id,
+      String nameTm,
+      String nameRu,
+      String nameEn,
+      String descriptionTm,
+      String descriptionRu,
+      String descriptionEn,
+      String image,
+      double price,
+      double count,
+      double rating,
+      int discount,
+      double discountPrice,
+      String category,
+      values,
       [double quantityStep = 1.0]) {
     // Eger haryt sebetde bar bolsa, onun oz adimini ulanyarys.
-    final double step = stepOf(_items.containsKey(id) ? _items[id]!.quantity_step : quantityStep);
+    final double step = stepOf(
+        _items.containsKey(id) ? _items[id]!.quantity_step : quantityStep);
 
     _price = _price + (price * step);
     if (discount == 0) {
@@ -116,7 +144,22 @@ class ProvItem with ChangeNotifier, DiagnosticableTreeMixin {
             quantity_step: step,
             values: values),
       );
-      DatabaseHelper.createItem(id, nameTm, nameRu, nameEn, descriptionTm, descriptionRu, descriptionEn, image, price, step, rating, discount, discountPrice, category, step);
+      DatabaseHelper.createItem(
+          id,
+          nameTm,
+          nameRu,
+          nameEn,
+          descriptionTm,
+          descriptionRu,
+          descriptionEn,
+          image,
+          price,
+          step,
+          rating,
+          discount,
+          discountPrice,
+          category,
+          step);
     }
     notifyListeners();
   }
@@ -134,7 +177,8 @@ class ProvItem with ChangeNotifier, DiagnosticableTreeMixin {
         if (_items[id]!.discount == 0) {
           _total_price = _total_price - (_items[id]!.price * step);
         } else {
-          _dis = _dis - ((_items[id]!.price - _items[id]!.discount_price) * step);
+          _dis =
+              _dis - ((_items[id]!.price - _items[id]!.discount_price) * step);
           _total_price = _total_price - (_items[id]!.discount_price * step);
         }
         _items.update(
@@ -163,8 +207,11 @@ class ProvItem with ChangeNotifier, DiagnosticableTreeMixin {
         if (_items[id]!.discount == 0) {
           _total_price = _total_price - _items[id]!.price * _items[id]!.count;
         } else {
-          _dis = _dis - ((_items[id]!.price * _items[id]!.count) - (_items[id]!.discount_price * _items[id]!.count));
-          _total_price = _total_price - _items[id]!.discount_price * _items[id]!.count;
+          _dis = _dis -
+              ((_items[id]!.price * _items[id]!.count) -
+                  (_items[id]!.discount_price * _items[id]!.count));
+          _total_price =
+              _total_price - _items[id]!.discount_price * _items[id]!.count;
         }
         _myid.remove(id);
         _items.remove(id);
@@ -179,8 +226,11 @@ class ProvItem with ChangeNotifier, DiagnosticableTreeMixin {
     if (_items[id]!.discount == 0) {
       _total_price = _total_price - _items[id]!.price * _items[id]!.count;
     } else {
-      _dis = _dis - ((_items[id]!.price * _items[id]!.count) - (_items[id]!.discount_price * _items[id]!.count));
-      _total_price = _total_price - _items[id]!.discount_price * _items[id]!.count;
+      _dis = _dis -
+          ((_items[id]!.price * _items[id]!.count) -
+              (_items[id]!.discount_price * _items[id]!.count));
+      _total_price =
+          _total_price - _items[id]!.discount_price * _items[id]!.count;
     }
     _myid.remove(id);
     _items.remove(id);

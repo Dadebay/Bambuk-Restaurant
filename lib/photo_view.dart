@@ -9,7 +9,8 @@ class PhotView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(child: PhotoView(imageProvider: NetworkImage(Constants.op_image))),
+        Container(
+            child: PhotoView(imageProvider: NetworkImage(Constants.op_image))),
         GestureDetector(
           onTap: () {
             Navigator.pop(context);

@@ -65,7 +65,8 @@ class DefaultFirebaseOptions {
     projectId: 'admin-panel-e4013',
     databaseURL: 'https://admin-panel-e4013-default-rtdb.firebaseio.com',
     storageBucket: 'admin-panel-e4013.appspot.com',
-    androidClientId: '590644022203-90tp5kgguc4l7e5adav9cugrbn3l7dnh.apps.googleusercontent.com',
+    androidClientId:
+        '590644022203-90tp5kgguc4l7e5adav9cugrbn3l7dnh.apps.googleusercontent.com',
     iosBundleId: 'com.gurbanow.bamboo',
   );
 }

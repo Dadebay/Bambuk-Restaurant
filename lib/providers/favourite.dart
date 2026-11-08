@@ -30,8 +30,23 @@ class Favourite with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
-  void addSplash(int id, String nameTm, String nameRu, String nameEn, var descriptionTm, var descriptionRu, var descriptionEn, String image, double price, double count, double rating, int discount,
-      double discountPrice, String category, var values, [double quantityStep = 1.0]) {
+  void addSplash(
+      int id,
+      String nameTm,
+      String nameRu,
+      String nameEn,
+      descriptionTm,
+      descriptionRu,
+      descriptionEn,
+      String image,
+      double price,
+      double count,
+      double rating,
+      int discount,
+      double discountPrice,
+      String category,
+      values,
+      [double quantityStep = 1.0]) {
     if (_items.containsKey(id)) {
     } else {
       _myid.add(id);
@@ -59,10 +74,40 @@ class Favourite with ChangeNotifier, DiagnosticableTreeMixin {
     }
   }
 
-  void addItem(int id, String nameTm, String nameRu, String nameEn, var descriptionTm, var descriptionRu, var descriptionEn, String image, double price, double count, double rating, int discount,
-      double discountPrice, String category, var values, [double quantityStep = 1.0]) {
+  void addItem(
+      int id,
+      String nameTm,
+      String nameRu,
+      String nameEn,
+      descriptionTm,
+      descriptionRu,
+      descriptionEn,
+      String image,
+      double price,
+      double count,
+      double rating,
+      int discount,
+      double discountPrice,
+      String category,
+      values,
+      [double quantityStep = 1.0]) {
     _myid.add(id);
-    DatabaseHelper.createFavor(id, nameTm, nameRu, nameEn, descriptionTm, descriptionRu, descriptionEn, image, price, count, rating, discount, discountPrice, category, quantityStep);
+    DatabaseHelper.createFavor(
+        id,
+        nameTm,
+        nameRu,
+        nameEn,
+        descriptionTm,
+        descriptionRu,
+        descriptionEn,
+        image,
+        price,
+        count,
+        rating,
+        discount,
+        discountPrice,
+        category,
+        quantityStep);
     _items.putIfAbsent(
       id,
       () => products(

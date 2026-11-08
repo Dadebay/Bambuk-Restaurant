@@ -16,9 +16,11 @@ class CommentBannerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var provDil = Provider.of<Which_page>(context).dil;
-    final imageUrl = provDil != 0 ? commentBanner.imageTm : commentBanner.imageRu;
+    final imageUrl =
+        provDil != 0 ? commentBanner.imageTm : commentBanner.imageRu;
     final title = provDil != 0 ? commentBanner.nameTm : commentBanner.nameRu;
-    final content = provDil != 0 ? commentBanner.contentTm : commentBanner.contentRu;
+    final content =
+        provDil != 0 ? commentBanner.contentTm : commentBanner.contentRu;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -32,11 +34,11 @@ class CommentBannerPage extends StatelessWidget {
             leading: Container(
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 8,
                   ),
                 ],
@@ -50,11 +52,11 @@ class CommentBannerPage extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 8,
                     ),
                   ],
@@ -128,7 +130,7 @@ class CommentBannerPage extends StatelessWidget {
                                 vertical: 6,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.1),
+                                color: AppColors.primary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: const Row(
