@@ -27,19 +27,14 @@ class _WebViewPageState extends State<WebViewPage> {
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {
-            debugPrint('WebView is loading (progress : $progress%)');
-          },
-          onPageStarted: (String url) {
-            debugPrint('Page started loading: $url');
+          onPageStarted: (String _) {
             if (mounted) {
               setState(() {
                 _isLoading = true;
               });
             }
           },
-          onPageFinished: (String url) async {
-            debugPrint('Page finished loading: $url');
+          onPageFinished: (String _) async {
             String? title = await _controller.getTitle();
             if (mounted) {
               setState(() {
@@ -48,14 +43,7 @@ class _WebViewPageState extends State<WebViewPage> {
               });
             }
           },
-          onWebResourceError: (WebResourceError error) {
-            debugPrint('''
-Page resource error:
-  code: ${error.errorCode}
-  description: ${error.description}
-  errorType: ${error.errorType}
-  isForMainFrame: ${error.isForMainFrame}
-          ''');
+          onWebResourceError: (WebResourceError _) {
             if (mounted) {
               setState(() {
                 _isLoading = false;
@@ -65,14 +53,12 @@ Page resource error:
 
             Get.snackbar(
               "Error",
-              "Could not load page: ${error.description}",
+              "Could not load page. Please try again.",
               snackPosition: SnackPosition.BOTTOM,
             );
           },
-          onNavigationRequest: (NavigationRequest request) {
-            debugPrint('allowing navigation to ${request.url}');
-            return NavigationDecision.navigate;
-          },
+          onNavigationRequest: (NavigationRequest _) =>
+              NavigationDecision.navigate,
         ),
       )
       ..loadRequest(Uri.parse(widget.url));

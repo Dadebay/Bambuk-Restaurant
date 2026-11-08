@@ -84,8 +84,8 @@ Future<void> _initNotifications() async {
     debugPrint('✅ Bildiris hyzmaty taýýar');
   } on TimeoutException {
     debugPrint('⏱️ Bildiris hyzmaty wagtynda jogap bermedi - dowam edilýär');
-  } catch (e) {
-    debugPrint('⚠️ Bildiris hyzmaty başlamady: $e');
+  } catch (_) {
+    debugPrint('⚠️ Bildiris hyzmaty başlamady');
   }
 }
 
