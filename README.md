@@ -17,7 +17,7 @@ The app also includes restaurant information, a map, and order history. Its inte
 
 - [Google Play: Bamboo Restaurant](https://play.google.com/store/apps/details?id=com.softpage.bamboo) (`com.softpage.bamboo`)
 - An iOS store listing has not been verified for this repository.
-- A direct APK download will be linked here after a signed release passes the checks in the [release guide](docs/RELEASE.md). This repository is currently private, so its GitHub Releases are accessible only to people with repository access.
+- [Android APK v2.0.5 (pre-release)](https://github.com/Dadebay/Bambuk-Restaurant/releases/download/v2.0.5/Bamboo-Restaurant-v2.0.5.apk) · [SHA-256 checksum](https://github.com/Dadebay/Bambuk-Restaurant/releases/download/v2.0.5/SHA256SUMS.txt) · [release notes](https://github.com/Dadebay/Bambuk-Restaurant/releases/tag/v2.0.5). This GitHub repository is private, so only people with repository access can download its Release assets. A real-device smoke test and comparison with Play's app-signing certificate are still pending; installing this APK over a Play-installed copy is unverified.
 
 ## Development
 
