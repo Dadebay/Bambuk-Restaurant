@@ -8,12 +8,13 @@ import '../values/colors.dart';
 import 'package:bamboo/values/constants.dart' as Constants;
 
 class SubcatCard extends StatefulWidget {
-  int id;
-  String name_tm;
-  String name_ru;
-  String image;
-  var children;
-  SubcatCard(this.id, this.name_tm, this.name_ru, this.image, this.children, {super.key});
+  final int id;
+  final String name_tm;
+  final String name_ru;
+  final String image;
+  final dynamic children;
+  SubcatCard(this.id, this.name_tm, this.name_ru, this.image, this.children,
+      {super.key});
 
   @override
   _SubcatCardState createState() => _SubcatCardState();
@@ -25,12 +26,17 @@ class _SubcatCardState extends State<SubcatCard> {
     return GestureDetector(
       onTap: () {
         Constants.myCatID = widget.id;
-        Constants.myCatName = (Provider.of<Which_page>(context, listen: false).dil != 0) ? widget.name_tm : widget.name_ru;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const SubCat()));
+        Constants.myCatName =
+            (Provider.of<Which_page>(context, listen: false).dil != 0)
+                ? widget.name_tm
+                : widget.name_ru;
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const SubCat()));
       },
       child: Container(
         margin: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-        padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+        padding:
+            const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
         decoration: BoxDecoration(
           color: AppColors.light_silver,
           borderRadius: BorderRadius.circular(10),
@@ -40,9 +46,12 @@ class _SubcatCardState extends State<SubcatCard> {
           children: [
             Container(
               constraints: const BoxConstraints(maxWidth: 275),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
               child: Text(
-                (Provider.of<Which_page>(context).dil != 0) ? widget.name_tm : widget.name_ru,
+                (Provider.of<Which_page>(context).dil != 0)
+                    ? widget.name_tm
+                    : widget.name_ru,
                 maxLines: 2,
                 style: const TextStyle(color: Colors.black, fontSize: 16),
               ),

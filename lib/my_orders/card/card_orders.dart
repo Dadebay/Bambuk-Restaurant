@@ -56,7 +56,7 @@ class _CardOrdersState extends State<CardOrders> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -73,10 +73,11 @@ class _CardOrdersState extends State<CardOrders> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(IconlyLight.bag_2, color: AppColors.primary, size: 20),
+                  child: const Icon(IconlyLight.bag_2,
+                      color: AppColors.primary, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -85,16 +86,21 @@ class _CardOrdersState extends State<CardOrders> {
                     children: [
                       Text(
                         '${Constants.ru_orderNo[prov.dil]} #${card.order_no}',
-                        style: const TextStyle(fontFamily: 'Semi', fontSize: 14, color: Colors.black),
+                        style: const TextStyle(
+                            fontFamily: 'Semi',
+                            fontSize: 14,
+                            color: Colors.black),
                       ),
                       const SizedBox(height: 2),
                       Row(
                         children: [
-                          const Icon(IconlyLight.time_circle, size: 13, color: AppColors.silver),
+                          const Icon(IconlyLight.time_circle,
+                              size: 13, color: AppColors.silver),
                           const SizedBox(width: 4),
                           Text(
                             card.date.toString(),
-                            style: const TextStyle(fontSize: 12, color: AppColors.silver),
+                            style: const TextStyle(
+                                fontSize: 12, color: AppColors.silver),
                           ),
                         ],
                       ),
@@ -103,7 +109,10 @@ class _CardOrdersState extends State<CardOrders> {
                 ),
                 Text(
                   '${card.total_price} TMT',
-                  style: const TextStyle(fontFamily: 'GilroyBold', fontSize: 18, color: AppColors.primary),
+                  style: const TextStyle(
+                      fontFamily: 'GilroyBold',
+                      fontSize: 18,
+                      color: AppColors.primary),
                 ),
               ],
             ),
@@ -114,14 +123,16 @@ class _CardOrdersState extends State<CardOrders> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
-                  color: status.color.withOpacity(0.12),
+                  color: status.color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   status.text,
-                  style: TextStyle(fontSize: 12, fontFamily: 'Semi', color: status.color),
+                  style: TextStyle(
+                      fontSize: 12, fontFamily: 'Semi', color: status.color),
                 ),
               ),
             ),
@@ -139,7 +150,8 @@ class _CardOrdersState extends State<CardOrders> {
                     icon: IconlyLight.document,
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => AboutProducts(widget.product[widget.index].my_products),
+                        builder: (_) => AboutProducts(
+                            widget.product[widget.index].my_products),
                       ));
                     },
                   ),
@@ -180,7 +192,11 @@ class _ActionButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
   final bool isPrimary;
-  const _ActionButton({required this.label, required this.icon, required this.onTap, this.isPrimary = false});
+  const _ActionButton(
+      {required this.label,
+      required this.icon,
+      required this.onTap,
+      this.isPrimary = false});
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +214,9 @@ class _ActionButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: isPrimary ? AppColors.primary : Colors.grey.shade500),
+            Icon(icon,
+                size: 16,
+                color: isPrimary ? AppColors.primary : Colors.grey.shade500),
             const SizedBox(width: 6),
             Text(
               label,

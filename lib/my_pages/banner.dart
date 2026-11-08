@@ -28,7 +28,9 @@ class _BannerScreenState extends State<BannerScreen> {
   Widget build(BuildContext context) {
     var provDil = Provider.of<Which_page>(context).dil;
     return BannerImage(
-      aspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height) / 0.25,
+      aspectRatio: MediaQuery.of(context).size.width /
+          (MediaQuery.of(context).size.height) /
+          0.25,
       itemLength: (Constants.banner.isNotEmpty) ? Constants.banner.length : 2,
       selectedIndicatorColor: AppColors.appBar_back,
       borderRadius: BorderRadius.circular(16),
@@ -83,7 +85,7 @@ class _BannerScreen2State extends State<BannerScreen2> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
@@ -141,20 +143,23 @@ class _BannerScreen2State extends State<BannerScreen2> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CommentBannerPage(commentBanner: banner),
+                        builder: (context) =>
+                            CommentBannerPage(commentBanner: banner),
                       ),
                     );
                   },
                   child: Container(
                     // Planşetde 0.85 ekran inliligi ~870dp bolýar - kart
                     // tutuş ekrany eýeleýär. Şonuň üçin çäk goýulýar.
-                    width: MediaQuery.of(context).size.shortestSide >= 600 ? 400 : MediaQuery.of(context).size.width * 0.85,
+                    width: MediaQuery.of(context).size.shortestSide >= 600
+                        ? 400
+                        : MediaQuery.of(context).size.width * 0.85,
                     margin: const EdgeInsets.symmetric(horizontal: 6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -183,7 +188,8 @@ class _BannerScreen2State extends State<BannerScreen2> {
                               errorWidget: (context, url, error) => Container(
                                 color: AppColors.light_silver,
                                 child: const Center(
-                                  child: Icon(Icons.image_not_supported, size: 40),
+                                  child:
+                                      Icon(Icons.image_not_supported, size: 40),
                                 ),
                               ),
                             ),
@@ -199,7 +205,7 @@ class _BannerScreen2State extends State<BannerScreen2> {
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.transparent,
-                                Colors.black.withOpacity(0.7),
+                                Colors.black.withValues(alpha: 0.7),
                               ],
                             ),
                           ),
@@ -383,7 +389,8 @@ class _SliderScreenState extends State<SliderScreen> {
         child: Column(
           children: [
             BannerImage(
-              aspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height),
+              aspectRatio: MediaQuery.of(context).size.width /
+                  (MediaQuery.of(context).size.height),
               padding: const EdgeInsets.only(),
               itemLength: list.length,
               // ignore: sort_child_properties_last

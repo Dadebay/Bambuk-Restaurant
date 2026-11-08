@@ -30,11 +30,18 @@ class _MyNewsState extends State<MyNews> {
           id: mitem[i]['id'],
           name_tm: (mitem[i]['title_tm'] != null) ? mitem[i]['title_tm'] : '',
           name_ru: (mitem[i]['title_ru'] != null) ? mitem[i]['title_ru'] : '',
-          body_tm: (mitem[i]['body_tm'] != null) ? mitem[i]['body_tm'].toString().replaceAll('<h3>', '') : '',
+          body_tm: (mitem[i]['body_tm'] != null)
+              ? mitem[i]['body_tm'].toString().replaceAll('<h3>', '')
+              : '',
           body_ru: (mitem[i]['body_ru'] != null) ? mitem[i]['body_ru'] : '',
-          date: (mitem[i]['date_start'] != null) ? mitem[i]['date_start'].toString().substring(0, 10) : '',
-          view: (mitem[i]['viewed'] != null) ? mitem[i]['viewed'].toString() : '',
-          image: (mitem[i]['image'] != null) ? 'http://tikin.com.tm/storage/${mitem[i]['image'].toString()}' : ''));
+          date: (mitem[i]['date_start'] != null)
+              ? mitem[i]['date_start'].toString().substring(0, 10)
+              : '',
+          view:
+              (mitem[i]['viewed'] != null) ? mitem[i]['viewed'].toString() : '',
+          image: (mitem[i]['image'] != null)
+              ? 'http://tikin.com.tm/storage/${mitem[i]['image'].toString()}'
+              : ''));
     }
     setState(() {});
     return 0;
@@ -59,8 +66,11 @@ class _MyNewsState extends State<MyNews> {
             icon: const Icon(IconlyLight.arrow_left, color: Colors.black),
           ),
           title: Text(
-            (Provider.of<Which_page>(context).dil != 0) ? 'Täzelikler' : 'Новости',
-            style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+            (Provider.of<Which_page>(context).dil != 0)
+                ? 'Täzelikler'
+                : 'Новости',
+            style: const TextStyle(
+                color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
           ),
         ),
         body: Container(

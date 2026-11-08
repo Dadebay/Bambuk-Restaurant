@@ -26,7 +26,9 @@ class _ActivState extends State<Activ> {
     page++;
     loading = false;
     Map<String, String> header = {'Authorization': 'Bearer ${Constants.token}'};
-    var response3 = await http.get(Uri.https(Constants.api, '/api/v1/users/me/orders/'), headers: header);
+    var response3 = await http.get(
+        Uri.https(Constants.api, '/api/v1/users/me/orders/'),
+        headers: header);
 
     dynamic mitem;
     try {
@@ -55,7 +57,9 @@ class _ActivState extends State<Activ> {
     product.clear();
     if (mitem.isEmpty) loading = true;
     for (int i = 0; i < mitem.length; i++) {
-      if (mitem[i]['status']['id'] == 1 || mitem[i]['status']['id'] == 2 || mitem[i]['status']['id'] == 3) {
+      if (mitem[i]['status']['id'] == 1 ||
+          mitem[i]['status']['id'] == 2 ||
+          mitem[i]['status']['id'] == 3) {
         product.add(orders(
             id: mitem[i]['id'],
             date: mitem[i]['created_at'],

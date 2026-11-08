@@ -17,10 +17,14 @@ class ChatService {
 
     final decoded = json.decode(utf8.decode(response.bodyBytes));
     final List<dynamic> messagesJson = _extractMessages(decoded);
-    return messagesJson.whereType<Map<String, dynamic>>().map(ChatMessage.fromJson).toList();
+    return messagesJson
+        .whereType<Map<String, dynamic>>()
+        .map(ChatMessage.fromJson)
+        .toList();
   }
 
-  Future<ChatMessage?> sendMessage({required String text, int? customerId}) async {
+  Future<ChatMessage?> sendMessage(
+      {required String text, int? customerId}) async {
     final body = <String, dynamic>{'message': text};
     if (customerId != null) {
       body['customer_id'] = customerId;

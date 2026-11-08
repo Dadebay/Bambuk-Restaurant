@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 
 class BottomProv with ChangeNotifier {
   // Navigator keys for each tab
-  final GlobalKey<NavigatorState> yourKey1 = GlobalKey<NavigatorState>(debugLabel: 'nav_key_1');
-  final GlobalKey<NavigatorState> yourKey2 = GlobalKey<NavigatorState>(debugLabel: 'nav_key_2');
-  final GlobalKey<NavigatorState> yourKey3 = GlobalKey<NavigatorState>(debugLabel: 'nav_key_3');
-  final GlobalKey<NavigatorState> yourKey4 = GlobalKey<NavigatorState>(debugLabel: 'nav_key_4');
-  final GlobalKey<NavigatorState> yourKey5 = GlobalKey<NavigatorState>(debugLabel: 'nav_key_5');
+  final GlobalKey<NavigatorState> yourKey1 =
+      GlobalKey<NavigatorState>(debugLabel: 'nav_key_1');
+  final GlobalKey<NavigatorState> yourKey2 =
+      GlobalKey<NavigatorState>(debugLabel: 'nav_key_2');
+  final GlobalKey<NavigatorState> yourKey3 =
+      GlobalKey<NavigatorState>(debugLabel: 'nav_key_3');
+  final GlobalKey<NavigatorState> yourKey4 =
+      GlobalKey<NavigatorState>(debugLabel: 'nav_key_4');
+  final GlobalKey<NavigatorState> yourKey5 =
+      GlobalKey<NavigatorState>(debugLabel: 'nav_key_5');
 
   int _page = 0;
   int get page => _page;

@@ -1,4 +1,5 @@
 import 'package:bamboo/values/models.dart';
+import 'package:bamboo/utils/toleg_pay.dart';
 // ignore_for_file: non_constant_identifier_names, camel_case_types, use_build_context_synchronously
 
 import 'dart:convert';
@@ -44,7 +45,8 @@ class SendOrder extends StatefulWidget {
   _SendOrderState createState() => _SendOrderState();
 }
 
-class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMixin {
+class _SendOrderState extends State<SendOrder>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -55,7 +57,13 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
   /// Saýlanan eltip berme wagty. `null` bolsa "mümkin boldugyça çalt".
   DateTime? _pickedDateTime;
 
-  final List<String> _listBank = ['Halk bank', 'Senagat bank', 'Rysgal bank', 'Wnesheconom bank'];
+  final List<String> _listBank = [
+    'Halk bank',
+    'Senagat bank',
+    'Rysgal bank',
+    'Wnesheconom bank',
+    'Toleg'
+  ];
   int _loader = 0;
   int _selectBank = 0;
   int _ii = 1;
@@ -74,8 +82,14 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    _sendAddress.text = Provider.of<Favourite>(context, listen: false).address.isNotEmpty ? Provider.of<Favourite>(context, listen: false).address[_whichAddress].address_txt : '';
-    _controller = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
+    _sendAddress.text =
+        Provider.of<Favourite>(context, listen: false).address.isNotEmpty
+            ? Provider.of<Favourite>(context, listen: false)
+                .address[_whichAddress]
+                .address_txt
+            : '';
+    _controller = AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this);
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller)
       ..addListener(() {
         setState(() {});
@@ -89,6 +103,7 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       final response = await _get('/api/v1/locations');
       if (response != null && response['data'] != null) {
         final locationsData = response['data'] as List<dynamic>;
+        if (!mounted) return;
         setState(() {
           _locations = locationsData
               .map((location) => locations(
@@ -121,14 +136,20 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
 
   @override
   void dispose() {
-    _controller.stop();
+    _controller.dispose();
+    _sendAddress.dispose();
+    _sendNote.dispose();
+    _timeCtl.dispose();
     super.dispose();
   }
 
-  _launchURL(String ads) async {
-    final Uri url = Uri.parse(ads);
-    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-      throw Exception('Could not launch $url');
+  Future<bool> _launchURL(String ads) async {
+    final url = Uri.tryParse(ads);
+    if (url == null || !url.hasScheme) return false;
+    try {
+      return await launchUrl(url, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      return false;
     }
   }
 
@@ -137,7 +158,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       if ((_sendAddress.text.isEmpty && _typeOrder == 2)) {
         _showErrorSnackBar(context, "Maglumaty doly dolduryň!");
       } else {
-        String timer = _timeCtl.text.isEmpty ? _getCurrentTime() : _timeCtl.text;
+        String timer =
+            _timeCtl.text.isEmpty ? _getCurrentTime() : _timeCtl.text;
         var url = Uri.https(constants.api, '/api/v1/orders');
         var token = constants.token;
         var prov = Provider.of<ProvItem>(context, listen: false);
@@ -149,7 +171,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
           "delivery_type": '$_typeOrder',
           "delivery_time": timer,
           "payment_method": _ii.toString(),
-          "location": _selectedLocation?.id.toString() ?? "1" // Seçilen lokasyonun ID'si
+          "location": _selectedLocation?.id.toString() ??
+              "1" // Seçilen lokasyonun ID'si
         };
         if (_ii == 1 && _selectBonus) {
           data["is_bonus_used"] = "1";
@@ -158,18 +181,24 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
           data["bank"] = _getSelectedBank();
         }
         for (int i = 0; i < prov.myid.length; i++) {
-          data['cart_product_ids[${prov.items[prov.myid[i]]!.id}]'] = formatQuantity(prov.items[prov.myid[i]]!.count);
+          data['cart_product_ids[${prov.items[prov.myid[i]]!.id}]'] =
+              formatQuantity(prov.items[prov.myid[i]]!.count);
         }
         Map<String, String> headers = {'Authorization': 'Bearer $token'};
         var req = http.MultipartRequest('POST', url)
           ..fields.addAll(data)
           ..headers.addAll(headers);
         var res = await req.send();
-        _handleResponse(res, context);
+        await _handleResponse(res, context);
       }
     } catch (_) {
       _setLoaderFalse();
-      rethrow;
+      if (mounted) {
+        _showErrorSnackBar(
+            context,
+            constants.ru_order_status_unknown[
+                Provider.of<Which_page>(context, listen: false).dil]);
+      }
     }
   }
 
@@ -192,28 +221,56 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
     if (_selectBank == 1) return "senagat";
     if (_selectBank == 2) return "rysgal";
     if (_selectBank == 3) return "vnesh";
+    if (_selectBank == 4) return "toleg";
     return "";
   }
 
-  Future<void> _handleResponse(http.StreamedResponse res, BuildContext context) async {
+  Future<void> _handleResponse(
+      http.StreamedResponse res, BuildContext context) async {
     if (res.statusCode == 201 || res.statusCode == 200) {
+      final response = await http.Response.fromStream(res);
+      dynamic payload;
+      try {
+        payload = json.decode(utf8.decode(response.bodyBytes));
+      } catch (_) {
+        payload = response.body.trim();
+      }
       Provider.of<Which_page>(context, listen: false).increment_cart();
       Provider.of<ProvItem>(context, listen: false).clearItem();
-      var response = await http.Response.fromStream(res);
-      var mcat = json.decode(utf8.decode(response.bodyBytes));
+      final toleg = _ii == 3 ? TolegPayment.tryParse(payload) : null;
+      if (toleg != null) {
+        _setLoaderFalse();
+        await showTolegPayDialog(context, toleg);
+        if (mounted) _goToHomePage();
+        return;
+      }
       if (_ii == 3) {
-        _showOrderConfirmationSheet(context);
-        _launchURL(mcat);
+        final launched = payload is String && await _launchURL(payload);
+        if (mounted) {
+          _showOrderConfirmationSheet(
+            context,
+            notice: launched
+                ? null
+                : constants.ru_payment_link_unavailable[
+                    Provider.of<Which_page>(context, listen: false).dil],
+          );
+        }
       } else {
         _showOrderConfirmationSheet(context);
       }
       _setLoaderFalse();
     } else {
       _setLoaderFalse();
+      if (mounted)
+        _showErrorSnackBar(
+            context,
+            constants.ru_order_status_unknown[
+                Provider.of<Which_page>(context, listen: false).dil]);
     }
   }
 
   void _setLoaderFalse() {
+    if (!mounted) return;
     setState(() {
       _loader = 0;
     });
@@ -230,7 +287,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
     Provider.of<BottomProv>(context, listen: false).setPage(0);
   }
 
-  Future<void> _showOrderConfirmationSheet(BuildContext context) {
+  Future<void> _showOrderConfirmationSheet(BuildContext context,
+      {String? notice}) {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -252,22 +310,40 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                 width: 48,
                 height: 5,
                 margin: const EdgeInsets.only(bottom: 24),
-                decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(3)),
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(3)),
               ),
-              SizedBox(width: 110, height: 110, child: Image.asset('assets/images/good_order.png')),
+              SizedBox(
+                  width: 110,
+                  height: 110,
+                  child: Image.asset('assets/images/good_order.png')),
               const SizedBox(height: 20),
               Text(
                 constants.ru_razmeshon[dil],
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.primary, fontSize: 22, fontFamily: gilroyBold),
+                style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 22,
+                    fontFamily: gilroyBold),
               ),
               const SizedBox(height: 12),
               Text(
                 constants.ru_potwerdit[dil],
                 textAlign: TextAlign.center,
                 maxLines: 4,
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 14, fontFamily: gilroyMedium),
+                style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 14,
+                    fontFamily: gilroyMedium),
               ),
+              if (notice != null) ...[
+                const SizedBox(height: 12),
+                Text(notice,
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(color: Colors.orange.shade800, fontSize: 14)),
+              ],
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
@@ -277,10 +353,13 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
                   ),
-                  child: Text(constants.ru_contin[dil], style: const TextStyle(fontSize: 16, fontFamily: gilroyBold)),
+                  child: Text(constants.ru_contin[dil],
+                      style: const TextStyle(
+                          fontSize: 16, fontFamily: gilroyBold)),
                 ),
               ),
               const SizedBox(height: 8),
@@ -294,7 +373,9 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
 
   // ─── UI constants ───
   static const _bgColor = Color(0xFFF6F7FA);
-  static const _cardShadow = [BoxShadow(color: Color(0x08000000), blurRadius: 12, offset: Offset(0, 2))];
+  static const _cardShadow = [
+    BoxShadow(color: Color(0x08000000), blurRadius: 12, offset: Offset(0, 2))
+  ];
 
   Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
     return Container(
@@ -316,13 +397,15 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, color: AppColors.primary, size: 16),
         ),
         const SizedBox(width: 10),
-        Text(text, style: const TextStyle(fontFamily: gilroyBold, fontSize: 15, color: Colors.black)),
+        Text(text,
+            style: const TextStyle(
+                fontFamily: gilroyBold, fontSize: 15, color: Colors.black)),
       ],
     );
   }
@@ -354,7 +437,7 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(icon, color: AppColors.primary, size: 16),
@@ -365,7 +448,11 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(title, style: const TextStyle(fontFamily: gilroyBold, fontSize: 15, color: Colors.black)),
+                        Text(title,
+                            style: const TextStyle(
+                                fontFamily: gilroyBold,
+                                fontSize: 15,
+                                color: Colors.black)),
                         // Yapyk wagty saylanan zat kicijik setirde gorunyar.
                         AnimatedSize(
                           duration: const Duration(milliseconds: 200),
@@ -377,14 +464,18 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                                   padding: const EdgeInsets.only(top: 2),
                                   child: Row(
                                     children: [
-                                      Icon(valueIcon, size: 13, color: AppColors.primary),
+                                      Icon(valueIcon,
+                                          size: 13, color: AppColors.primary),
                                       const SizedBox(width: 5),
                                       Expanded(
                                         child: Text(
                                           valueLabel,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(fontFamily: gilroyMedium, fontSize: 12, color: AppColors.primary),
+                                          style: const TextStyle(
+                                              fontFamily: gilroyMedium,
+                                              fontSize: 12,
+                                              color: AppColors.primary),
                                         ),
                                       ),
                                     ],
@@ -413,7 +504,9 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
             curve: Curves.easeOutCubic,
             alignment: Alignment.topCenter,
             child: expanded
-                ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: children)
                 : const SizedBox(width: double.infinity),
           ),
         ],
@@ -452,7 +545,9 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
             decoration: BoxDecoration(
-              color: selected ? AppColors.primary.withOpacity(0.06) : Colors.transparent,
+              color: selected
+                  ? AppColors.primary.withValues(alpha: 0.06)
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: selected ? AppColors.primary : const Color(0xFFE8E8E8),
@@ -467,7 +562,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                   width: 30,
                   height: 30,
                   decoration: BoxDecoration(
-                    color: selected ? AppColors.primary : const Color(0xFFF4F4F4),
+                    color:
+                        selected ? AppColors.primary : const Color(0xFFF4F4F4),
                     borderRadius: BorderRadius.circular(9),
                   ),
                   child: Icon(
@@ -498,11 +594,16 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                     shape: BoxShape.circle,
                     color: selected ? AppColors.primary : Colors.transparent,
                     border: Border.all(
-                      color: selected ? AppColors.primary : const Color(0xFFD6D6D6),
+                      color: selected
+                          ? AppColors.primary
+                          : const Color(0xFFD6D6D6),
                       width: 1.2,
                     ),
                   ),
-                  child: selected ? const Icon(HugeIcons.strokeRoundedTick02, size: 11, color: Colors.white) : null,
+                  child: selected
+                      ? const Icon(HugeIcons.strokeRoundedTick02,
+                          size: 11, color: Colors.white)
+                      : null,
                 ),
               ],
             ),
@@ -529,12 +630,14 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(HugeIcons.strokeRoundedArrowLeft01, color: Colors.black),
+          icon: const Icon(HugeIcons.strokeRoundedArrowLeft01,
+              color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           constants.ru_send[dil],
-          style: const TextStyle(fontFamily: gilroyBold, fontSize: 18, color: Colors.black),
+          style: const TextStyle(
+              fontFamily: gilroyBold, fontSize: 18, color: Colors.black),
         ),
       ),
       body: LayoutBuilder(
@@ -581,12 +684,16 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                       children: [
                         Expanded(
                           flex: 5,
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: choices),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: choices),
                         ),
                         const SizedBox(width: 20),
                         Expanded(
                           flex: 4,
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: summary),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: summary),
                         ),
                       ],
                     ),
@@ -625,7 +732,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
 
     // Öň saýlanan bolsa şondan başlaýarys.
     DateTime selectedDay = _pickedDateTime ?? now;
-    DateTime selectedTime = _pickedDateTime ?? now.add(const Duration(minutes: 30));
+    DateTime selectedTime =
+        _pickedDateTime ?? now.add(const Duration(minutes: 30));
     bool asap = _pickedDateTime == null;
 
     // Indiki 14 gün
@@ -647,7 +755,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
               ),
-              padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).padding.bottom + 12),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(ctx).padding.bottom + 12),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -656,19 +765,25 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                     width: 44,
                     height: 4,
                     margin: const EdgeInsets.only(top: 10, bottom: 14),
-                    decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(3)),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(3)),
                   ),
                   // Baş setir
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
-                        const Icon(HugeIcons.strokeRoundedClock01, color: AppColors.primary, size: 20),
+                        const Icon(HugeIcons.strokeRoundedClock01,
+                            color: AppColors.primary, size: 20),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             constants.ru_pick_time[dil],
-                            style: const TextStyle(fontFamily: gilroyBold, fontSize: 17, color: Colors.black),
+                            style: const TextStyle(
+                                fontFamily: gilroyBold,
+                                fontSize: 17,
+                                color: Colors.black),
                           ),
                         ),
                         GestureDetector(
@@ -676,8 +791,11 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                           child: Container(
                             width: 30,
                             height: 30,
-                            decoration: BoxDecoration(color: const Color(0xFFF2F2F2), borderRadius: BorderRadius.circular(9)),
-                            child: const Icon(HugeIcons.strokeRoundedCancel01, size: 15, color: Colors.black54),
+                            decoration: BoxDecoration(
+                                color: const Color(0xFFF2F2F2),
+                                borderRadius: BorderRadius.circular(9)),
+                            child: const Icon(HugeIcons.strokeRoundedCancel01,
+                                size: 15, color: Colors.black54),
                           ),
                         ),
                       ],
@@ -699,15 +817,22 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
-                        Expanded(child: Container(height: 1, color: const Color(0xFFEFEFEF))),
+                        Expanded(
+                            child: Container(
+                                height: 1, color: const Color(0xFFEFEFEF))),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Text(
                             constants.ru_pick_time[dil],
-                            style: TextStyle(fontFamily: gilroyMedium, fontSize: 11, color: Colors.grey.shade400),
+                            style: TextStyle(
+                                fontFamily: gilroyMedium,
+                                fontSize: 11,
+                                color: Colors.grey.shade400),
                           ),
                         ),
-                        Expanded(child: Container(height: 1, color: const Color(0xFFEFEFEF))),
+                        Expanded(
+                            child: Container(
+                                height: 1, color: const Color(0xFFEFEFEF))),
                       ],
                     ),
                   ),
@@ -744,10 +869,14 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                             width: 62,
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             decoration: BoxDecoration(
-                              color: isSelected ? AppColors.primary : const Color(0xFFF6F7FA),
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : const Color(0xFFF6F7FA),
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
-                                color: isSelected ? AppColors.primary : const Color(0xFFEDEDED),
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : const Color(0xFFEDEDED),
                                 width: 1.2,
                               ),
                             ),
@@ -761,7 +890,9 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                                   style: TextStyle(
                                     fontFamily: gilroyMedium,
                                     fontSize: 10,
-                                    color: isSelected ? Colors.white70 : Colors.grey.shade500,
+                                    color: isSelected
+                                        ? Colors.white70
+                                        : Colors.grey.shade500,
                                   ),
                                 ),
                                 const SizedBox(height: 3),
@@ -770,7 +901,9 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                                   style: TextStyle(
                                     fontFamily: gilroyBold,
                                     fontSize: 18,
-                                    color: isSelected ? Colors.white : Colors.black87,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.black87,
                                   ),
                                 ),
                               ],
@@ -834,11 +967,13 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
                           elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
                         ),
                         child: Text(
                           constants.ru_otp_confirm[dil],
-                          style: const TextStyle(fontSize: 15, fontFamily: gilroyBold),
+                          style: const TextStyle(
+                              fontSize: 15, fontFamily: gilroyBold),
                         ),
                       ),
                     ),
@@ -854,21 +989,29 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
     if (!mounted) return;
     setState(() {
       _pickedDateTime = result;
-      _timeCtl.text = result == null ? '' : DateFormat('dd.MM.yyyy kk:mm').format(result);
+      _timeCtl.text =
+          result == null ? '' : DateFormat('dd.MM.yyyy kk:mm').format(result);
     });
   }
 
   /// "Mümkin boldugyça çalt" setiri.
-  Widget _sheetAsapRow({required String label, required bool selected, required VoidCallback onTap}) {
+  Widget _sheetAsapRow(
+      {required String label,
+      required bool selected,
+      required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
         decoration: BoxDecoration(
-          color: selected ? AppColors.primary.withOpacity(0.06) : Colors.transparent,
+          color: selected
+              ? AppColors.primary.withValues(alpha: 0.06)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: selected ? AppColors.primary : const Color(0xFFE8E8E8), width: 1.2),
+          border: Border.all(
+              color: selected ? AppColors.primary : const Color(0xFFE8E8E8),
+              width: 1.2),
         ),
         child: Row(
           children: [
@@ -903,9 +1046,15 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: selected ? AppColors.primary : Colors.transparent,
-                border: Border.all(color: selected ? AppColors.primary : const Color(0xFFD6D6D6), width: 1.2),
+                border: Border.all(
+                    color:
+                        selected ? AppColors.primary : const Color(0xFFD6D6D6),
+                    width: 1.2),
               ),
-              child: selected ? const Icon(HugeIcons.strokeRoundedTick02, size: 11, color: Colors.white) : null,
+              child: selected
+                  ? const Icon(HugeIcons.strokeRoundedTick02,
+                      size: 11, color: Colors.white)
+                  : null,
             ),
           ],
         ),
@@ -916,7 +1065,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
   /// "Mümkin boldugyça çalt" saýlanan ýagdaýda çak edilýän eltip berme sagady:
   /// häzirki wagt + 30 minut taýýarlyk.
   String _asapEstimate() {
-    return DateFormat('HH:mm').format(DateTime.now().add(const Duration(minutes: 30)));
+    return DateFormat('HH:mm')
+        .format(DateTime.now().add(const Duration(minutes: 30)));
   }
 
   Widget _buildTimeCard(BuildContext context, int dil) {
@@ -924,7 +1074,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionLabel(constants.ru_timeDos[dil], HugeIcons.strokeRoundedClock01),
+          _sectionLabel(
+              constants.ru_timeDos[dil], HugeIcons.strokeRoundedClock01),
           const SizedBox(height: 12),
           GestureDetector(
             onTap: () {
@@ -941,7 +1092,9 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
               child: Row(
                 children: [
                   Icon(
-                    _pickedDateTime == null ? HugeIcons.strokeRoundedFlash : HugeIcons.strokeRoundedCalendar01,
+                    _pickedDateTime == null
+                        ? HugeIcons.strokeRoundedFlash
+                        : HugeIcons.strokeRoundedCalendar01,
                     color: AppColors.primary,
                     size: 18,
                   ),
@@ -956,7 +1109,9 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          _pickedDateTime == null ? constants.ru_asap[dil] : _timeCtl.text,
+                          _pickedDateTime == null
+                              ? constants.ru_asap[dil]
+                              : _timeCtl.text,
                           style: const TextStyle(
                             fontFamily: gilroyMedium,
                             fontSize: 14,
@@ -978,7 +1133,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                       ],
                     ),
                   ),
-                  const Icon(HugeIcons.strokeRoundedArrowRight01, color: Colors.grey, size: 16),
+                  const Icon(HugeIcons.strokeRoundedArrowRight01,
+                      color: Colors.grey, size: 16),
                 ],
               ),
             ),
@@ -1026,7 +1182,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
         dismissDirection: DismissDirection.down,
         duration: const Duration(seconds: 3),
         backgroundColor: AppColors.primary,
-        content: Text(constants.ru_textr[dil], style: const TextStyle(color: Colors.white)),
+        content: Text(constants.ru_textr[dil],
+            style: const TextStyle(color: Colors.white)),
       ));
     }
     _collapseAfterPick(() => _typeExpanded = false);
@@ -1089,26 +1246,36 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
               decoration: BoxDecoration(
                 color: _selectBonus ? AppColors.primary : Colors.transparent,
                 borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: _selectBonus ? AppColors.primary : AppColors.silver, width: 2),
+                border: Border.all(
+                    color: _selectBonus ? AppColors.primary : AppColors.silver,
+                    width: 2),
               ),
-              child: _selectBonus ? const Icon(Icons.check, color: Colors.white, size: 14) : null,
+              child: _selectBonus
+                  ? const Icon(Icons.check, color: Colors.white, size: 14)
+                  : null,
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 constants.ru_use_bonus[dil],
-                style: const TextStyle(fontFamily: gilroyMedium, fontSize: 14, color: Colors.black),
+                style: const TextStyle(
+                    fontFamily: gilroyMedium,
+                    fontSize: 14,
+                    color: Colors.black),
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 '${constants.bonusMoney} TMT',
-                style: const TextStyle(fontFamily: gilroyBold, fontSize: 13, color: AppColors.primary),
+                style: const TextStyle(
+                    fontFamily: gilroyBold,
+                    fontSize: 13,
+                    color: AppColors.primary),
               ),
             ),
           ],
@@ -1160,12 +1327,14 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       constraints: _sheetConstraints,
       builder: (ctx) {
         return Container(
-          constraints: BoxConstraints(maxHeight: MediaQuery.of(ctx).size.height * 0.7),
+          constraints:
+              BoxConstraints(maxHeight: MediaQuery.of(ctx).size.height * 0.7),
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).padding.bottom + 12),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(ctx).padding.bottom + 12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -1173,18 +1342,24 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                 width: 44,
                 height: 4,
                 margin: const EdgeInsets.only(top: 10, bottom: 14),
-                decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(3)),
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(3)),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
-                    const Icon(HugeIcons.strokeRoundedLocation01, color: AppColors.primary, size: 20),
+                    const Icon(HugeIcons.strokeRoundedLocation01,
+                        color: AppColors.primary, size: 20),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         constants.ru_pick_region[dil],
-                        style: const TextStyle(fontFamily: gilroyBold, fontSize: 17, color: Colors.black),
+                        style: const TextStyle(
+                            fontFamily: gilroyBold,
+                            fontSize: 17,
+                            color: Colors.black),
                       ),
                     ),
                     GestureDetector(
@@ -1192,8 +1367,11 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                       child: Container(
                         width: 30,
                         height: 30,
-                        decoration: BoxDecoration(color: const Color(0xFFF2F2F2), borderRadius: BorderRadius.circular(9)),
-                        child: const Icon(HugeIcons.strokeRoundedCancel01, size: 15, color: Colors.black54),
+                        decoration: BoxDecoration(
+                            color: const Color(0xFFF2F2F2),
+                            borderRadius: BorderRadius.circular(9)),
+                        child: const Icon(HugeIcons.strokeRoundedCancel01,
+                            size: 15, color: Colors.black54),
                       ),
                     ),
                   ],
@@ -1213,12 +1391,17 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                       child: GestureDetector(
                         onTap: () => Navigator.pop(ctx, loc),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 11),
                           decoration: BoxDecoration(
-                            color: isSelected ? AppColors.primary.withOpacity(0.06) : Colors.transparent,
+                            color: isSelected
+                                ? AppColors.primary.withValues(alpha: 0.06)
+                                : Colors.transparent,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isSelected ? AppColors.primary : const Color(0xFFE8E8E8),
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : const Color(0xFFE8E8E8),
                               width: 1.2,
                             ),
                           ),
@@ -1228,13 +1411,17 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                                 width: 30,
                                 height: 30,
                                 decoration: BoxDecoration(
-                                  color: isSelected ? AppColors.primary : const Color(0xFFF4F4F4),
+                                  color: isSelected
+                                      ? AppColors.primary
+                                      : const Color(0xFFF4F4F4),
                                   borderRadius: BorderRadius.circular(9),
                                 ),
                                 child: Icon(
                                   HugeIcons.strokeRoundedLocation01,
                                   size: 16,
-                                  color: isSelected ? Colors.white : Colors.grey.shade500,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.grey.shade500,
                                 ),
                               ),
                               const SizedBox(width: 10),
@@ -1248,7 +1435,9 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        fontFamily: isSelected ? gilroyBold : gilroyMedium,
+                                        fontFamily: isSelected
+                                            ? gilroyBold
+                                            : gilroyMedium,
                                         fontSize: 13,
                                         color: Colors.black87,
                                       ),
@@ -1256,7 +1445,10 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                                     const SizedBox(height: 2),
                                     Text(
                                       '${constants.ru_min_order[dil]}: ${loc.min_order_fee} TMT',
-                                      style: TextStyle(fontFamily: gilroyMedium, fontSize: 11, color: Colors.grey.shade500),
+                                      style: TextStyle(
+                                          fontFamily: gilroyMedium,
+                                          fontSize: 11,
+                                          color: Colors.grey.shade500),
                                     ),
                                   ],
                                 ),
@@ -1306,7 +1498,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionLabel(constants.ru_address[dil], HugeIcons.strokeRoundedLocation01),
+          _sectionLabel(
+              constants.ru_address[dil], HugeIcons.strokeRoundedLocation01),
 
           // Sebit - basylanda aşaky penjire açylýar
           if (_locations.isNotEmpty) ...[
@@ -1317,7 +1510,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                 _openRegionSheet(context, dil);
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
                   color: _bgColor,
                   borderRadius: BorderRadius.circular(12),
@@ -1325,7 +1519,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                 ),
                 child: Row(
                   children: [
-                    const Icon(HugeIcons.strokeRoundedMapsLocation01, color: AppColors.primary, size: 18),
+                    const Icon(HugeIcons.strokeRoundedMapsLocation01,
+                        color: AppColors.primary, size: 18),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -1334,22 +1529,32 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                         children: [
                           Text(
                             constants.ru_region[dil],
-                            style: TextStyle(fontFamily: gilroyMedium, fontSize: 11, color: Colors.grey.shade600),
+                            style: TextStyle(
+                                fontFamily: gilroyMedium,
+                                fontSize: 11,
+                                color: Colors.grey.shade600),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            _selectedLocation == null ? constants.ru_pick_region[dil] : _locName(_selectedLocation!, dil),
+                            _selectedLocation == null
+                                ? constants.ru_pick_region[dil]
+                                : _locName(_selectedLocation!, dil),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontFamily: gilroyBold, fontSize: 14, color: Colors.black),
+                            style: const TextStyle(
+                                fontFamily: gilroyBold,
+                                fontSize: 14,
+                                color: Colors.black),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(width: 8),
-                    if (_selectedLocation != null) _feePill(_selectedLocation!.shipping_fee, false),
+                    if (_selectedLocation != null)
+                      _feePill(_selectedLocation!.shipping_fee, false),
                     const SizedBox(width: 6),
-                    const Icon(HugeIcons.strokeRoundedArrowRight01, color: Colors.grey, size: 16),
+                    const Icon(HugeIcons.strokeRoundedArrowRight01,
+                        color: Colors.grey, size: 16),
                   ],
                 ),
               ),
@@ -1362,7 +1567,10 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
             const SizedBox(height: 14),
             Text(
               constants.ru_saved_address[dil],
-              style: TextStyle(fontFamily: gilroyMedium, fontSize: 11, color: Colors.grey.shade600),
+              style: TextStyle(
+                  fontFamily: gilroyMedium,
+                  fontSize: 11,
+                  color: Colors.grey.shade600),
             ),
             const SizedBox(height: 8),
             SizedBox(
@@ -1383,11 +1591,18 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                       duration: const Duration(milliseconds: 200),
                       width: 190,
                       margin: const EdgeInsets.only(right: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 11, vertical: 9),
                       decoration: BoxDecoration(
-                        color: isSelected ? AppColors.primary.withOpacity(0.06) : Colors.transparent,
+                        color: isSelected
+                            ? AppColors.primary.withValues(alpha: 0.06)
+                            : Colors.transparent,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: isSelected ? AppColors.primary : const Color(0xFFE8E8E8), width: 1.2),
+                        border: Border.all(
+                            color: isSelected
+                                ? AppColors.primary
+                                : const Color(0xFFE8E8E8),
+                            width: 1.2),
                       ),
                       child: Row(
                         children: [
@@ -1396,13 +1611,17 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                             width: 28,
                             height: 28,
                             decoration: BoxDecoration(
-                              color: isSelected ? AppColors.primary : const Color(0xFFF4F4F4),
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : const Color(0xFFF4F4F4),
                               borderRadius: BorderRadius.circular(9),
                             ),
                             child: Icon(
                               HugeIcons.strokeRoundedHome01,
                               size: 15,
-                              color: isSelected ? Colors.white : Colors.grey.shade500,
+                              color: isSelected
+                                  ? Colors.white
+                                  : Colors.grey.shade500,
                             ),
                           ),
                           const SizedBox(width: 9),
@@ -1416,7 +1635,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontFamily: isSelected ? gilroyBold : gilroyMedium,
+                                    fontFamily:
+                                        isSelected ? gilroyBold : gilroyMedium,
                                     fontSize: 12.5,
                                     color: Colors.black87,
                                   ),
@@ -1426,7 +1646,10 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                                   addresses[index].address_txt,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontFamily: gilroyMedium, fontSize: 10.5, color: Colors.grey.shade500),
+                                  style: TextStyle(
+                                      fontFamily: gilroyMedium,
+                                      fontSize: 10.5,
+                                      color: Colors.grey.shade500),
                                 ),
                               ],
                             ),
@@ -1436,8 +1659,11 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                             Container(
                               width: 17,
                               height: 17,
-                              decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.primary),
-                              child: const Icon(HugeIcons.strokeRoundedTick02, size: 10, color: Colors.white),
+                              decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.primary),
+                              child: const Icon(HugeIcons.strokeRoundedTick02,
+                                  size: 10, color: Colors.white),
                             ),
                           ],
                         ],
@@ -1461,7 +1687,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.all(14),
               hintText: constants.ru_adres[dil],
-              hintStyle: const TextStyle(fontFamily: gilroyMedium, fontSize: 14, color: Colors.grey),
+              hintStyle: const TextStyle(
+                  fontFamily: gilroyMedium, fontSize: 14, color: Colors.grey),
               filled: true,
               fillColor: _bgColor,
               enabledBorder: OutlineInputBorder(
@@ -1470,7 +1697,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                borderSide:
+                    const BorderSide(color: AppColors.primary, width: 2),
               ),
             ),
           ),
@@ -1503,7 +1731,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                borderSide:
+                    const BorderSide(color: AppColors.primary, width: 2),
               ),
             ),
           ),
@@ -1520,20 +1749,25 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          _priceRow(constants.ru_product_price[dil], '${provItem.price.toStringAsFixed(2)} TMT'),
+          _priceRow(constants.ru_product_price[dil],
+              '${provItem.price.toStringAsFixed(2)} TMT'),
           if (_typeOrder == 2) ...[
             const SizedBox(height: 16),
-            _priceRow(constants.ru_extra_info[dil], '${_selectedLocation?.shipping_fee ?? 0} TMT'),
+            _priceRow(constants.ru_extra_info[dil],
+                '${_selectedLocation?.shipping_fee ?? 0} TMT'),
           ],
           const SizedBox(height: 16),
-          _priceRow(constants.ru_discount_info[dil], '${provItem.dis.toStringAsFixed(2)} TMT', valueColor: Colors.green),
+          _priceRow(constants.ru_discount_info[dil],
+              '${provItem.dis.toStringAsFixed(2)} TMT',
+              valueColor: Colors.green),
           if (addMoreMoney) ...[
             const SizedBox(height: 16),
             _priceRow(constants.service[dil], '$tenPercentOfPrice TMT'),
           ],
           if (_selectBonus) ...[
             const SizedBox(height: 16),
-            _priceRow(constants.ru_bonus[dil], '${constants.bonusMoney} TMT', valueColor: Colors.orange),
+            _priceRow(constants.ru_bonus[dil], '${constants.bonusMoney} TMT',
+                valueColor: Colors.orange),
           ],
           const SizedBox(height: 16),
           Container(height: 1, color: AppColors.silver),
@@ -1541,20 +1775,33 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
           _priceRow(
             constants.ru_net_price[dil],
             _getTotalPrice(context),
-            labelStyle: const TextStyle(fontSize: 15, fontFamily: gilroyBold, color: Colors.black),
-            valueStyle: const TextStyle(fontSize: 17, color: AppColors.primary, fontFamily: gilroyBold),
+            labelStyle: const TextStyle(
+                fontSize: 15, fontFamily: gilroyBold, color: Colors.black),
+            valueStyle: const TextStyle(
+                fontSize: 17, color: AppColors.primary, fontFamily: gilroyBold),
           ),
         ],
       ),
     );
   }
 
-  Widget _priceRow(String label, String value, {Color? valueColor, TextStyle? labelStyle, TextStyle? valueStyle}) {
+  Widget _priceRow(String label, String value,
+      {Color? valueColor, TextStyle? labelStyle, TextStyle? valueStyle}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: labelStyle ?? const TextStyle(fontSize: 14, fontFamily: gilroyMedium, color: Colors.black87)),
-        Text(value, style: valueStyle ?? TextStyle(fontSize: 14, fontFamily: gilroyBold, color: valueColor ?? Colors.black)),
+        Text(label,
+            style: labelStyle ??
+                const TextStyle(
+                    fontSize: 14,
+                    fontFamily: gilroyMedium,
+                    color: Colors.black87)),
+        Text(value,
+            style: valueStyle ??
+                TextStyle(
+                    fontSize: 14,
+                    fontFamily: gilroyBold,
+                    color: valueColor ?? Colors.black)),
       ],
     );
   }
@@ -1563,9 +1810,14 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
     final provItem = Provider.of<ProvItem>(context);
     final pageProvider = Provider.of<Which_page>(context);
     double totalPrice;
-    double shippingFee = double.tryParse(_selectedLocation?.shipping_fee ?? '0') ?? 0;
+    double shippingFee =
+        double.tryParse(_selectedLocation?.shipping_fee ?? '0') ?? 0;
     if (_selectBonus) {
-      totalPrice = provItem.price < pageProvider.dostawka_min ? (provItem.total_price + shippingFee - double.parse(constants.bonusMoney)) : (provItem.total_price - double.parse(constants.bonusMoney));
+      totalPrice = provItem.price < pageProvider.dostawka_min
+          ? (provItem.total_price +
+              shippingFee -
+              double.parse(constants.bonusMoney))
+          : (provItem.total_price - double.parse(constants.bonusMoney));
     } else {
       totalPrice = provItem.price < pageProvider.dostawka_min
           ? _typeOrder == 2
@@ -1574,7 +1826,8 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
           : provItem.total_price;
     }
     if (addMoreMoney) {
-      final double productPrice = double.parse(provItem.price.toStringAsFixed(2));
+      final double productPrice =
+          double.parse(provItem.price.toStringAsFixed(2));
       totalPrice += (productPrice * 10.0) / 100;
     }
     return "${totalPrice.toStringAsFixed(2)} TMT";
@@ -1595,12 +1848,18 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
         decoration: BoxDecoration(
           color: AppColors.primary,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.35), blurRadius: 12, offset: const Offset(0, 4))],
+          boxShadow: [
+            BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.35),
+                blurRadius: 12,
+                offset: const Offset(0, 4))
+          ],
         ),
         child: _loader == 0
             ? Text(
                 constants.ru_confirm[pageProvider.dil],
-                style: const TextStyle(color: Colors.white, fontSize: 16, fontFamily: gilroyBold),
+                style: const TextStyle(
+                    color: Colors.white, fontSize: 16, fontFamily: gilroyBold),
               )
             : SizedBox(
                 width: 200,
@@ -1608,7 +1867,7 @@ class _SendOrderState extends State<SendOrder> with SingleTickerProviderStateMix
                   minHeight: 6,
                   value: _animation.value,
                   color: Colors.white,
-                  backgroundColor: Colors.white.withOpacity(0.3),
+                  backgroundColor: Colors.white.withValues(alpha: 0.3),
                   // borderRadius: BorderRadius.circular(3),
                 ),
               ),

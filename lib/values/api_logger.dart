@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,7 +27,8 @@ class ApiLog {
   static const String _magenta = '\x1B[35m';
   static const String _grey = '\x1B[90m';
 
-  static String _c(String text, String color) => useColors ? '$color$text$_reset' : text;
+  static String _c(String text, String color) =>
+      useColors ? '$color$text$_reset' : text;
 
   static const String _line = '───────────────────────────────────────────────';
 
@@ -44,12 +43,12 @@ class ApiLog {
     if (!kDebugMode) return;
     _print('');
     _print(_c('┌─ ➡️  $tag  ·  ISLEG IBERILYAR', '$_bold$_cyan'));
-    _print(_c('│ $method $url', _cyan));
+    _print(_c('│ $method ${url.path}', _cyan));
     if (headers != null && headers.isNotEmpty) {
-      _print(_c('│ Headers: ${_maskHeaders(headers)}', _grey));
+      _print(_c('│ Header fields: ${headers.keys.join(', ')}', _grey));
     }
     if (body != null && body.isNotEmpty) {
-      _print(_c('│ Body: $body', '$_bold$_yellow'));
+      _print(_c('│ Body fields: ${body.keys.join(', ')}', '$_bold$_yellow'));
     }
     _print(_c('└$_line', _cyan));
   }
@@ -64,18 +63,12 @@ class ApiLog {
     final String color = ok ? _green : _red;
     final String icon = ok ? '✅' : '❌';
 
-    String bodyText;
-    try {
-      bodyText = utf8.decode(response.bodyBytes);
-    } catch (_) {
-      bodyText = response.body;
-    }
-
     _print('');
-    _print(_c('┌─ $icon  $tag  ·  JOGAP ${response.statusCode}', '$_bold$color'));
-    _print(_c('│ URL: ${response.request?.url}', _grey));
+    _print(
+        _c('┌─ $icon  $tag  ·  JOGAP ${response.statusCode}', '$_bold$color'));
+    _print(_c('│ Path: ${response.request?.url.path ?? '<unknown>'}', _grey));
     _print(_c('│ Content-Type: ${response.headers['content-type']}', _grey));
-    _print(_c('│ Body: ${bodyText.isEmpty ? "<bos>" : bodyText}', '$_bold$color'));
+    _print(_c('│ Body size: ${response.bodyBytes.length} bytes', _grey));
     _print(_c('└$_line', color));
   }
 
@@ -87,8 +80,8 @@ class ApiLog {
   }) {
     if (!kDebugMode) return;
     _print('');
-    _print(_c('┌─ 🔥  $tag  ·  ISLEG BASARSYZ (backend-e yetmedi)', '$_bold$_magenta'));
-    _print(_c('│ Error: $error', _magenta));
+    _print(_c('┌─ 🔥  $tag  ·  ISLEG BASARSYZ (backend-e yetmedi)',
+        '$_bold$_magenta'));
     _print(_c('│ Type: ${error.runtimeType}', _grey));
     if (stackTrace != null) _print(_c('│ Stack: $stackTrace', _grey));
     _print(_c('└$_line', _magenta));
@@ -105,15 +98,5 @@ class ApiLog {
     for (final line in text.split('\n')) {
       debugPrint(line);
     }
-  }
-
-  /// Authorization yaly duyduryjy baslyklary gysgaldyar.
-  static Map<String, String> _maskHeaders(Map<String, String> headers) {
-    return headers.map((key, value) {
-      if (key.toLowerCase() == 'authorization' && value.length > 16) {
-        return MapEntry(key, '${value.substring(0, 14)}…(${value.length} simwol)');
-      }
-      return MapEntry(key, value);
-    });
   }
 }

@@ -89,43 +89,46 @@ class _MyFavouritesState extends State<MyFavourites> {
                 // Kartyň suraty kwadrat (AspectRatio 1.0), şonuň üçin kartyň
                 // boýy onuň inliligine bagly. Planşetde 2 sütünde öýjük
                 // 497dp bolup, 315dp-lik beýiklige sygman daşyna çykýardy.
-                final bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+                final bool isTablet =
+                    MediaQuery.of(context).size.shortestSide >= 600;
                 final int cross = isTablet ? 3 : 2;
                 final double spacing = isTablet ? 14 : 0;
-                final double cellW = (box.maxWidth - spacing * (cross - 1)) / cross;
+                final double cellW =
+                    (box.maxWidth - spacing * (cross - 1)) / cross;
                 // ýazgy zolagy: gyralar + bir setir at + aralyk + düwme
                 final double extent = isTablet ? cellW + 92 : 315;
 
                 return GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: cross,
-                    crossAxisSpacing: spacing,
-                    mainAxisSpacing: spacing,
-                    mainAxisExtent: extent,
-                  ),
-                  shrinkWrap: true,
-                  physics: const ScrollPhysics(),
-                  primary: false,
-                  itemCount: prov.myid.length,
-                  itemBuilder: (context, index) {
-                    return CartItems(
-                        prov.items[prov.myid[index]]!.id,
-                        prov.items[prov.myid[index]]!.name_tm,
-                        prov.items[prov.myid[index]]!.name_ru,
-                        prov.items[prov.myid[index]]!.name_en,
-                        prov.items[prov.myid[index]]!.description_tm,
-                        prov.items[prov.myid[index]]!.description_ru,
-                        prov.items[prov.myid[index]]!.description_en,
-                        prov.items[prov.myid[index]]!.image,
-                        prov.items[prov.myid[index]]!.price,
-                        prov.items[prov.myid[index]]!.count,
-                        prov.items[prov.myid[index]]!.rating,
-                        prov.items[prov.myid[index]]!.discount,
-                        prov.items[prov.myid[index]]!.discount_price,
-                        prov.items[prov.myid[index]]!.category,
-                        prov.items[prov.myid[index]]!.values,
-                        quantity_step: prov.items[prov.myid[index]]!.quantity_step);
-                  });
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: cross,
+                      crossAxisSpacing: spacing,
+                      mainAxisSpacing: spacing,
+                      mainAxisExtent: extent,
+                    ),
+                    shrinkWrap: true,
+                    physics: const ScrollPhysics(),
+                    primary: false,
+                    itemCount: prov.myid.length,
+                    itemBuilder: (context, index) {
+                      return CartItems(
+                          prov.items[prov.myid[index]]!.id,
+                          prov.items[prov.myid[index]]!.name_tm,
+                          prov.items[prov.myid[index]]!.name_ru,
+                          prov.items[prov.myid[index]]!.name_en,
+                          prov.items[prov.myid[index]]!.description_tm,
+                          prov.items[prov.myid[index]]!.description_ru,
+                          prov.items[prov.myid[index]]!.description_en,
+                          prov.items[prov.myid[index]]!.image,
+                          prov.items[prov.myid[index]]!.price,
+                          prov.items[prov.myid[index]]!.count,
+                          prov.items[prov.myid[index]]!.rating,
+                          prov.items[prov.myid[index]]!.discount,
+                          prov.items[prov.myid[index]]!.discount_price,
+                          prov.items[prov.myid[index]]!.category,
+                          prov.items[prov.myid[index]]!.values,
+                          quantity_step:
+                              prov.items[prov.myid[index]]!.quantity_step);
+                    });
               }),
             ),
     );

@@ -8,10 +8,10 @@ import '../my_pages2/sub_cat.dart';
 import '../providers/page1provider.dart';
 
 class Harytlar extends StatefulWidget {
-  int id;
-  String name_tm;
-  String name_ru;
-  var children;
+  final int id;
+  final String name_tm;
+  final String name_ru;
+  final dynamic children;
   Harytlar(this.id, this.name_tm, this.name_ru, this.children, {super.key});
 
   @override
@@ -34,19 +34,30 @@ class _HarytlarState extends State<Harytlar> {
                   alignment: Alignment.center,
                   child: Text(
                     (prov.dil != 0) ? widget.name_tm : widget.name_ru,
-                    style: const TextStyle(fontSize: 18, fontFamily: "Semi", color: Colors.black),
+                    style: const TextStyle(
+                        fontSize: 18, fontFamily: "Semi", color: Colors.black),
                   ),
                 ),
                 GestureDetector(
                   onTap: () {
                     Constants.children = widget.children;
                     Constants.myCatID = widget.id;
-                    Constants.myCatName = (Provider.of<Which_page>(context, listen: false).dil != 0) ? widget.name_tm : widget.name_ru;
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const SubCat()));
+                    Constants.myCatName =
+                        (Provider.of<Which_page>(context, listen: false).dil !=
+                                0)
+                            ? widget.name_tm
+                            : widget.name_ru;
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SubCat()));
                   },
                   child: Text(
                     Constants.ru_showAll[prov.dil],
-                    style: const TextStyle(fontSize: 18, fontFamily: "Semi", color: AppColors.primary),
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontFamily: "Semi",
+                        color: AppColors.primary),
                   ),
                 ),
               ],

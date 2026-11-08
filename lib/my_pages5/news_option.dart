@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,8 +8,8 @@ import '../values/colors.dart';
 import '../values/models.dart';
 
 class NewsOption extends StatefulWidget {
-  List<new_post> product;
-  int index;
+  final List<new_post> product;
+  final int index;
   NewsOption(this.product, this.index, {super.key});
 
   @override
@@ -20,18 +19,28 @@ class NewsOption extends StatefulWidget {
 class _NewsOptionState extends State<NewsOption> {
   @override
   Widget build(BuildContext context) {
-    widget.product[widget.index].body_tm = widget.product[widget.index].body_tm.replaceAll('<h2>', '');
-    widget.product[widget.index].body_tm = widget.product[widget.index].body_tm.replaceAll('<h1>', '');
-    widget.product[widget.index].body_tm = widget.product[widget.index].body_tm.replaceAll('<h3>', '');
-    widget.product[widget.index].body_tm = widget.product[widget.index].body_tm.replaceAll('<h4>', '');
-    widget.product[widget.index].body_tm = widget.product[widget.index].body_tm.replaceAll('<strong>', '');
+    widget.product[widget.index].body_tm =
+        widget.product[widget.index].body_tm.replaceAll('<h2>', '');
+    widget.product[widget.index].body_tm =
+        widget.product[widget.index].body_tm.replaceAll('<h1>', '');
+    widget.product[widget.index].body_tm =
+        widget.product[widget.index].body_tm.replaceAll('<h3>', '');
+    widget.product[widget.index].body_tm =
+        widget.product[widget.index].body_tm.replaceAll('<h4>', '');
+    widget.product[widget.index].body_tm =
+        widget.product[widget.index].body_tm.replaceAll('<strong>', '');
 
-    widget.product[widget.index].body_ru = widget.product[widget.index].body_ru.replaceAll('<h2>', '');
-    widget.product[widget.index].body_ru = widget.product[widget.index].body_ru.replaceAll('<h1>', '');
-    widget.product[widget.index].body_ru = widget.product[widget.index].body_ru.replaceAll('<h3>', '');
-    widget.product[widget.index].body_ru = widget.product[widget.index].body_ru.replaceAll('<h4>', '');
+    widget.product[widget.index].body_ru =
+        widget.product[widget.index].body_ru.replaceAll('<h2>', '');
+    widget.product[widget.index].body_ru =
+        widget.product[widget.index].body_ru.replaceAll('<h1>', '');
+    widget.product[widget.index].body_ru =
+        widget.product[widget.index].body_ru.replaceAll('<h3>', '');
+    widget.product[widget.index].body_ru =
+        widget.product[widget.index].body_ru.replaceAll('<h4>', '');
 
-    widget.product[widget.index].body_ru = widget.product[widget.index].body_ru.replaceAll('<strong>', '');
+    widget.product[widget.index].body_ru =
+        widget.product[widget.index].body_ru.replaceAll('<strong>', '');
 
     return Scaffold(
         appBar: PreferredSize(
@@ -45,7 +54,9 @@ class _NewsOptionState extends State<NewsOption> {
                 children: [
                   Center(
                     child: Text(
-                      (Provider.of<Which_page>(context).dil != 0) ? 'Täzelikler' : 'Новости',
+                      (Provider.of<Which_page>(context).dil != 0)
+                          ? 'Täzelikler'
+                          : 'Новости',
                       // ignore: prefer_const_constructors
                       style: TextStyle(
                         color: Colors.black,
@@ -109,7 +120,9 @@ class _NewsOptionState extends State<NewsOption> {
                 height: 15,
               ),
               Text(
-                (Provider.of<Which_page>(context).dil != 0) ? widget.product[widget.index].name_tm : widget.product[widget.index].name_ru,
+                (Provider.of<Which_page>(context).dil != 0)
+                    ? widget.product[widget.index].name_tm
+                    : widget.product[widget.index].name_ru,
                 style: const TextStyle(
                   fontFamily: 'Semi',
                   fontSize: 18,
@@ -132,7 +145,9 @@ class _NewsOptionState extends State<NewsOption> {
                     margin: const EdgeInsets.only(left: 5, right: 10),
                     // ignore: prefer_const_constructors
                     child: Text(
-                      (Provider.of<Which_page>(context).dil != 0) ? widget.product[widget.index].date : widget.product[widget.index].date,
+                      (Provider.of<Which_page>(context).dil != 0)
+                          ? widget.product[widget.index].date
+                          : widget.product[widget.index].date,
                       maxLines: 2,
                       style: const TextStyle(
                         color: Colors.black,
@@ -146,7 +161,9 @@ class _NewsOptionState extends State<NewsOption> {
                 height: 15,
               ),
               Html(
-                data: (Provider.of<Which_page>(context).dil != 0) ? widget.product[widget.index].body_tm : widget.product[widget.index].body_ru,
+                data: (Provider.of<Which_page>(context).dil != 0)
+                    ? widget.product[widget.index].body_tm
+                    : widget.product[widget.index].body_ru,
               ),
             ],
           ),

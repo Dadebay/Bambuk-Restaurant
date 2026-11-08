@@ -120,7 +120,8 @@ class _VerifyState extends State<Verify> {
       var jsonData = json.decode(utf8.decode(response.bodyBytes));
       var m = jsonData['data'];
       DatabaseHelper.deleteUserAll();
-      DatabaseHelper.addUser(m['id'], m['name'], m['surname'] ?? '', m['email'], m['username'], m['api_token']);
+      DatabaseHelper.addUser(m['id'], m['name'], m['surname'] ?? '', m['email'],
+          m['username'], m['api_token']);
       Constants.token = m['api_token'];
 
       Constants.name1 = m['name'];
@@ -131,9 +132,12 @@ class _VerifyState extends State<Verify> {
       }
       Constants.email = m['email'];
       try {
-        Map<String, String> header = {'Authorization': 'Bearer ${Constants.token}'};
+        Map<String, String> header = {
+          'Authorization': 'Bearer ${Constants.token}'
+        };
         final bonusUrl = Uri.https(Constants.api, '/api/v1/users/me/bonus');
-        ApiLog.request(tag: 'BONUS', method: 'GET', url: bonusUrl, headers: header);
+        ApiLog.request(
+            tag: 'BONUS', method: 'GET', url: bonusUrl, headers: header);
         var responseAmount = await http.get(bonusUrl, headers: header);
         ApiLog.response(tag: 'BONUS', response: responseAmount);
         var mamount = json.decode(utf8.decode(responseAmount.bodyBytes));
@@ -171,7 +175,8 @@ class _VerifyState extends State<Verify> {
     try {
       var url = Uri.https(Constants.api, '/api/v1/login');
       final resendBody = {"phone": widget.phoneNumber};
-      ApiLog.request(tag: 'OTP GAYTADAN IBER', method: 'POST', url: url, body: resendBody);
+      ApiLog.request(
+          tag: 'OTP GAYTADAN IBER', method: 'POST', url: url, body: resendBody);
       final resendResponse = await http.post(url, body: resendBody);
       ApiLog.response(tag: 'OTP GAYTADAN IBER', response: resendResponse);
       if (!mounted) return;
@@ -243,7 +248,8 @@ class _VerifyState extends State<Verify> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.error_outline_rounded, size: 16, color: Color(0xFFE53935)),
+                          const Icon(Icons.error_outline_rounded,
+                              size: 16, color: Color(0xFFE53935)),
                           const SizedBox(width: 6),
                           Flexible(
                             child: Text(
@@ -290,7 +296,7 @@ class _VerifyState extends State<Verify> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.12),
+            color: AppColors.primary.withValues(alpha: 0.12),
             blurRadius: 30,
             offset: const Offset(0, 10),
           ),
@@ -306,7 +312,7 @@ class _VerifyState extends State<Verify> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.08),
+        color: AppColors.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(30),
       ),
       child: Text(
@@ -373,7 +379,7 @@ class _VerifyState extends State<Verify> {
         : isActive
             ? AppColors.primary
             : isFilled
-                ? AppColors.primary.withOpacity(0.45)
+                ? AppColors.primary.withValues(alpha: 0.45)
                 : const Color(0xFFEEEEEE);
 
     return AnimatedContainer(
@@ -388,7 +394,8 @@ class _VerifyState extends State<Verify> {
         border: Border.all(color: borderColor, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: (_hasError ? const Color(0xFFE53935) : AppColors.primary).withOpacity(isActive || isFilled ? 0.12 : 0.06),
+            color: (_hasError ? const Color(0xFFE53935) : AppColors.primary)
+                .withValues(alpha: isActive || isFilled ? 0.12 : 0.06),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -422,7 +429,8 @@ class _VerifyState extends State<Verify> {
             ? GestureDetector(
                 onTap: _resendCode,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   child: Text(
                     Constants.ru_otp_resend[dil],
                     style: const TextStyle(
@@ -471,7 +479,8 @@ class _VerifyState extends State<Verify> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(active ? 0.35 : 0.12),
+                color:
+                    AppColors.primary.withValues(alpha: active ? 0.35 : 0.12),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
@@ -526,7 +535,7 @@ class _VerifyState extends State<Verify> {
             height: 180,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primary.withOpacity(0.06),
+              color: AppColors.primary.withValues(alpha: 0.06),
             ),
           ),
         ),
@@ -538,7 +547,7 @@ class _VerifyState extends State<Verify> {
             height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primary.withOpacity(0.04),
+              color: AppColors.primary.withValues(alpha: 0.04),
             ),
           ),
         ),
@@ -550,7 +559,7 @@ class _VerifyState extends State<Verify> {
             height: 160,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primary.withOpacity(0.05),
+              color: AppColors.primary.withValues(alpha: 0.05),
             ),
           ),
         ),
@@ -571,11 +580,11 @@ class _VerifyState extends State<Verify> {
             height: 44,
             width: 44,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 10,
                   offset: const Offset(0, 2),
                 ),

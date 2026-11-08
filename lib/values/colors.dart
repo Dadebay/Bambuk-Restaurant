@@ -50,7 +50,8 @@ class NeonStyle {
         colors: [Colors.transparent, AppColors.neon, Colors.transparent],
       ),
       boxShadow: [
-        BoxShadow(color: Color(0x662CF420), blurRadius: 6, offset: Offset(0, 1)),
+        BoxShadow(
+            color: Color(0x662CF420), blurRadius: 6, offset: Offset(0, 1)),
       ],
     );
   }

@@ -24,7 +24,13 @@ class categorys {
   String name_en;
   String image;
   var children;
-  categorys({required this.id, required this.name_tm, required this.name_ru, required this.name_en, required this.image, required this.children});
+  categorys(
+      {required this.id,
+      required this.name_tm,
+      required this.name_ru,
+      required this.name_en,
+      required this.image,
+      required this.children});
 }
 
 class sliders {
@@ -60,7 +66,14 @@ class CommentBanner {
   String contentRu;
   String imageTm;
   String imageRu;
-  CommentBanner({required this.id, required this.nameTm, required this.nameRu, required this.contentTm, required this.contentRu, required this.imageTm, required this.imageRu});
+  CommentBanner(
+      {required this.id,
+      required this.nameTm,
+      required this.nameRu,
+      required this.contentTm,
+      required this.contentRu,
+      required this.imageTm,
+      required this.imageRu});
 }
 
 /// JSON / SQLite-den gelen dinamik degeri guvenli sekilde double-a cevirir.
@@ -153,7 +166,15 @@ class orders {
   String order_no;
   var my_products;
   String total_price;
-  orders({required this.id, required this.date, required this.status_id, required this.status, required this.status_ru, required this.order_no, required this.my_products, required this.total_price});
+  orders(
+      {required this.id,
+      required this.date,
+      required this.status_id,
+      required this.status,
+      required this.status_ru,
+      required this.order_no,
+      required this.my_products,
+      required this.total_price});
 }
 
 class order_items {
@@ -175,7 +196,8 @@ class category_home {
   int id;
   String name_tm;
   String name_ru;
-  category_home({required this.id, required this.name_tm, required this.name_ru});
+  category_home(
+      {required this.id, required this.name_tm, required this.name_ru});
 }
 
 class category_home2 {
@@ -184,7 +206,11 @@ class category_home2 {
   String name_ru;
   String name_en;
 
-  category_home2({required this.id, required this.name_tm, required this.name_ru, required this.name_en});
+  category_home2(
+      {required this.id,
+      required this.name_tm,
+      required this.name_ru,
+      required this.name_en});
 }
 
 class help {

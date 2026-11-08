@@ -81,7 +81,8 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     // Tüm işlemler bittikten sonra ana sayfaya geç
     if (mounted) {
       // Sayfa hala aktif mi kontrolü
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyHomePage()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const MyHomePage()));
     }
   }
 
@@ -103,7 +104,8 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     try {
       if (Constants.token.isNotEmpty) {
         _dio.options.headers["Authorization"] = "Bearer ${Constants.token}";
-        final response = await _dio.get('https://${Constants.api}/api/v1/users/me/bonus');
+        final response =
+            await _dio.get('https://${Constants.api}/api/v1/users/me/bonus');
         Constants.bonusMoney = response.data['amount'].toString();
       }
     } catch (e) {}
@@ -113,10 +115,14 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     try {
       final response = await _get('/api/v1/locations');
       if (!mounted) return;
-      if (response != null && response['data'] != null && response['data'].isNotEmpty) {
+      if (response != null &&
+          response['data'] != null &&
+          response['data'].isNotEmpty) {
         final location = response['data'][0];
-        Provider.of<Which_page>(context, listen: false).setDosMin(double.parse(location['min_order_fee']));
-        Provider.of<Which_page>(context, listen: false).setDosPrice(double.parse(location['shipping_fee']));
+        Provider.of<Which_page>(context, listen: false)
+            .setDosMin(double.parse(location['min_order_fee']));
+        Provider.of<Which_page>(context, listen: false)
+            .setDosPrice(double.parse(location['shipping_fee']));
       }
     } catch (e) {}
   }
@@ -193,7 +199,8 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   }
 
   Future<void> _fetchDiscountProducts() async {
-    await _fetchProducts('/api/v1/products/discounts', Constants.discount_products);
+    await _fetchProducts(
+        '/api/v1/products/discounts', Constants.discount_products);
   }
 
   Future<void> _fetchNewProducts() async {
@@ -204,7 +211,8 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     await _fetchProducts('/api/v1/brands/1/products', Constants.hit_products);
   }
 
-  Future<void> _fetchProducts(String endpoint, List<products> targetList) async {
+  Future<void> _fetchProducts(
+      String endpoint, List<products> targetList) async {
     try {
       final response = await _get(endpoint);
       if (response != null && response['data'] != null) {
@@ -225,10 +233,13 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                 image: product['image'],
                 price: double.parse(product['price'].toString()),
                 count: 0,
-                quantity_step: stepOf(toDouble(product['quantity_step'], fallback: 1.0)),
+                quantity_step:
+                    stepOf(toDouble(product['quantity_step'], fallback: 1.0)),
                 rating: double.parse(product['rating'].toString()),
                 discount: product['discount'],
-                discount_price: (product['discounted_price'] != null) ? double.parse(product['discounted_price'].toString()) : 0.00,
+                discount_price: (product['discounted_price'] != null)
+                    ? double.parse(product['discounted_price'].toString())
+                    : 0.00,
                 category: product['category']['id'].toString(),
                 values: product['values'],
               ),
@@ -270,7 +281,8 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
       if (!mounted) return;
       Provider.of<Favourite>(context, listen: false).clearAddress();
       for (var address in addresses) {
-        Provider.of<Favourite>(context, listen: false).addAddress(address['name'], address['address_txt']);
+        Provider.of<Favourite>(context, listen: false)
+            .addAddress(address['name'], address['address_txt']);
       }
     } catch (e) {}
   }
@@ -346,9 +358,9 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.primary.withOpacity(0.1),
+              AppColors.primary.withValues(alpha: 0.1),
               Colors.white,
-              AppColors.primary.withOpacity(0.05),
+              AppColors.primary.withValues(alpha: 0.05),
             ],
           ),
         ),
@@ -363,7 +375,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                 height: 200,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primary.withOpacity(0.05),
+                  color: AppColors.primary.withValues(alpha: 0.05),
                 ),
               ),
             ),
@@ -375,7 +387,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                 height: 150,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primary.withOpacity(0.05),
+                  color: AppColors.primary.withValues(alpha: 0.05),
                 ),
               ),
             ),
@@ -400,7 +412,8 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                               color: Colors.white,
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.2),
+                                  color:
+                                      AppColors.primary.withValues(alpha: 0.2),
                                   blurRadius: 30,
                                   offset: const Offset(0, 10),
                                   spreadRadius: 5,
@@ -453,7 +466,9 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                                       height: 50,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 3.5,
-                                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                AppColors.primary),
                                       ),
                                     ),
                                     const SizedBox(height: 16),
@@ -469,7 +484,8 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                                 );
                               } else {
                                 return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 16),
                                   decoration: BoxDecoration(
                                     color: Colors.red.shade50,
                                     borderRadius: BorderRadius.circular(12),

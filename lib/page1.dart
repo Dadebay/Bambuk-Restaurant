@@ -32,7 +32,8 @@ class _Page1State extends State<Page1> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: const PreferredSize(preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
+      appBar: const PreferredSize(
+          preferredSize: Size.fromHeight(0), child: SizedBox.shrink()),
       body: ListView(
         children: <Widget>[
           Row(
@@ -64,8 +65,12 @@ class _Page1State extends State<Page1> {
           searchWidget(context),
           const BannerScreen(),
           const MainCat(),
-          (Constants.discount_products.isNotEmpty) ? MainVisibles(type: 0, items: Constants.discount_products) : Container(),
-          (Constants.new_products.isNotEmpty) ? MainVisibles(type: 1, items: Constants.new_products) : Container(),
+          (Constants.discount_products.isNotEmpty)
+              ? MainVisibles(type: 0, items: Constants.discount_products)
+              : Container(),
+          (Constants.new_products.isNotEmpty)
+              ? MainVisibles(type: 1, items: Constants.new_products)
+              : Container(),
           const BannerScreen2(),
           const RestaurantMapWidget(),
           reviewListDesign(prov),
@@ -78,11 +83,13 @@ class _Page1State extends State<Page1> {
   Widget searchWidget(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Search()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Search()));
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
+        padding:
+            const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
         decoration: BoxDecoration(
           color: AppColors.light_silver,
           borderRadius: BorderRadius.circular(16),
@@ -97,7 +104,8 @@ class _Page1State extends State<Page1> {
             const SizedBox(width: 10),
             Text(
               Constants.ru_search[Provider.of<Which_page>(context).dil],
-              style: const TextStyle(color: AppColors.silver, fontFamily: 'Semi'),
+              style:
+                  const TextStyle(color: AppColors.silver, fontFamily: 'Semi'),
             ),
           ],
         ),
@@ -119,7 +127,7 @@ class _Page1State extends State<Page1> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
@@ -182,7 +190,9 @@ class _Page1State extends State<Page1> {
                       final review = snapshot.data![index];
                       return SizedBox(
                         // Planşetde kart aşa giň bolmaz ýaly çäk.
-                        width: MediaQuery.of(context).size.shortestSide >= 600 ? 360 : MediaQuery.of(context).size.width * 0.75,
+                        width: MediaQuery.of(context).size.shortestSide >= 600
+                            ? 360
+                            : MediaQuery.of(context).size.width * 0.75,
                         child: ReviewCard(
                           image: review.image!,
                           date: review.date!,
@@ -203,7 +213,8 @@ class _Page1State extends State<Page1> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.rate_review_outlined, size: 48, color: Colors.grey[400]),
+                    Icon(Icons.rate_review_outlined,
+                        size: 48, color: Colors.grey[400]),
                     const SizedBox(height: 12),
                     Text(
                       Constants.no_reviews_yet[prov.dil],
@@ -257,7 +268,7 @@ class _Page1State extends State<Page1> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
@@ -334,7 +345,9 @@ class _Page1State extends State<Page1> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary.withOpacity(0.08) : const Color(0xFFF8F8F8),
+            color: isSelected
+                ? AppColors.primary.withValues(alpha: 0.08)
+                : const Color(0xFFF8F8F8),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isSelected ? AppColors.primary : const Color(0xFFEEEEEE),
@@ -356,7 +369,9 @@ class _Page1State extends State<Page1> {
                   style: TextStyle(
                     fontFamily: isSelected ? 'GilroyBold' : 'GilroyMedium',
                     fontSize: 16,
-                    color: isSelected ? AppColors.primary : const Color(0xFF2D2D2D),
+                    color: isSelected
+                        ? AppColors.primary
+                        : const Color(0xFF2D2D2D),
                   ),
                 ),
               ),
@@ -369,11 +384,16 @@ class _Page1State extends State<Page1> {
                   shape: BoxShape.circle,
                   color: isSelected ? AppColors.primary : Colors.transparent,
                   border: Border.all(
-                    color: isSelected ? AppColors.primary : const Color(0xFFCCCCCC),
+                    color: isSelected
+                        ? AppColors.primary
+                        : const Color(0xFFCCCCCC),
                     width: 2,
                   ),
                 ),
-                child: isSelected ? const Icon(Icons.check_rounded, color: Colors.white, size: 16) : null,
+                child: isSelected
+                    ? const Icon(Icons.check_rounded,
+                        color: Colors.white, size: 16)
+                    : null,
               ),
             ],
           ),
@@ -411,7 +431,14 @@ class ReviewModel {
   final String? image;
   final String? date;
   final int? viewed;
-  ReviewModel({this.id, this.image, this.date, this.titleEN, this.titleRU, this.titleTM, this.viewed});
+  ReviewModel(
+      {this.id,
+      this.image,
+      this.date,
+      this.titleEN,
+      this.titleRU,
+      this.titleTM,
+      this.viewed});
 
   factory ReviewModel.fromJson(Map<dynamic, dynamic> json) {
     return ReviewModel(

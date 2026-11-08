@@ -22,7 +22,8 @@ class OptionsItem extends StatefulWidget {
 
 class _OptionsItemState extends State<OptionsItem> {
   /// Planşet: gysga gyra 600dp-den uly bolsa.
-  bool _isTablet(BuildContext context) => MediaQuery.of(context).size.shortestSide >= 600;
+  bool _isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.shortestSide >= 600;
 
   bool descrip = true;
   bool vis_size = true;
@@ -59,7 +60,8 @@ class _OptionsItemState extends State<OptionsItem> {
     try {
       for (int i = 0; i < Constants.op_values.length; i++) {
         if (Constants.op_values[i]['option']['is_color'] == "0") {
-          colors.add(ColorPick(id: Constants.op_id, colors: Constants.op_values[i]['color']));
+          colors.add(ColorPick(
+              id: Constants.op_id, colors: Constants.op_values[i]['color']));
         }
       }
     } catch (e) {}
@@ -68,7 +70,8 @@ class _OptionsItemState extends State<OptionsItem> {
       for (int j = 0; j < product.length; j++) {
         for (int i = 0; i < product[j].values.length; i++) {
           if (product[j].values[i]['option']['is_color'] != "0") {
-            colors.add(ColorPick(id: product[j].id, colors: product[j].values[i]['color']));
+            colors.add(ColorPick(
+                id: product[j].id, colors: product[j].values[i]['color']));
           }
         }
       }
@@ -107,11 +110,16 @@ class _OptionsItemState extends State<OptionsItem> {
             onTap: () => Navigator.pop(context),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.92),
+                color: Colors.white.withValues(alpha: 0.92),
                 shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 8)],
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.15),
+                      blurRadius: 8)
+                ],
               ),
-              child: const Icon(IconlyLight.arrow_left_circle, color: Colors.black, size: 22),
+              child: const Icon(IconlyLight.arrow_left_circle,
+                  color: Colors.black, size: 22),
             ),
           ),
         ),
@@ -120,7 +128,10 @@ class _OptionsItemState extends State<OptionsItem> {
             padding: const EdgeInsets.only(right: 12),
             child: GestureDetector(
               onTap: () {
-                if (Provider.of<Favourite>(context, listen: false).items[Constants.op_id]?.count == null) {
+                if (Provider.of<Favourite>(context, listen: false)
+                        .items[Constants.op_id]
+                        ?.count ==
+                    null) {
                   Provider.of<Favourite>(context, listen: false).addItem(
                     Constants.op_id,
                     Constants.op_name_tm,
@@ -139,7 +150,8 @@ class _OptionsItemState extends State<OptionsItem> {
                     Constants.op_values,
                   );
                 } else {
-                  Provider.of<Favourite>(context, listen: false).removeItem(Constants.op_id);
+                  Provider.of<Favourite>(context, listen: false)
+                      .removeItem(Constants.op_id);
                 }
                 setState(() {});
               },
@@ -147,14 +159,23 @@ class _OptionsItemState extends State<OptionsItem> {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.92),
+                  color: Colors.white.withValues(alpha: 0.92),
                   shape: BoxShape.circle,
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 8)],
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 8)
+                  ],
                 ),
                 child: Center(
-                  child: (Provider.of<Favourite>(context).items[Constants.op_id]?.count == null)
-                      ? const Icon(IconlyLight.heart, color: AppColors.primary, size: 20)
-                      : const Icon(IconlyBold.heart, color: Color.fromARGB(255, 218, 44, 32), size: 20),
+                  child: (Provider.of<Favourite>(context)
+                              .items[Constants.op_id]
+                              ?.count ==
+                          null)
+                      ? const Icon(IconlyLight.heart,
+                          color: AppColors.primary, size: 20)
+                      : const Icon(IconlyBold.heart,
+                          color: Color.fromARGB(255, 218, 44, 32), size: 20),
                 ),
               ),
             ),
@@ -171,16 +192,21 @@ class _OptionsItemState extends State<OptionsItem> {
               // suratyň ýokarsyny we aşagyny kesip taşlaýar. Şonuň üçin uly
               // ekranda surat `contain` bilen doly görkezilýär.
               SizedBox(
-                height: _isTablet(context) ? size.height * 0.42 : size.height * 0.48,
+                height: _isTablet(context)
+                    ? size.height * 0.42
+                    : size.height * 0.48,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    if (_isTablet(context)) Container(color: Colors.grey.shade100),
+                    if (_isTablet(context))
+                      Container(color: Colors.grey.shade100),
                     CachedNetworkImage(
                       fit: _isTablet(context) ? BoxFit.contain : BoxFit.cover,
                       imageUrl: widget.image,
-                      placeholder: (_, __) => Container(color: Colors.grey.shade200),
-                      errorWidget: (_, __, ___) => Image.asset(logoImage, fit: BoxFit.contain),
+                      placeholder: (_, __) =>
+                          Container(color: Colors.grey.shade200),
+                      errorWidget: (_, __, ___) =>
+                          Image.asset(logoImage, fit: BoxFit.contain),
                     ),
                     // bottom fade so content card blends into image
                     const Positioned(
@@ -203,16 +229,24 @@ class _OptionsItemState extends State<OptionsItem> {
                       bottom: 40,
                       right: 16,
                       child: GestureDetector(
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PhotView())),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const PhotView())),
                         child: Container(
                           width: 44,
                           height: 44,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.92),
+                            color: Colors.white.withValues(alpha: 0.92),
                             shape: BoxShape.circle,
-                            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 8)],
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.12),
+                                  blurRadius: 8)
+                            ],
                           ),
-                          child: const Icon(IconlyLight.search, color: Colors.black, size: 18),
+                          child: const Icon(IconlyLight.search,
+                              color: Colors.black, size: 18),
                         ),
                       ),
                     ),
@@ -226,7 +260,8 @@ class _OptionsItemState extends State<OptionsItem> {
                 child: Container(
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(28)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,14 +325,18 @@ class _OptionsItemState extends State<OptionsItem> {
                                   ),
                                   const SizedBox(width: 8),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 3),
                                     decoration: BoxDecoration(
                                       color: Colors.red,
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Text(
                                       '-${Constants.op_discount}%',
-                                      style: const TextStyle(color: Colors.white, fontFamily: 'Semi', fontSize: 11),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Semi',
+                                          fontSize: 11),
                                     ),
                                   ),
                                 ],
@@ -340,7 +379,10 @@ class _OptionsItemState extends State<OptionsItem> {
                               AnimatedRotation(
                                 turns: descrip ? 0.0 : -0.25,
                                 duration: const Duration(milliseconds: 200),
-                                child: const Icon(Icons.keyboard_arrow_down_rounded, size: 26, color: Colors.black54),
+                                child: const Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    size: 26,
+                                    color: Colors.black54),
                               ),
                             ],
                           ),
@@ -367,8 +409,12 @@ class _OptionsItemState extends State<OptionsItem> {
                                   lineHeight: const LineHeight(1.8),
                                   fontSize: FontSize.large,
                                 ),
-                                "p": Style(margin: Margins.all(1), padding: HtmlPaddings.all(1)),
-                                "span": Style(fontFamily: 'GilroyMedium', fontSize: FontSize.medium),
+                                "p": Style(
+                                    margin: Margins.all(1),
+                                    padding: HtmlPaddings.all(1)),
+                                "span": Style(
+                                    fontFamily: 'GilroyMedium',
+                                    fontSize: FontSize.medium),
                               },
                             ),
                           ),
@@ -377,7 +423,10 @@ class _OptionsItemState extends State<OptionsItem> {
 
                       // ── Sizes (expandable) ─────────────────────────────────
                       if (sizes.isNotEmpty) ...[
-                        Container(height: 1, margin: const EdgeInsets.fromLTRB(18, 4, 18, 0), color: Colors.grey.shade100),
+                        Container(
+                            height: 1,
+                            margin: const EdgeInsets.fromLTRB(18, 4, 18, 0),
+                            color: Colors.grey.shade100),
                         GestureDetector(
                           onTap: () => setState(() {
                             vis_size = !vis_size;
@@ -387,11 +436,18 @@ class _OptionsItemState extends State<OptionsItem> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(text_size, style: const TextStyle(fontSize: 18, fontFamily: 'GilroyBold', color: Colors.black)),
+                                Text(text_size,
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontFamily: 'GilroyBold',
+                                        color: Colors.black)),
                                 AnimatedRotation(
                                   turns: vis_size ? 0.0 : -0.25,
                                   duration: const Duration(milliseconds: 200),
-                                  child: const Icon(Icons.keyboard_arrow_down_rounded, size: 26, color: Colors.black54),
+                                  child: const Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      size: 26,
+                                      color: Colors.black54),
                                 ),
                               ],
                             ),
@@ -402,20 +458,30 @@ class _OptionsItemState extends State<OptionsItem> {
                             height: 54,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 14),
                               itemCount: sizes.length,
                               physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
                                 return Container(
                                   alignment: Alignment.center,
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(12),
-                                    boxShadow: [BoxShadow(color: Colors.grey.shade200, spreadRadius: 2, blurRadius: 6)],
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.grey.shade200,
+                                          spreadRadius: 2,
+                                          blurRadius: 6)
+                                    ],
                                   ),
-                                  child: Text(sizes[index], style: const TextStyle(fontFamily: 'Semi', fontSize: 14)),
+                                  child: Text(sizes[index],
+                                      style: const TextStyle(
+                                          fontFamily: 'Semi', fontSize: 14)),
                                 );
                               },
                             ),
@@ -424,7 +490,10 @@ class _OptionsItemState extends State<OptionsItem> {
 
                       // ── Colors (expandable) ────────────────────────────────
                       if (colors.isNotEmpty) ...[
-                        Container(height: 1, margin: const EdgeInsets.fromLTRB(18, 8, 18, 0), color: Colors.grey.shade100),
+                        Container(
+                            height: 1,
+                            margin: const EdgeInsets.fromLTRB(18, 8, 18, 0),
+                            color: Colors.grey.shade100),
                         GestureDetector(
                           onTap: () => setState(() {
                             vis_color = !vis_color;
@@ -436,12 +505,18 @@ class _OptionsItemState extends State<OptionsItem> {
                               children: [
                                 Text(
                                   prov.dil != 0 ? 'Reňkler' : 'Цвета',
-                                  style: const TextStyle(fontSize: 18, fontFamily: 'GilroyBold', color: Colors.black),
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'GilroyBold',
+                                      color: Colors.black),
                                 ),
                                 AnimatedRotation(
                                   turns: vis_color ? 0.0 : -0.25,
                                   duration: const Duration(milliseconds: 200),
-                                  child: const Icon(Icons.keyboard_arrow_down_rounded, size: 26, color: Colors.black54),
+                                  child: const Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      size: 26,
+                                      color: Colors.black54),
                                 ),
                               ],
                             ),
@@ -452,7 +527,8 @@ class _OptionsItemState extends State<OptionsItem> {
                             height: 54,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 14),
                               itemCount: colors.length,
                               physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
@@ -460,36 +536,56 @@ class _OptionsItemState extends State<OptionsItem> {
                                   onTap: () {
                                     setState(() {
                                       Constants.op_id = product[index].id;
-                                      Constants.op_name_tm = product[index].name_tm;
-                                      Constants.op_name_ru = product[index].name_ru;
-                                      Constants.op_description_tm = product[index].description_tm;
-                                      Constants.op_description_ru = product[index].description_ru;
+                                      Constants.op_name_tm =
+                                          product[index].name_tm;
+                                      Constants.op_name_ru =
+                                          product[index].name_ru;
+                                      Constants.op_description_tm =
+                                          product[index].description_tm;
+                                      Constants.op_description_ru =
+                                          product[index].description_ru;
                                       Constants.op_image = product[index].image;
                                       Constants.op_price = product[index].price;
                                       Constants.op_count = product[index].count;
-                                      Constants.op_quantity_step = product[index].quantity_step;
-                                      Constants.op_rating = product[index].rating;
-                                      Constants.op_discount = product[index].discount;
-                                      Constants.op_discount_price = product[index].discount_price;
-                                      Constants.op_category = product[index].category;
-                                      Constants.op_values = product[index].values;
+                                      Constants.op_quantity_step =
+                                          product[index].quantity_step;
+                                      Constants.op_rating =
+                                          product[index].rating;
+                                      Constants.op_discount =
+                                          product[index].discount;
+                                      Constants.op_discount_price =
+                                          product[index].discount_price;
+                                      Constants.op_category =
+                                          product[index].category;
+                                      Constants.op_values =
+                                          product[index].values;
                                     });
                                   },
                                   child: Container(
                                     width: 34,
                                     height: 34,
-                                    margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 10),
                                     decoration: BoxDecoration(
-                                      color: Color(int.parse('0xff${colors[index].colors.replaceAll("#", "")}')),
+                                      color: Color(int.parse(
+                                          '0xff${colors[index].colors.replaceAll("#", "")}')),
                                       shape: BoxShape.circle,
-                                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 4)],
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black
+                                                .withValues(alpha: 0.15),
+                                            blurRadius: 4)
+                                      ],
                                     ),
                                   ),
                                 );
                               },
                             ),
                           ),
-                        Container(height: 1, margin: const EdgeInsets.fromLTRB(18, 8, 18, 0), color: Colors.grey.shade100),
+                        Container(
+                            height: 1,
+                            margin: const EdgeInsets.fromLTRB(18, 8, 18, 0),
+                            color: Colors.grey.shade100),
                       ],
 
                       const SizedBox(height: 120),
@@ -513,15 +609,20 @@ class _OptionsItemState extends State<OptionsItem> {
   }
 
   Widget _addCartButton(BuildContext context) {
-    final bool inCart = Provider.of<ProvItem>(context).items[Constants.op_id]?.count != null;
+    final bool inCart =
+        Provider.of<ProvItem>(context).items[Constants.op_id]?.count != null;
 
     final decoration = BoxDecoration(
       borderRadius: BorderRadius.circular(20),
       color: inCart ? Colors.white : AppColors.primary,
-      border: inCart ? Border.all(color: AppColors.primary.withOpacity(0.3)) : null,
+      border: inCart
+          ? Border.all(color: AppColors.primary.withValues(alpha: 0.3))
+          : null,
       boxShadow: [
         BoxShadow(
-          color: inCart ? Colors.black.withOpacity(0.1) : AppColors.primary.withOpacity(0.4),
+          color: inCart
+              ? Colors.black.withValues(alpha: 0.1)
+              : AppColors.primary.withValues(alpha: 0.4),
           blurRadius: 16,
           offset: const Offset(0, 6),
         ),
@@ -536,21 +637,28 @@ class _OptionsItemState extends State<OptionsItem> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             GestureDetector(
-              onTap: () => Provider.of<ProvItem>(context, listen: false).removeItem(Constants.op_id, Constants.op_quantity_step),
+              onTap: () => Provider.of<ProvItem>(context, listen: false)
+                  .removeItem(Constants.op_id, Constants.op_quantity_step),
               child: Container(
                 margin: const EdgeInsets.all(10),
                 width: 42,
                 height: 42,
-                decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(12)),
-                child: const Icon(CupertinoIcons.minus, color: Colors.white, size: 18),
+                decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(12)),
+                child: const Icon(CupertinoIcons.minus,
+                    color: Colors.white, size: 18),
               ),
             ),
             Text(
-              formatQuantity(Provider.of<ProvItem>(context).items[Constants.op_id]!.count),
-              style: const TextStyle(color: Colors.black, fontSize: 22, fontFamily: 'GilroyBold'),
+              formatQuantity(
+                  Provider.of<ProvItem>(context).items[Constants.op_id]!.count),
+              style: const TextStyle(
+                  color: Colors.black, fontSize: 22, fontFamily: 'GilroyBold'),
             ),
             GestureDetector(
-              onTap: () => Provider.of<ProvItem>(context, listen: false).addItem(
+              onTap: () =>
+                  Provider.of<ProvItem>(context, listen: false).addItem(
                 Constants.op_id,
                 Constants.op_name_tm,
                 Constants.op_name_ru,
@@ -572,7 +680,9 @@ class _OptionsItemState extends State<OptionsItem> {
                 margin: const EdgeInsets.all(10),
                 width: 42,
                 height: 42,
-                decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(12)),
+                decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(12)),
                 child: const Icon(Icons.add, color: Colors.white, size: 18),
               ),
             ),
@@ -607,7 +717,8 @@ class _OptionsItemState extends State<OptionsItem> {
         child: Center(
           child: Text(
             Constants.ru_AddCart[Provider.of<Which_page>(context).dil],
-            style: const TextStyle(color: Colors.white, fontFamily: 'Semi', fontSize: 20),
+            style: const TextStyle(
+                color: Colors.white, fontFamily: 'Semi', fontSize: 20),
           ),
         ),
       ),

@@ -12,25 +12,40 @@ import 'package:provider/provider.dart';
 import '../providers/page1provider.dart';
 
 class CardUni extends StatefulWidget {
-  int id;
-  String name_tm;
-  String name_ru;
-  String name_en;
-  String description_tm;
-  String description_ru;
-  String description_en;
-  String image;
-  double price;
-  double count;
-  double rating;
-  int discount;
-  double discount_price;
-  String category;
-  var values;
-  double quantity_step;
-  CardUni(this.id, this.name_tm, this.name_ru, this.name_en, this.description_tm, this.description_ru, this.description_en, this.image, this.price, this.count, this.rating, this.discount,
-      this.discount_price, this.category, this.values,
-      {this.quantity_step = 1.0, super.key});
+  final int id;
+  final String name_tm;
+  final String name_ru;
+  final String name_en;
+  final String description_tm;
+  final String description_ru;
+  final String description_en;
+  final String image;
+  final double price;
+  final double count;
+  final double rating;
+  final int discount;
+  final double discount_price;
+  final String category;
+  final dynamic values;
+  final double quantity_step;
+  CardUni(
+      this.id,
+      this.name_tm,
+      this.name_ru,
+      this.name_en,
+      this.description_tm,
+      this.description_ru,
+      this.description_en,
+      this.image,
+      this.price,
+      this.count,
+      this.rating,
+      this.discount,
+      this.discount_price,
+      this.category,
+      this.values,
+      {this.quantity_step = 1.0,
+      super.key});
 
   @override
   _CardUniState createState() => _CardUniState();
@@ -75,7 +90,7 @@ class _CardUniState extends State<CardUni> {
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.25),
+                color: Colors.grey.withValues(alpha: 0.25),
                 spreadRadius: 3,
                 blurRadius: 3,
                 offset: const Offset(0, 0), // changes position of shadow
@@ -99,7 +114,8 @@ class _CardUniState extends State<CardUni> {
                           ),
                           child: Text(
                             '${widget.discount}%',
-                            style: const TextStyle(color: Colors.white, fontSize: 12),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 12),
                           ),
                         )
                       : Container(),
@@ -131,7 +147,9 @@ class _CardUniState extends State<CardUni> {
                   alignment: Alignment.topCenter,
                   margin: const EdgeInsets.only(left: 8, right: 8),
                   child: Text(
-                    (Provider.of<Which_page>(context).dil != 0) ? widget.name_tm : widget.name_ru,
+                    (Provider.of<Which_page>(context).dil != 0)
+                        ? widget.name_tm
+                        : widget.name_ru,
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -143,11 +161,30 @@ class _CardUniState extends State<CardUni> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      if (Provider.of<ProvItem>(context, listen: false).items[widget.id]?.count == null) {
-                        Provider.of<ProvItem>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru,
-                            widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values, widget.quantity_step);
+                      if (Provider.of<ProvItem>(context, listen: false)
+                              .items[widget.id]
+                              ?.count ==
+                          null) {
+                        Provider.of<ProvItem>(context, listen: false).addItem(
+                            widget.id,
+                            widget.name_tm,
+                            widget.name_ru,
+                            widget.name_en,
+                            widget.description_tm,
+                            widget.description_ru,
+                            widget.description_en,
+                            widget.image,
+                            widget.price,
+                            widget.count,
+                            widget.rating,
+                            widget.discount,
+                            widget.discount_price,
+                            widget.category,
+                            widget.values,
+                            widget.quantity_step);
                       } else {
-                        Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, widget.quantity_step);
+                        Provider.of<ProvItem>(context, listen: false)
+                            .removeItem(widget.id, widget.quantity_step);
                       }
                     },
                     child: Container(
@@ -155,17 +192,28 @@ class _CardUniState extends State<CardUni> {
                       height: 40,
                       // ignore: prefer_const_constructors
                       decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(5)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5)),
                         border: Border.all(
                           width: 3,
                           color: AppColors.primary,
                           style: BorderStyle.solid,
                         ),
-                        color: (Provider.of<ProvItem>(context).items[widget.id]?.count == null) ? Colors.white : AppColors.primary,
+                        color: (Provider.of<ProvItem>(context)
+                                    .items[widget.id]
+                                    ?.count ==
+                                null)
+                            ? Colors.white
+                            : AppColors.primary,
                       ),
                       child: Image.asset(
                         "assets/images/plus.png",
-                        color: (Provider.of<ProvItem>(context).items[widget.id]?.count == null) ? AppColors.primary : Colors.white,
+                        color: (Provider.of<ProvItem>(context)
+                                    .items[widget.id]
+                                    ?.count ==
+                                null)
+                            ? AppColors.primary
+                            : Colors.white,
                         fit: BoxFit.none,
                         width: 12,
                         height: 12,
@@ -179,7 +227,10 @@ class _CardUniState extends State<CardUni> {
                             children: [
                               Text(
                                 '${widget.price}TMT',
-                                style: const TextStyle(color: AppColors.light_black, fontSize: 12, decoration: TextDecoration.lineThrough),
+                                style: const TextStyle(
+                                    color: AppColors.light_black,
+                                    fontSize: 12,
+                                    decoration: TextDecoration.lineThrough),
                               ),
                               Text(
                                 '${widget.discount_price}TMT',
@@ -202,15 +253,37 @@ class _CardUniState extends State<CardUni> {
                   ),
                   GestureDetector(
                     onTap: (() {
-                      if (Provider.of<Favourite>(context, listen: false).items[widget.id]?.count == null) {
-                        Provider.of<Favourite>(context, listen: false).addItem(widget.id, widget.name_tm, widget.name_ru, widget.name_en, widget.description_tm, widget.description_ru,
-                            widget.description_en, widget.image, widget.price, widget.count, widget.rating, widget.discount, widget.discount_price, widget.category, widget.values, widget.quantity_step);
+                      if (Provider.of<Favourite>(context, listen: false)
+                              .items[widget.id]
+                              ?.count ==
+                          null) {
+                        Provider.of<Favourite>(context, listen: false).addItem(
+                            widget.id,
+                            widget.name_tm,
+                            widget.name_ru,
+                            widget.name_en,
+                            widget.description_tm,
+                            widget.description_ru,
+                            widget.description_en,
+                            widget.image,
+                            widget.price,
+                            widget.count,
+                            widget.rating,
+                            widget.discount,
+                            widget.discount_price,
+                            widget.category,
+                            widget.values,
+                            widget.quantity_step);
                       } else {
-                        Provider.of<Favourite>(context, listen: false).removeItem(widget.id);
+                        Provider.of<Favourite>(context, listen: false)
+                            .removeItem(widget.id);
                       }
                     }),
                     child: Container(
-                      child: (Provider.of<Favourite>(context).items[widget.id]?.count == null)
+                      child: (Provider.of<Favourite>(context)
+                                  .items[widget.id]
+                                  ?.count ==
+                              null)
                           ? const Icon(
                               Icons.favorite_border,
                               color: Colors.black,

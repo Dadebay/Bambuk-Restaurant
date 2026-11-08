@@ -12,28 +12,45 @@ import '../providers/page1provider.dart';
 import '../providers/provider_items.dart';
 
 class CardItem extends StatefulWidget {
-  int id;
-  String name_tm;
-  String name_ru;
-  String name_en;
-  String description_tm;
-  String description_ru;
-  String description_en;
-  String image;
-  double price;
-  double count;
-  double rating;
-  int discount;
-  double discount_price;
-  String category;
-  var values;
-  double quantity_step;
+  final int id;
+  final String name_tm;
+  final String name_ru;
+  final String name_en;
+  final String description_tm;
+  final String description_ru;
+  final String description_en;
+  final String image;
+  final double price;
+  final double count;
+  final double rating;
+  final int discount;
+  final double discount_price;
+  final String category;
+  final dynamic values;
+  final double quantity_step;
 
   final ScrollController? scrollController;
   final bool isGrid;
-  CardItem(this.id, this.name_tm, this.name_ru, this.name_en, this.description_tm, this.description_ru, this.description_en, this.image, this.price, this.count, this.rating, this.discount,
-      this.discount_price, this.category, this.values,
-      {super.key, this.scrollController, this.isGrid = false, this.quantity_step = 1.0});
+  CardItem(
+      this.id,
+      this.name_tm,
+      this.name_ru,
+      this.name_en,
+      this.description_tm,
+      this.description_ru,
+      this.description_en,
+      this.image,
+      this.price,
+      this.count,
+      this.rating,
+      this.discount,
+      this.discount_price,
+      this.category,
+      this.values,
+      {super.key,
+      this.scrollController,
+      this.isGrid = false,
+      this.quantity_step = 1.0});
 
   @override
   _CardItemState createState() => _CardItemState();
@@ -75,7 +92,8 @@ class _CardItemState extends State<CardItem> {
     Constants.op_discount_price = widget.discount_price;
     Constants.op_category = widget.category;
     Constants.op_values = widget.values;
-    Navigator.push(context, MaterialPageRoute(builder: (_) => OptionsItem(image: widget.image)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => OptionsItem(image: widget.image)));
   }
 
   @override
@@ -86,8 +104,10 @@ class _CardItemState extends State<CardItem> {
         : dil == 1
             ? widget.name_tm
             : widget.name_en;
-    final double cartCount = Provider.of<ProvItem>(context).items[widget.id]?.count ?? 0;
-    final bool isFav = Provider.of<Favourite>(context).items[widget.id]?.count != null;
+    final double cartCount =
+        Provider.of<ProvItem>(context).items[widget.id]?.count ?? 0;
+    final bool isFav =
+        Provider.of<Favourite>(context).items[widget.id]?.count != null;
 
     if (widget.isGrid) {
       return _buildGridCard(context, name, cartCount, isFav);
@@ -102,7 +122,7 @@ class _CardItemState extends State<CardItem> {
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.09),
+              color: Colors.black.withValues(alpha: 0.09),
               blurRadius: 22,
               offset: const Offset(0, 6),
             ),
@@ -126,10 +146,12 @@ class _CardItemState extends State<CardItem> {
                       imageUrl: widget.image,
                       width: double.infinity,
                       height: 190,
-                      placeholder: (_, __) => Container(color: Colors.grey.shade100),
+                      placeholder: (_, __) =>
+                          Container(color: Colors.grey.shade100),
                       errorWidget: (_, __, ___) => Container(
                         color: Colors.grey.shade200,
-                        child: const Icon(Icons.broken_image, size: 44, color: Colors.grey),
+                        child: const Icon(Icons.broken_image,
+                            size: 44, color: Colors.grey),
                       ),
                     ),
                     // Bottom gradient
@@ -143,7 +165,10 @@ class _CardItemState extends State<CardItem> {
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Colors.transparent, Colors.black.withOpacity(0.5)],
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withValues(alpha: 0.5)
+                            ],
                           ),
                         ),
                       ),
@@ -154,14 +179,18 @@ class _CardItemState extends State<CardItem> {
                         top: 12,
                         left: 12,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
                             '-${widget.discount}%',
-                            style: const TextStyle(color: Colors.white, fontFamily: 'Semi', fontSize: 12),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Semi',
+                                fontSize: 12),
                           ),
                         ),
                       ),
@@ -172,31 +201,36 @@ class _CardItemState extends State<CardItem> {
                       child: GestureDetector(
                         onTap: () {
                           isFav
-                              ? Provider.of<Favourite>(context, listen: false).removeItem(widget.id)
-                              : Provider.of<Favourite>(context, listen: false).addItem(
-                                  widget.id,
-                                  widget.name_tm,
-                                  widget.name_ru,
-                                  widget.name_en,
-                                  widget.description_tm,
-                                  widget.description_ru,
-                                  widget.description_en,
-                                  widget.image,
-                                  widget.price,
-                                  widget.count,
-                                  widget.rating,
-                                  widget.discount,
-                                  widget.discount_price,
-                                  widget.category,
-                                  widget.values,
-                                  widget.quantity_step);
+                              ? Provider.of<Favourite>(context, listen: false)
+                                  .removeItem(widget.id)
+                              : Provider.of<Favourite>(context, listen: false)
+                                  .addItem(
+                                      widget.id,
+                                      widget.name_tm,
+                                      widget.name_ru,
+                                      widget.name_en,
+                                      widget.description_tm,
+                                      widget.description_ru,
+                                      widget.description_en,
+                                      widget.image,
+                                      widget.price,
+                                      widget.count,
+                                      widget.rating,
+                                      widget.discount,
+                                      widget.discount_price,
+                                      widget.category,
+                                      widget.values,
+                                      widget.quantity_step);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                          decoration: const BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle),
                           child: Icon(
                             isFav ? Icons.favorite : Icons.favorite_border,
-                            color: isFav ? const Color.fromARGB(255, 218, 44, 32) : AppColors.primary,
+                            color: isFav
+                                ? const Color.fromARGB(255, 218, 44, 32)
+                                : AppColors.primary,
                             size: 20,
                           ),
                         ),
@@ -210,7 +244,9 @@ class _CardItemState extends State<CardItem> {
                         children: List.generate(
                           5,
                           (i) => Icon(
-                            i < widget.rating.round() ? CupertinoIcons.star_fill : CupertinoIcons.star,
+                            i < widget.rating.round()
+                                ? CupertinoIcons.star_fill
+                                : CupertinoIcons.star,
                             size: 13,
                             color: Colors.amber,
                           ),
@@ -277,7 +313,8 @@ class _CardItemState extends State<CardItem> {
                     _CartCounter(
                       count: cartCount,
                       onAdd: () {
-                        widget.count = roundQty(widget.count + widget.quantity_step);
+                        final nextCount =
+                            roundQty(cartCount + widget.quantity_step);
                         Provider.of<ProvItem>(context, listen: false).addItem(
                           widget.id,
                           widget.name_tm,
@@ -288,7 +325,7 @@ class _CardItemState extends State<CardItem> {
                           widget.description_en,
                           widget.image,
                           widget.price,
-                          widget.count,
+                          nextCount,
                           widget.rating,
                           widget.discount,
                           widget.discount_price,
@@ -299,8 +336,10 @@ class _CardItemState extends State<CardItem> {
                         setState(() {});
                       },
                       onRemove: () {
-                        widget.count = roundQty(widget.count - widget.quantity_step);
-                        Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, widget.count);
+                        final nextCount =
+                            roundQty(cartCount - widget.quantity_step);
+                        Provider.of<ProvItem>(context, listen: false)
+                            .removeItem(widget.id, nextCount);
                         setState(() {});
                       },
                     ),
@@ -314,7 +353,8 @@ class _CardItemState extends State<CardItem> {
     );
   }
 
-  Widget _buildGridCard(BuildContext context, String name, double cartCount, bool isFav) {
+  Widget _buildGridCard(
+      BuildContext context, String name, double cartCount, bool isFav) {
     return GestureDetector(
       onTap: _navigateToDetail,
       child: Container(
@@ -323,7 +363,7 @@ class _CardItemState extends State<CardItem> {
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.09),
+              color: Colors.black.withValues(alpha: 0.09),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -342,10 +382,12 @@ class _CardItemState extends State<CardItem> {
                     CachedNetworkImage(
                       fit: BoxFit.cover,
                       imageUrl: widget.image,
-                      placeholder: (_, __) => Container(color: Colors.grey.shade100),
+                      placeholder: (_, __) =>
+                          Container(color: Colors.grey.shade100),
                       errorWidget: (_, __, ___) => Container(
                         color: Colors.grey.shade200,
-                        child: const Icon(Icons.broken_image, size: 32, color: Colors.grey),
+                        child: const Icon(Icons.broken_image,
+                            size: 32, color: Colors.grey),
                       ),
                     ),
                     if (widget.discount != 0)
@@ -353,9 +395,16 @@ class _CardItemState extends State<CardItem> {
                         top: 8,
                         left: 8,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                          decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(12)),
-                          child: Text('-${widget.discount}%', style: const TextStyle(color: Colors.white, fontFamily: 'Semi', fontSize: 10)),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7, vertical: 3),
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Text('-${widget.discount}%',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Semi',
+                                  fontSize: 10)),
                         ),
                       ),
                     Positioned(
@@ -364,31 +413,36 @@ class _CardItemState extends State<CardItem> {
                       child: GestureDetector(
                         onTap: () {
                           isFav
-                              ? Provider.of<Favourite>(context, listen: false).removeItem(widget.id)
-                              : Provider.of<Favourite>(context, listen: false).addItem(
-                                  widget.id,
-                                  widget.name_tm,
-                                  widget.name_ru,
-                                  widget.name_en,
-                                  widget.description_tm,
-                                  widget.description_ru,
-                                  widget.description_en,
-                                  widget.image,
-                                  widget.price,
-                                  widget.count,
-                                  widget.rating,
-                                  widget.discount,
-                                  widget.discount_price,
-                                  widget.category,
-                                  widget.values,
-                                  widget.quantity_step);
+                              ? Provider.of<Favourite>(context, listen: false)
+                                  .removeItem(widget.id)
+                              : Provider.of<Favourite>(context, listen: false)
+                                  .addItem(
+                                      widget.id,
+                                      widget.name_tm,
+                                      widget.name_ru,
+                                      widget.name_en,
+                                      widget.description_tm,
+                                      widget.description_ru,
+                                      widget.description_en,
+                                      widget.image,
+                                      widget.price,
+                                      widget.count,
+                                      widget.rating,
+                                      widget.discount,
+                                      widget.discount_price,
+                                      widget.category,
+                                      widget.values,
+                                      widget.quantity_step);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(5),
-                          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                          decoration: const BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle),
                           child: Icon(
                             isFav ? Icons.favorite : Icons.favorite_border,
-                            color: isFav ? const Color.fromARGB(255, 218, 44, 32) : AppColors.primary,
+                            color: isFav
+                                ? const Color.fromARGB(255, 218, 44, 32)
+                                : AppColors.primary,
                             size: 15,
                           ),
                         ),
@@ -407,19 +461,35 @@ class _CardItemState extends State<CardItem> {
                       name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontFamily: 'GilroyBold', fontSize: 13, color: Colors.black),
+                      style: const TextStyle(
+                          fontFamily: 'GilroyBold',
+                          fontSize: 13,
+                          color: Colors.black),
                     ),
                     const SizedBox(height: 4),
                     if (widget.discount != 0) ...[
-                      Text('${widget.price} TMT', style: const TextStyle(color: Colors.grey, fontSize: 11, decoration: TextDecoration.lineThrough)),
-                      Text('${widget.discount_price} TMT', style: const TextStyle(color: Colors.green, fontFamily: 'Semi', fontSize: 13)),
+                      Text('${widget.price} TMT',
+                          style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 11,
+                              decoration: TextDecoration.lineThrough)),
+                      Text('${widget.discount_price} TMT',
+                          style: const TextStyle(
+                              color: Colors.green,
+                              fontFamily: 'Semi',
+                              fontSize: 13)),
                     ] else
-                      Text('${widget.price} TMT', style: const TextStyle(color: Colors.green, fontFamily: 'Semi', fontSize: 13)),
+                      Text('${widget.price} TMT',
+                          style: const TextStyle(
+                              color: Colors.green,
+                              fontFamily: 'Semi',
+                              fontSize: 13)),
                     const SizedBox(height: 8),
                     _CartCounter(
                       count: cartCount,
                       onAdd: () {
-                        widget.count = roundQty(widget.count + widget.quantity_step);
+                        final nextCount =
+                            roundQty(cartCount + widget.quantity_step);
                         Provider.of<ProvItem>(context, listen: false).addItem(
                           widget.id,
                           widget.name_tm,
@@ -430,7 +500,7 @@ class _CardItemState extends State<CardItem> {
                           widget.description_en,
                           widget.image,
                           widget.price,
-                          widget.count,
+                          nextCount,
                           widget.rating,
                           widget.discount,
                           widget.discount_price,
@@ -441,8 +511,10 @@ class _CardItemState extends State<CardItem> {
                         setState(() {});
                       },
                       onRemove: () {
-                        widget.count = roundQty(widget.count - widget.quantity_step);
-                        Provider.of<ProvItem>(context, listen: false).removeItem(widget.id, widget.count);
+                        final nextCount =
+                            roundQty(cartCount - widget.quantity_step);
+                        Provider.of<ProvItem>(context, listen: false)
+                            .removeItem(widget.id, nextCount);
                         setState(() {});
                       },
                     ),
@@ -463,14 +535,15 @@ class _CartCounter extends StatelessWidget {
   final VoidCallback onAdd;
   final VoidCallback onRemove;
 
-  const _CartCounter({required this.count, required this.onAdd, required this.onRemove});
+  const _CartCounter(
+      {required this.count, required this.onAdd, required this.onRemove});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 40,
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.07),
+        color: AppColors.primary.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(

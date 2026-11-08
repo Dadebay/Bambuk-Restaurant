@@ -9,7 +9,11 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class ReviewCard extends StatelessWidget {
-  const ReviewCard({super.key, required this.image, required this.date, required this.title});
+  const ReviewCard(
+      {super.key,
+      required this.image,
+      required this.date,
+      required this.title});
   final String image;
   final String date;
   final String title;
@@ -29,7 +33,7 @@ class ReviewCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -42,7 +46,8 @@ class ReviewCard extends StatelessWidget {
             Expanded(
               flex: 2,
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(16)),
                 child: CachedNetworkImage(
                   imageUrl: image,
                   // height: 210,
@@ -64,9 +69,11 @@ class ReviewCard extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
+                        const Icon(Icons.image_not_supported,
+                            size: 40, color: Colors.grey),
                         const SizedBox(height: 8),
-                        Text(Constants.no_image[provDil], style: const TextStyle(color: Colors.grey)),
+                        Text(Constants.no_image[provDil],
+                            style: const TextStyle(color: Colors.grey)),
                       ],
                     ),
                   ),

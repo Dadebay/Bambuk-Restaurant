@@ -5,7 +5,7 @@ import 'package:bamboo/values/models.dart';
 import 'package:flutter/material.dart';
 
 class HomeItemPage extends StatefulWidget {
-  int id;
+  final int id;
   HomeItemPage(this.id, {super.key});
 
   @override
@@ -29,10 +29,12 @@ class _HomeItemPageState extends State<HomeItemPage> {
           image: m[i]['image'],
           price: double.parse(m[i]['price']),
           count: toDouble(m[i]['count']),
-            quantity_step: stepOf(toDouble(m[i]['quantity_step'], fallback: 1.0)),
+          quantity_step: stepOf(toDouble(m[i]['quantity_step'], fallback: 1.0)),
           rating: double.parse(m[i]['rating']),
           discount: m[i]['discount'],
-          discount_price: (m[i]['discounted_price'] != null) ? double.parse(m[i]['discounted_price']) : 0.00,
+          discount_price: (m[i]['discounted_price'] != null)
+              ? double.parse(m[i]['discounted_price'])
+              : 0.00,
           category: m[i]['category']['id'].toString(),
           values: m[i]['values']));
     }

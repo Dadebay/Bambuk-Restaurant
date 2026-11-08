@@ -9,42 +9,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 class FirebaseMessagingService {
   FirebaseMessagingService._();
 
-  static final FirebaseMessagingService _instance = FirebaseMessagingService._();
+  static final FirebaseMessagingService _instance =
+      FirebaseMessagingService._();
 
   factory FirebaseMessagingService.instance() => _instance;
-
-  /// FCM token: iOS-da APNS token gelmese `getToken()` yalnyslyk zynyar.
-  /// Simulyatorda APNS hic hacan gelmeyar - sonun ucin bu yagdaý sessiz
-  /// gecirilyar, yogsam `main()` bolunip, ekran gara bolup galyar.
-  Future<void> _printFcmToken() async {
-    try {
-      if (Platform.isIOS) {
-        final String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-        if (apnsToken == null) {
-          debugPrint('APNS token yok (simulyator bolmagy mumkin) - FCM token soralanok.');
-          return;
-        }
-      }
-      final String? token = await FirebaseMessaging.instance.getToken();
-      print('');
-      print('═══════════════════════════════════════════════════════════════');
-      print('🔥 FIREBASE FCM TOKEN 🔥');
-      print('═══════════════════════════════════════════════════════════════');
-      print('Platform: ${Platform.isAndroid ? "ANDROID" : Platform.isIOS ? "iOS" : "Unknown"}');
-      print('Token: $token');
-      print('═══════════════════════════════════════════════════════════════');
-      print('');
-      debugPrint('FCM Token: $token');
-    } catch (e) {
-      debugPrint('FCM token alynmady: $e');
-    }
-  }
 
   Future<void> init({
     required LocalNotificationsService localNotificationsService,
   }) async {
     // Bildirim izni iste (Android 13+ ve iOS için gerekli)
-    NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
+    NotificationSettings settings =
+        await FirebaseMessaging.instance.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -54,48 +29,19 @@ class FirebaseMessagingService {
       sound: true,
     );
 
-    print('');
-    print('🔔 NOTIFICATION PERMISSION STATUS 🔔');
-    print('═══════════════════════════════════════════════════════════════');
-    print('Authorization Status: ${settings.authorizationStatus}');
-    print('Alert: ${settings.alert}');
-    print('Badge: ${settings.badge}');
-    print('Sound: ${settings.sound}');
-    print('═══════════════════════════════════════════════════════════════');
-    print('');
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('✅ User granted notification permission');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-      print('⚠️ User granted provisional notification permission');
-    } else {
-      print('❌ User declined or has not accepted notification permission');
-    }
+    debugPrint('Notification authorization: ${settings.authorizationStatus}');
 
     // iOS için foreground bildirimleri göster
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
     );
 
-    await _printFcmToken();
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print('');
-      print('📨 FOREGROUND MESSAGE RECEIVED 📨');
-      print('═══════════════════════════════════════════════════════════════');
-      debugPrint('Got a message whilst in the foreground!');
       final String? title = message.notification?.title;
       final String? body = message.notification?.body;
-      print('Title: $title');
-      print('Body: $body');
-      print('Data: ${message.data}');
-      print('═══════════════════════════════════════════════════════════════');
-      print('');
-      debugPrint('Foreground Message Title: $title');
-      debugPrint('Foreground Message Body (URL if present): $body');
-      debugPrint('Foreground Message data: ${message.data}');
 
       if (title != null || body != null) {
         // Extract URL from data payload based on platform
@@ -119,13 +65,6 @@ class FirebaseMessagingService {
             urlToLaunch = body;
           }
         }
-
-        print('');
-        print('🔗 EXTRACTED URL 🔗');
-        print('═══════════════════════════════════════════════════════════════');
-        print('URL: $urlToLaunch');
-        print('═══════════════════════════════════════════════════════════════');
-        print('');
 
         localNotificationsService.showNotification(
           title: title ?? "Yeni Bildirim",

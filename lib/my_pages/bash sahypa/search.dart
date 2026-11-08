@@ -37,7 +37,8 @@ class _SearchState extends State<Search> {
 
   Future getTime() async {
     product = [];
-    var response3 = await http.get(Uri.https(Constants.api, '/api/v1/products', {'keyword': _importo.text}));
+    var response3 = await http.get(Uri.https(
+        Constants.api, '/api/v1/products', {'keyword': _importo.text}));
     var mitem = json.decode(utf8.decode(response3.bodyBytes))['data'];
     for (int i = 0; i < mitem.length; i++) {
       // ignore: curly_braces_in_flow_control_structures
@@ -52,10 +53,13 @@ class _SearchState extends State<Search> {
           image: mitem[i]['image'],
           price: double.parse(mitem[i]['price']),
           count: toDouble(mitem[i]['count']),
-          quantity_step: stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
+          quantity_step:
+              stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
           rating: double.parse(mitem[i]['rating']),
           discount: mitem[i]['discount'],
-          discount_price: double.parse(mitem[i]['discounted_price'] == null ? "0.00" : mitem[i]['discounted_price'].toString()),
+          discount_price: double.parse(mitem[i]['discounted_price'] == null
+              ? "0.00"
+              : mitem[i]['discounted_price'].toString()),
           category: mitem[i]['category']['id'].toString(),
           values: mitem[i]['values']));
     }
@@ -80,7 +84,8 @@ class _SearchState extends State<Search> {
                 const SizedBox(width: 10),
                 GestureDetector(
                   onTap: (() {
-                    Provider.of<PageSettings>(context, listen: false).set_page0();
+                    Provider.of<PageSettings>(context, listen: false)
+                        .set_page0();
                     Navigator.pop(context);
                   }),
                   child: Container(
@@ -124,10 +129,12 @@ class _SearchState extends State<Search> {
                               autofocus: true,
                               decoration: const InputDecoration(
                                 focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: AppColors.primary, width: 2.0),
+                                  borderSide: BorderSide(
+                                      color: AppColors.primary, width: 2.0),
                                 ),
                                 // ignore: prefer_const_constructors
-                                labelStyle: TextStyle(fontSize: 10, color: Colors.black),
+                                labelStyle: TextStyle(
+                                    fontSize: 10, color: Colors.black),
                               ),
                             ),
                           ),

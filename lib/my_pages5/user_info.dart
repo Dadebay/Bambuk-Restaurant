@@ -17,9 +17,12 @@ class UserInf extends StatefulWidget {
 }
 
 class _UserInfState extends State<UserInf> {
-  final TextEditingController regName1 = TextEditingController(text: constants.name1);
-  final TextEditingController regSurname1 = TextEditingController(text: constants.name2);
-  final TextEditingController regPhone1 = TextEditingController(text: constants.phone);
+  final TextEditingController regName1 =
+      TextEditingController(text: constants.name1);
+  final TextEditingController regSurname1 =
+      TextEditingController(text: constants.name2);
+  final TextEditingController regPhone1 =
+      TextEditingController(text: constants.phone);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,8 @@ class _UserInfState extends State<UserInf> {
         ),
         title: Text(
           constants.ru_profil[prov.dil],
-          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
+          style: const TextStyle(
+              color: Colors.black, fontSize: 18, fontFamily: 'Semi'),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
@@ -72,7 +76,7 @@ class _UserInfState extends State<UserInf> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -84,16 +88,19 @@ class _UserInfState extends State<UserInf> {
               height: 80,
               width: 80,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.25),
+                color: Colors.white.withValues(alpha: 0.25),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white.withOpacity(0.5), width: 2),
+                border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.5), width: 2),
               ),
-              child: const Icon(IconlyBold.profile, color: Colors.white, size: 40)),
+              child: const Icon(IconlyBold.profile,
+                  color: Colors.white, size: 40)),
           const SizedBox(height: 12),
           if (fullName.isNotEmpty)
             Text(
               fullName,
-              style: const TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'Semi'),
+              style: const TextStyle(
+                  color: Colors.white, fontSize: 18, fontFamily: 'Semi'),
             ),
           const SizedBox(height: 4),
           if (constants.phone.isNotEmpty)
@@ -112,7 +119,7 @@ class _UserInfState extends State<UserInf> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -122,7 +129,8 @@ class _UserInfState extends State<UserInf> {
                 const SizedBox(width: 6),
                 Text(
                   '${constants.bonusMoney} TMT ${constants.bonus[prov.dil]}',
-                  style: const TextStyle(color: Colors.white, fontSize: 13, fontFamily: 'Semi'),
+                  style: const TextStyle(
+                      color: Colors.white, fontSize: 13, fontFamily: 'Semi'),
                 ),
               ],
             ),
@@ -139,7 +147,7 @@ class _UserInfState extends State<UserInf> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -190,16 +198,19 @@ class _UserInfState extends State<UserInf> {
         controller: controller,
         readOnly: readOnly,
         keyboardType: keyboardType,
-        style: const TextStyle(fontSize: 15, color: Colors.black87, fontFamily: 'GilroyMedium'),
+        style: const TextStyle(
+            fontSize: 15, color: Colors.black87, fontFamily: 'GilroyMedium'),
         decoration: InputDecoration(
           prefixIcon: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Icon(icon, color: AppColors.primary, size: 20),
           ),
-          prefixIconConstraints: const BoxConstraints(minWidth: 56, minHeight: 56),
+          prefixIconConstraints:
+              const BoxConstraints(minWidth: 56, minHeight: 56),
           labelText: label,
           labelStyle: TextStyle(color: Colors.grey.shade500, fontSize: 13),
-          floatingLabelStyle: const TextStyle(color: AppColors.primary, fontSize: 12),
+          floatingLabelStyle:
+              const TextStyle(color: AppColors.primary, fontSize: 12),
           filled: true,
           fillColor: Colors.white,
           border: InputBorder.none,
@@ -213,7 +224,8 @@ class _UserInfState extends State<UserInf> {
     );
   }
 
-  Widget _buildDeleteButton(BuildContext context, BottomProv bottomProv, Which_page prov) {
+  Widget _buildDeleteButton(
+      BuildContext context, BottomProv bottomProv, Which_page prov) {
     return GestureDetector(
       onTap: () => _confirmDelete(context, bottomProv),
       child: Container(
@@ -231,7 +243,8 @@ class _UserInfState extends State<UserInf> {
             const SizedBox(width: 8),
             Text(
               constants.ru_delete[prov.dil],
-              style: TextStyle(fontFamily: 'Semi', fontSize: 14, color: Colors.red.shade600),
+              style: TextStyle(
+                  fontFamily: 'Semi', fontSize: 14, color: Colors.red.shade600),
             ),
           ],
         ),
@@ -256,7 +269,9 @@ class _UserInfState extends State<UserInf> {
             Container(
               width: 40,
               height: 4,
-              decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2)),
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2)),
             ),
             const SizedBox(height: 20),
             Container(
@@ -265,12 +280,14 @@ class _UserInfState extends State<UserInf> {
                 color: Colors.red.shade50,
                 shape: BoxShape.circle,
               ),
-              child: Icon(IconlyBold.delete, color: Colors.red.shade500, size: 32),
+              child:
+                  Icon(IconlyBold.delete, color: Colors.red.shade500, size: 32),
             ),
             const SizedBox(height: 16),
             Text(
               constants.ru_delete[dil],
-              style: const TextStyle(fontFamily: 'Semi', fontSize: 17, color: Colors.black),
+              style: const TextStyle(
+                  fontFamily: 'Semi', fontSize: 17, color: Colors.black),
             ),
             const SizedBox(height: 8),
             Text(
@@ -290,7 +307,11 @@ class _UserInfState extends State<UserInf> {
                         color: const Color(0xFFF6F7FA),
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Text(constants.ruCykmakNo[dil], style: const TextStyle(fontFamily: 'Semi', fontSize: 15, color: Colors.black87)),
+                      child: Text(constants.ruCykmakNo[dil],
+                          style: const TextStyle(
+                              fontFamily: 'Semi',
+                              fontSize: 15,
+                              color: Colors.black87)),
                     ),
                   ),
                 ),
@@ -308,7 +329,11 @@ class _UserInfState extends State<UserInf> {
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Text(constants.ruCykmakYes[dil], style: const TextStyle(fontFamily: 'Semi', fontSize: 15, color: Colors.white)),
+                      child: Text(constants.ruCykmakYes[dil],
+                          style: const TextStyle(
+                              fontFamily: 'Semi',
+                              fontSize: 15,
+                              color: Colors.white)),
                     ),
                   ),
                 ),
@@ -320,7 +345,8 @@ class _UserInfState extends State<UserInf> {
     );
   }
 
-  Future<void> _handleDeleteAccount(BuildContext context, BottomProv bottomProv) async {
+  Future<void> _handleDeleteAccount(
+      BuildContext context, BottomProv bottomProv) async {
     final headers = {'Authorization': 'Bearer ${constants.token}'};
     final url = Uri.https(constants.api, '/api/v1/users/me/destroy');
 
@@ -341,10 +367,14 @@ class _UserInfState extends State<UserInf> {
       });
       bottomProv.set_reg(false);
       final dil = Provider.of<Which_page>(context, listen: false).dil;
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(constants.ru_acc_deleted[dil])));
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(constants.ru_acc_deleted[dil])));
     } else {
       final dil = Provider.of<Which_page>(context, listen: false).dil;
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(constants.ru_acc_delete_error[dil])));
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(constants.ru_acc_delete_error[dil])));
     }
   }
 }

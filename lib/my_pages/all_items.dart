@@ -40,8 +40,8 @@ class _AllItemsState extends State<AllItems> {
             values: Constants.product[i].values));
       }
     } else {
-      var headers = {"limit": 15};
-      var response3 = await http.get(Uri.https(Constants.api, '/api/v1/products/', {'limit': '10', 'daily': '1', 'page': '$page'}));
+      var response3 = await http.get(Uri.https(Constants.api,
+          '/api/v1/products/', {'limit': '10', 'daily': '1', 'page': '$page'}));
       var mitem = json.decode(utf8.decode(response3.bodyBytes))['data'];
       if (mitem.length == 0) loading = true;
       for (int i = 0; i < mitem.length; i++) {
@@ -56,7 +56,8 @@ class _AllItemsState extends State<AllItems> {
             image: mitem[i]['image'],
             price: double.parse(mitem[i]['price']),
             count: toDouble(mitem[i]['count']),
-            quantity_step: stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
+            quantity_step:
+                stepOf(toDouble(mitem[i]['quantity_step'], fallback: 1.0)),
             rating: double.parse(mitem[i]['rating']),
             discount: mitem[i]['discount'],
             discount_price: double.parse(mitem[i]['discount_price'] ?? "0.00"),
@@ -78,7 +79,8 @@ class _AllItemsState extends State<AllItems> {
   @override
   Widget build(BuildContext context) {
     return SliverList(
-        delegate: SliverChildListDelegate(List.generate(product.length, (index) {
+        delegate:
+            SliverChildListDelegate(List.generate(product.length, (index) {
       if (index == product.length - 1) {
         if (loading == false) {
           loading = true;
